@@ -93,7 +93,7 @@ public class StatementDialects {
      */
     protected boolean load() {
         if (this.xmlFile == null) {
-            LOG.warn(String.format("SKIP - No SQL dialect file was given.", this.xmlFile));
+            LOG.warn(String.format("SKIP - No SQL dialect file was given."));
             return (false);
         }
         else if (this.xmlFile.exists() == false) {

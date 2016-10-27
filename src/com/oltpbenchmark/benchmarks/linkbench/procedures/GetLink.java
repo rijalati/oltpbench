@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +44,7 @@ public class GetLink extends Procedure{
     
     public Link[] run(Connection conn, long id1, long link_type, long[] id2s) throws SQLException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("getLink : " + id1 + " " + link_type + " " + id2s);
+		LOG.debug("getLink : " + id1 + " " + link_type + " " + Arrays.toString(id2s));
         }
         boolean first = true;
         String ids = "";
