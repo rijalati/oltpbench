@@ -30,7 +30,7 @@ import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.chbenchmark.queries.Q1;
-import com.oltpbenchmark.benchmarks.tpcc.jTPCCConfig;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
 
 public class CHBenCHmark extends BenchmarkModule {
 	private static final Logger LOG = Logger.getLogger(CHBenCHmark.class);
@@ -47,36 +47,19 @@ public class CHBenCHmark extends BenchmarkModule {
 	 * @param Bool
 	 */
 	@Override
-	protected List<Worker> makeWorkersImpl(boolean verbose) throws IOException {
+	protected List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException {
 		// HACK: Turn off terminal messages
-		jTPCCConfig.TERMINAL_MESSAGES = false;
-		ArrayList<Worker> workers = new ArrayList<Worker>();
+		List<Worker<? extends BenchmarkModule>> workers = new ArrayList<Worker<? extends BenchmarkModule>>();
 
-		try {
-			List<CHBenCHmarkWorker> terminals = createCHTerminals();
-			workers.addAll(terminals);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		int numTerminals = workConf.getTerminals();
+		LOG.info(String.format("Creating %d workers for CHBenCHMark", numTerminals));
+        for (int i = 0; i < numTerminals; i++)
+            workers.add(new CHBenCHmarkWorker(this, i));
 
 		return workers;
 	}
 	
-	protected ArrayList<CHBenCHmarkWorker> createCHTerminals() throws SQLException {
-
-		int numTerminals = workConf.getTerminals();
-		
-		
-
-		ArrayList<CHBenCHmarkWorker> ret = new ArrayList<CHBenCHmarkWorker>();
-		LOG.info(String.format("Creating %d workers for CHBenCHMark", numTerminals));
-		for (int i = 0; i < numTerminals; i++)
-			
-			ret.add(new CHBenCHmarkWorker(this));
-		return ret;
-	}
-
-	protected Loader makeLoaderImpl(Connection conn) throws SQLException {
+	protected Loader<CHBenCHmark> makeLoaderImpl(Connection conn) throws SQLException {
 		return new CHBenCHmarkLoader(this, conn);
 	}
 	

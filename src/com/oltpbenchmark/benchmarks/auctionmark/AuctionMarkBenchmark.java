@@ -66,8 +66,8 @@ public class AuctionMarkBenchmark extends BenchmarkModule {
 	}
 
 	@Override
-	protected List<Worker> makeWorkersImpl(boolean verbose) throws IOException {
-		List<Worker> workers = new ArrayList<Worker>();
+	protected List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException {
+		List<Worker<? extends BenchmarkModule>> workers = new ArrayList<Worker<? extends BenchmarkModule>>();
 		for (int i = 0; i < workConf.getTerminals(); ++i) {
 			workers.add(new AuctionMarkWorker(i, this));
 		} // FOR
@@ -75,7 +75,7 @@ public class AuctionMarkBenchmark extends BenchmarkModule {
 	}
 	
 	@Override
-	protected Loader makeLoaderImpl(Connection conn) throws SQLException {
+	protected Loader<AuctionMarkBenchmark> makeLoaderImpl(Connection conn) throws SQLException {
 		return new AuctionMarkLoader(this, conn);
 	}
 	

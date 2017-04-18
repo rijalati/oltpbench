@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
 
-
 public class TransactionTypes implements Collection<TransactionType> {
 	
 	private final ListOrderedMap<String, TransactionType> types = new ListOrderedMap<String, TransactionType>();

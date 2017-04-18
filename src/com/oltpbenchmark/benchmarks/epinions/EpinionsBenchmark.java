@@ -49,8 +49,8 @@ public class EpinionsBenchmark extends BenchmarkModule {
     }
 
     @Override
-    protected List<Worker> makeWorkersImpl(boolean verbose) throws IOException {
-        ArrayList<Worker> workers = new ArrayList<Worker>();
+    protected List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException {
+        List<Worker<? extends BenchmarkModule>> workers = new ArrayList<Worker<? extends BenchmarkModule>>();
 
         try {
             Connection metaConn = this.makeConnection();
@@ -61,7 +61,7 @@ public class EpinionsBenchmark extends BenchmarkModule {
             Table t = this.catalog.getTable("USER");
             assert (t != null) : "Invalid table name '" + t + "' " + this.catalog.getTables();
 
-            String userCount = SQLUtil.selectColValues(t, "u_id");
+            String userCount = SQLUtil.selectColValues(this.workConf.getDBType(), t, "u_id");
             Statement stmt = metaConn.createStatement();
             ResultSet res = stmt.executeQuery(userCount);
             ArrayList<String> user_ids = new ArrayList<String>();
@@ -73,7 +73,7 @@ public class EpinionsBenchmark extends BenchmarkModule {
             // LIST OF ITEMS AND
             t = this.catalog.getTable("ITEM");
             assert (t != null) : "Invalid table name '" + t + "' " + this.catalog.getTables();
-            String itemCount = SQLUtil.selectColValues(t, "i_id");
+            String itemCount = SQLUtil.selectColValues(this.workConf.getDBType(), t, "i_id");
             res = stmt.executeQuery(itemCount);
             ArrayList<String> item_ids = new ArrayList<String>();
             while (res.next()) {
@@ -84,7 +84,7 @@ public class EpinionsBenchmark extends BenchmarkModule {
             metaConn.close();
             // Now create the workers.
             for (int i = 0; i < workConf.getTerminals(); ++i) {
-                workers.add(new EpinionsWorker(i, this, user_ids, item_ids));
+                workers.add(new EpinionsWorker(this, i, user_ids, item_ids));
             }
 
         } catch (SQLException e) {
@@ -94,7 +94,7 @@ public class EpinionsBenchmark extends BenchmarkModule {
     }
 
     @Override
-    protected Loader makeLoaderImpl(Connection conn) throws SQLException {
+    protected Loader<EpinionsBenchmark> makeLoaderImpl(Connection conn) throws SQLException {
         return new EpinionsLoader(this, conn);
     }
 

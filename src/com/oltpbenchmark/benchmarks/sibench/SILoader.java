@@ -19,33 +19,42 @@ package com.oltpbenchmark.benchmarks.sibench;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
 
-public class SILoader extends Loader {
+public class SILoader extends Loader<SIBenchmark> {
     private static final Logger LOG = Logger.getLogger(SILoader.class);
     private final int num_record;
 
     public SILoader(SIBenchmark benchmark, Connection c) {
         super(benchmark, c);
-        this.num_record = (int) Math.round(this.scaleFactor);
+        this.num_record = (int) Math.round(SIConstants.RECORD_COUNT * this.scaleFactor);
         if (LOG.isDebugEnabled()) {
             LOG.debug("# of RECORDS:  " + this.num_record);
         }
     }
+    
+    @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public void load() throws SQLException {
-        Random rand = new Random(System.currentTimeMillis());
-        Table catalog_tbl = this.getTableCatalog("SITEST");
+        Random rand = this.benchmark.rng();
+        Table catalog_tbl = this.benchmark.getTableCatalog("SITEST");
         assert (catalog_tbl != null);
         
-        String sql = SQLUtil.getInsertSQL(catalog_tbl);
+        String sql = SQLUtil.getInsertSQL(catalog_tbl,
+        		this.getDatabaseType().shouldEscapeNames());
         PreparedStatement stmt = this.conn.prepareStatement(sql);
         long total = 0;
         int batch = 0;
