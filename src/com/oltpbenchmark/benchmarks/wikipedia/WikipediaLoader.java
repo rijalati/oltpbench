@@ -50,7 +50,7 @@ import com.oltpbenchmark.util.TimeUtil;
  * @author pavlo
  * @author djellel
  */
-public class WikipediaLoader extends Loader {
+public class WikipediaLoader extends Loader<WikipediaBenchmark> {
     private static final Logger LOG = Logger.getLogger(WikipediaLoader.class);
 
     private final int num_users;
@@ -99,6 +99,12 @@ public class WikipediaLoader extends Loader {
             LOG.debug("# of PAGES: " + this.num_pages);
         }
     }
+    
+    @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public void load() {
@@ -134,7 +140,9 @@ public class WikipediaLoader extends Loader {
         Zipf z_pages = new Zipf(rng(), 1, this.num_pages, WikipediaConstants.USER_ID_SIGMA);
         
         PrintStream ps = new PrintStream(file);
-        PrintStream psdebug = new PrintStream(filedebug);
+        PrintStream psdebug = null;
+        if (filedebug != null)
+             psdebug = new PrintStream(filedebug);
         for (int i = 0, cnt = (b.getTraceSize() * 1000); i < cnt; i++) {
             int user_id = -1;
             
@@ -153,10 +161,12 @@ public class WikipediaLoader extends Loader {
             Pair<Integer, String> p = this.titles.get(page_id);
             assert(p != null);
             TransactionSelector.writeEntry(ps, user_id, p.first, p.second);
-            TransactionSelector.writeEntryDebug(psdebug, user_id, p.first, p.second, page_id+1);
+            if (psdebug != null)
+                TransactionSelector.writeEntryDebug(psdebug, user_id, p.first, p.second, page_id+1);
         } // FOR
         ps.close();
-        psdebug.close();
+        if (psdebug != null)
+            psdebug.close();
         return (file);
     }
     
@@ -164,7 +174,7 @@ public class WikipediaLoader extends Loader {
      * USERACCTS
      */
     private void loadUsers() throws SQLException {
-        Table catalog_tbl = this.getTableCatalog(WikipediaConstants.TABLENAME_USER);
+        Table catalog_tbl = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_USER);
         assert(catalog_tbl != null);
 
         String sql = SQLUtil.getInsertSQL(catalog_tbl);
@@ -248,7 +258,7 @@ public class WikipediaLoader extends Loader {
      * PAGE
      */
     private void loadPages() throws SQLException {
-        Table catalog_tbl = this.getTableCatalog(WikipediaConstants.TABLENAME_PAGE);
+        Table catalog_tbl = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_PAGE);
         assert(catalog_tbl != null);
 
         String sql = SQLUtil.getInsertSQL(catalog_tbl);
@@ -321,7 +331,7 @@ public class WikipediaLoader extends Loader {
      * WATCHLIST
      */
     private void loadWatchlist() throws SQLException {
-        Table catalog_tbl = this.getTableCatalog(WikipediaConstants.TABLENAME_WATCHLIST);
+        Table catalog_tbl = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_WATCHLIST);
         assert(catalog_tbl != null);
         
         String sql = SQLUtil.getInsertSQL(catalog_tbl, 1);
@@ -405,7 +415,7 @@ public class WikipediaLoader extends Loader {
     private void loadRevision() throws SQLException {
         
         // TEXT
-        Table textTable = this.getTableCatalog(WikipediaConstants.TABLENAME_TEXT);
+        Table textTable = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_TEXT);
         String textSQL = SQLUtil.getInsertSQL(textTable);
         if (this.getDatabaseType() == DatabaseType.ORACLE) {
             // Oracle handles quoted object identifiers differently, do not escape names
@@ -414,7 +424,7 @@ public class WikipediaLoader extends Loader {
         PreparedStatement textInsert = this.conn.prepareStatement(textSQL);
 
         // REVISION
-        Table revTable = this.getTableCatalog(WikipediaConstants.TABLENAME_REVISION);
+        Table revTable = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_REVISION);
         String revSQL = SQLUtil.getInsertSQL(revTable);
         if (this.getDatabaseType() == DatabaseType.ORACLE) {
             // Oracle handles quoted object identifiers differently, do not escape names
@@ -525,7 +535,7 @@ public class WikipediaLoader extends Loader {
         }
         
         // UPDATE USER
-        revTable = this.getTableCatalog(WikipediaConstants.TABLENAME_USER);
+        revTable = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_USER);
         
         // Since Oracle handles table names with quote differently, catch this here
         String revTableName = (this.getDatabaseType() == DatabaseType.ORACLE) ? revTable.getName() : revTable.getEscapedName();
@@ -557,7 +567,7 @@ public class WikipediaLoader extends Loader {
         userUpdate.close();
         
         // UPDATE PAGES
-        revTable = this.getTableCatalog(WikipediaConstants.TABLENAME_PAGE);
+        revTable = this.benchmark.getTableCatalog(WikipediaConstants.TABLENAME_PAGE);
         
         // Since Oracle handles table names with quote differently, catch this here
         revTableName = (this.getDatabaseType() == DatabaseType.ORACLE) ? revTable.getName() : revTable.getEscapedName();

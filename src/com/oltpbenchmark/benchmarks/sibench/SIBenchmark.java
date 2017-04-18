@@ -39,8 +39,8 @@ public class SIBenchmark extends BenchmarkModule {
     }
 
     @Override
-    protected List<Worker> makeWorkersImpl(boolean verbose) throws IOException {
-        ArrayList<Worker> workers = new ArrayList<Worker>();
+    protected List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException {
+        List<Worker<? extends BenchmarkModule>> workers = new ArrayList<Worker<? extends BenchmarkModule>>();
         try {
             Connection metaConn = this.makeConnection();
 
@@ -49,7 +49,7 @@ public class SIBenchmark extends BenchmarkModule {
 
             Table t = this.catalog.getTable("SITEST");
             assert (t != null) : "Invalid table name '" + t + "' " + this.catalog.getTables();
-            String recordCount = SQLUtil.getMaxColSQL(t, "id");
+            String recordCount = SQLUtil.getMaxColSQL(this.workConf.getDBType(), t, "id");
             Statement stmt = metaConn.createStatement();
             ResultSet res = stmt.executeQuery(recordCount);
             int init_record_count = 0;
@@ -60,7 +60,7 @@ public class SIBenchmark extends BenchmarkModule {
             res.close();
             //
             for (int i = 0; i < workConf.getTerminals(); ++i) {
-                workers.add(new SIWorker(i, this, init_record_count));
+                workers.add(new SIWorker(this, i, init_record_count));
             } // FOR
             metaConn.close();
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class SIBenchmark extends BenchmarkModule {
     }
 
     @Override
-    protected Loader makeLoaderImpl(Connection conn) throws SQLException {
+    protected Loader<SIBenchmark> makeLoaderImpl(Connection conn) throws SQLException {
         return new SILoader(this, conn);
     }
 

@@ -20,14 +20,16 @@ package com.oltpbenchmark.benchmarks.tatp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.catalog.*;
 import com.oltpbenchmark.util.SQLUtil;
 
-public class TATPLoader extends Loader {
+public class TATPLoader extends Loader<TATPBenchmark> {
     private static final Logger LOG = Logger.getLogger(TATPLoader.class);
     
     private final long subscriberSize;
@@ -39,6 +41,12 @@ public class TATPLoader extends Loader {
     	this.subscriberSize = Math.round(TATPConstants.DEFAULT_NUM_SUBSCRIBERS * this.scaleFactor);
         if (LOG.isDebugEnabled()) LOG.debug("CONSTRUCTOR: " + TATPLoader.class.getName());
     }
+    
+    @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public void load() {
@@ -48,7 +56,7 @@ public class TATPLoader extends Loader {
             new Thread() {
                 public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_SUBSCRIBER);
-                    Table catalog_tbl = getTableCatalog(TATPConstants.TABLENAME_SUBSCRIBER);
+                    Table catalog_tbl = benchmark.getTableCatalog(TATPConstants.TABLENAME_SUBSCRIBER);
                     try {
                     	genSubscriber(catalog_tbl);
                     } catch (SQLException ex) {
@@ -61,7 +69,7 @@ public class TATPLoader extends Loader {
             new Thread() {
                 public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_ACCESS_INFO);
-                    Table catalog_tbl = getTableCatalog(TATPConstants.TABLENAME_ACCESS_INFO);
+                    Table catalog_tbl = benchmark.getTableCatalog(TATPConstants.TABLENAME_ACCESS_INFO);
                     try {
                     	genAccessInfo(catalog_tbl);
                     } catch (SQLException ex) {
@@ -74,8 +82,8 @@ public class TATPLoader extends Loader {
             new Thread() {
                 public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_SPECIAL_FACILITY + " and " + TATPConstants.TABLENAME_CALL_FORWARDING);
-                    Table catalog_spe = getTableCatalog(TATPConstants.TABLENAME_SPECIAL_FACILITY);
-                    Table catalog_cal = getTableCatalog(TATPConstants.TABLENAME_CALL_FORWARDING);
+                    Table catalog_spe = benchmark.getTableCatalog(TATPConstants.TABLENAME_SPECIAL_FACILITY);
+                    Table catalog_cal = benchmark.getTableCatalog(TATPConstants.TABLENAME_CALL_FORWARDING);
                     try {
                     	genSpeAndCal(catalog_spe, catalog_cal);
                     } catch (SQLException ex) {

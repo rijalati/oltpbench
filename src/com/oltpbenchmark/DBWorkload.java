@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -55,7 +56,7 @@ import com.oltpbenchmark.util.TimeUtil;
 public class DBWorkload {
     private static final Logger LOG = Logger.getLogger(DBWorkload.class);
     
-    private static final String SINGLE_LINE = "**********************************************************************************";
+    private static final String SINGLE_LINE = StringUtil.repeat("=", 70);
     
     private static final String RATE_DISABLED = "disabled";
     private static final String RATE_UNLIMITED = "unlimited";
@@ -132,7 +133,7 @@ public class DBWorkload {
         options.addOption("v", "verbose", false, "Display Messages");
         options.addOption("h", "help", false, "Print this help");
         options.addOption("s", "sample", true, "Sampling window");
-        options.addOption("im", "interval-monitor", true, "Throughput Monitoring Interval in seconds");
+        options.addOption("im", "interval-monitor", true, "Throughput Monitoring Interval in milliseconds");
         options.addOption("ss", false, "Verbose Sampling per Transaction");
         options.addOption("o", "output", true, "Output file (default System.out)");
         options.addOption("d", "directory", true, "Base directory for the result files, default is current directory");
@@ -156,16 +157,7 @@ public class DBWorkload {
             return;
         }
         
-        // If an output directory is used, store the information
-        String outputDirectory = "";
-        if (argsLine.hasOption("d")) {
-            outputDirectory = argsLine.getOptionValue("d");
-        }
         
-        String timestampValue = "";
-        if (argsLine.hasOption("t")) {
-            timestampValue = String.valueOf(TimeUtil.getCurrentTime().getTime()) + "_";
-        }
         
         // Seconds
         int intervalMonitor = 0;
@@ -216,14 +208,30 @@ public class DBWorkload {
             wrkld.setDBName(xmlConfig.getString("DBName"));
             wrkld.setDBUsername(xmlConfig.getString("username"));
             wrkld.setDBPassword(xmlConfig.getString("password"));
+            
             int terminals = xmlConfig.getInt("terminals[not(@bench)]", 0);
             terminals = xmlConfig.getInt("terminals" + pluginTest, terminals);
             wrkld.setTerminals(terminals);
+            
+            if (xmlConfig.containsKey("loaderThreads")) {
+                int loaderThreads = xmlConfig.getInt("loaderThreads");
+                wrkld.setLoaderThreads(loaderThreads);
+            }
+            
             String isolationMode = xmlConfig.getString("isolation[not(@bench)]", "TRANSACTION_SERIALIZABLE");
             wrkld.setIsolationMode(xmlConfig.getString("isolation" + pluginTest, isolationMode));
             wrkld.setScaleFactor(xmlConfig.getDouble("scalefactor", 1.0));
             wrkld.setRecordAbortMessages(xmlConfig.getBoolean("recordabortmessages", false));
             wrkld.setDataDir(xmlConfig.getString("datadir", "."));
+
+            double selectivity = -1;
+            try {
+                selectivity = xmlConfig.getDouble("selectivity");
+                wrkld.setSelectivity(selectivity);
+            }
+            catch(NoSuchElementException nse) {  
+                // Nothing to do here !
+            }
 
             // ----------------------------------------------------------------
             // CREATE BENCHMARK MODULE
@@ -244,6 +252,10 @@ public class DBWorkload {
             initDebug.put("URL", wrkld.getDBConnection());
             initDebug.put("Isolation", wrkld.getIsolationString());
             initDebug.put("Scale Factor", wrkld.getScaleFactor());
+            
+            if(selectivity != -1)
+                initDebug.put("Selectivity", selectivity);
+
             LOG.info(SINGLE_LINE + "\n\n" + StringUtil.formatMaps(initDebug));
             LOG.info(SINGLE_LINE);
 
@@ -261,12 +273,12 @@ public class DBWorkload {
             List<TransactionType> ttypes = new ArrayList<TransactionType>();
             ttypes.add(TransactionType.INVALID);
             int txnIdOffset = lastTxnId;
-            for (int i = 1; i < wrkld.getNumTxnTypes() + 1; i++) {
+            for (int i = 1; i <= wrkld.getNumTxnTypes(); i++) {
                 String key = "transactiontypes" + pluginTest + "/transactiontype[" + i + "]";
                 String txnName = xmlConfig.getString(key + "/name");
 
                 // Get ID if specified; else increment from last one.
-                int txnId = i + 1;
+                int txnId = i;
                 if (xmlConfig.containsKey(key + "/id")) {
                     txnId = xmlConfig.getInt(key + "/id");
                 }
@@ -347,7 +359,7 @@ public class DBWorkload {
                     if (groupings.containsKey(weightKey))
                         weight_strings = groupings.get(weightKey);
                     else
-                    weight_strings = get_weights(plugin, work);
+                    weight_strings = getWeights(plugin, work);
                 } else {
                     String weightKey = work.getString("weights[not(@bench)]").toLowerCase();
                     if (groupings.containsKey(weightKey))
@@ -556,131 +568,204 @@ public class DBWorkload {
             }
             assert(r != null);
 
-            PrintStream ps = System.out;
-            PrintStream rs = System.out;
+            // WRITE OUTPUT
+            writeOutputs(r, activeTXTypes, argsLine, xmlConfig);
             
-            // Special result uploader
-            ResultUploader ru = null;
-            if (xmlConfig.containsKey("uploadUrl")) {
-                ru = new ResultUploader(r, xmlConfig, argsLine);
+            // WRITE HISTOGRAMS
+            if (argsLine.hasOption("histograms")) {
+                writeHistograms(r);
             }
 
-            if (argsLine.hasOption("o")) {
-                // Check if directory needs to be created
-                if (outputDirectory.length() > 0) {
-                    FileUtil.makeDirIfNotExists(outputDirectory.split("/"));
-                }
-                
-                // Build the complex path
-                String baseFile = timestampValue + argsLine.getOptionValue("o");
-                
-                // Increment the filename for new results
-                String nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".res"));
-                ps = new PrintStream(new File(nextName));
-                LOG.info("Output into file: " + nextName);
 
-                nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".raw"));
-                rs = new PrintStream(new File(nextName));
-                LOG.info("Output Raw data into file: " + nextName);
+        } else {
+            LOG.info("Skipping benchmark workload execution");
+        }
+    }
+    
+    private static void writeHistograms(Results r) {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(StringUtil.bold("Completed Transactions:"))
+          .append("\n")
+          .append(r.getTransactionSuccessHistogram())
+          .append("\n\n");
+        
+        sb.append(StringUtil.bold("Aborted Transactions:"))
+          .append("\n")
+          .append(r.getTransactionAbortHistogram())
+          .append("\n\n");
+        
+        sb.append(StringUtil.bold("Rejected Transactions (Server Retry):"))
+          .append("\n")
+          .append(r.getTransactionRetryHistogram())
+          .append("\n\n");
+        
+        sb.append(StringUtil.bold("Unexpected Errors:"))
+          .append("\n")
+          .append(r.getTransactionErrorHistogram());
+        
+        if (r.getTransactionAbortMessageHistogram().isEmpty() == false)
+            sb.append("\n\n")
+              .append(StringUtil.bold("User Aborts:"))
+              .append("\n")
+              .append(r.getTransactionAbortMessageHistogram());
+        
+        LOG.info(SINGLE_LINE);
+        LOG.info("Workload Histograms:\n" + sb.toString());
+        LOG.info(SINGLE_LINE);
+    }
+    
+        
+    /**
+     * Write out the results for a benchmark run to a bunch of files
+     * @param r
+     * @param activeTXTypes
+     * @param argsLine
+     * @param xmlConfig
+     * @throws Exception
+     */
+    private static void writeOutputs(Results r, List<TransactionType> activeTXTypes, CommandLine argsLine, XMLConfiguration xmlConfig) throws Exception {
+        
+        // If an output directory is used, store the information
+        String outputDirectory = "results";
+        if (argsLine.hasOption("d")) {
+            outputDirectory = argsLine.getOptionValue("d");
+        }
+        String filePrefix = "";
+        if (argsLine.hasOption("t")) {
+            filePrefix = String.valueOf(TimeUtil.getCurrentTime().getTime()) + "_";
+        }
+        
+        // Special result uploader
+        ResultUploader ru = null;
+        if (xmlConfig.containsKey("uploadUrl")) {
+            ru = new ResultUploader(r, xmlConfig, argsLine);
+            LOG.info("Upload Results URL: " + ru);
+        }
+        
+        // Output target 
+        PrintStream ps = null;
+        PrintStream rs = null;
+        String baseFileName = "oltpbench";
+        if (argsLine.hasOption("o")) {
+            if (argsLine.getOptionValue("o") == "-") {
+                ps = System.out;
+                rs = System.out;
+                baseFileName = null;
+            } else {
+                baseFileName = argsLine.getOptionValue("o");
+            }
+        }
 
+        // Build the complex path
+        String baseFile = filePrefix;
+        String nextName;
+        
+        if (baseFileName != null) {
+            // Check if directory needs to be created
+            if (outputDirectory.length() > 0) {
+                FileUtil.makeDirIfNotExists(outputDirectory.split("/"));
+            }
+            
+            baseFile = filePrefix + baseFileName;
+            
+            // RAW OUTPUT
+            nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".csv"));
+            rs = new PrintStream(new File(nextName));
+            LOG.info("Output Raw data into file: " + nextName);
+            r.writeAllCSVAbsoluteTiming(activeTXTypes, rs);
+
+            // Result Uploader Files
+            if (ru != null) {
+                // Summary Data
                 nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".summary"));
                 PrintStream ss = new PrintStream(new File(nextName));
-                System.out.println("Our result uploader" + ru);
                 LOG.info("Output summary data into file: " + nextName);
-                if (ru != null) ru.writeSummary(ss);
+                ru.writeSummary(ss);
                 ss.close();
 
+                // DBMS Configuration
                 nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".db.cnf"));
                 ss = new PrintStream(new File(nextName));
-                LOG.info("Output db config into file: " + nextName);
-                if (ru != null) ru.writeDBParameters(ss);
+                LOG.info("Output DBMS Configuration into file: " + nextName);
+                ru.writeDBParameters(ss);
                 ss.close();
 
                 nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".ben.cnf"));
                 ss = new PrintStream(new File(nextName));
                 LOG.info("Output benchmark config into file: " + nextName);
-                if (ru != null) ru.writeBenchmarkConf(ss);
+                ru.writeBenchmarkConf(ss);
                 ss.close();
-            } else if (LOG.isDebugEnabled()) {
-                LOG.debug("No output file specified");
             }
             
-            if (argsLine.hasOption("s")) {
-                int windowSize = Integer.parseInt(argsLine.getOptionValue("s"));
-                LOG.info("Grouped into Buckets of " + windowSize + " seconds");
-                r.writeCSV(windowSize, ps);
+        } else if (LOG.isDebugEnabled()) {
+            LOG.debug("No output file specified");
+        }
+        
+        // SUMMARY FILE
+        if (argsLine.hasOption("s")) {
+            nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".res"));
+            ps = new PrintStream(new File(nextName));
+            LOG.info("Output into file: " + nextName);
+            
+            int windowSize = Integer.parseInt(argsLine.getOptionValue("s"));
+            LOG.info("Grouped into Buckets of " + windowSize + " seconds");
+            r.writeCSV(windowSize, ps);
 
-                if (isBooleanOptionSet(argsLine, "upload") && ru != null) {
-                    ru.uploadResult();
-                }
+            if (isBooleanOptionSet(argsLine, "upload") && ru != null) {
+                ru.uploadResult(activeTXTypes);
+            }
 
-                // Allow more detailed reporting by transaction to make it easier to check
-                if (argsLine.hasOption("ss")) {
-                    
-                    for (TransactionType t : activeTXTypes) {
-                        PrintStream ts = ps;
-                        
-                        if (ts != System.out) {
-                            // Get the actual filename for the output
-                            String baseFile = timestampValue + argsLine.getOptionValue("o") + "_" + t.getName();
-                            String prepended = outputDirectory + timestampValue;
-                            String nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".res"));                            
-                            ts = new PrintStream(new File(nextName));
-                            r.writeCSV(windowSize, ts, t);
-                            ts.close();
-                        }
+            // Allow more detailed reporting by transaction to make it easier to check
+            if (argsLine.hasOption("ss")) {
+                
+                for (TransactionType t : activeTXTypes) {
+                    PrintStream ts = ps;
+                    if (ts != System.out) {
+                        // Get the actual filename for the output
+                        baseFile = filePrefix + baseFileName + "_" + t.getName();
+                        nextName = FileUtil.getNextFilename(FileUtil.joinPath(outputDirectory, baseFile + ".res"));                            
+                        ts = new PrintStream(new File(nextName));
+                        r.writeCSV(windowSize, ts, t);
+                        ts.close();
                     }
                 }
-            } else if (LOG.isDebugEnabled()) {
-                LOG.warn("No bucket size specified");
             }
-            if (argsLine.hasOption("histograms")) {
-                LOG.info(SINGLE_LINE);
-                LOG.info("Completed Transactions:\n" + r.getTransactionSuccessHistogram() + "\n");
-                LOG.info("Aborted Transactions:\n" + r.getTransactionAbortHistogram() + "\n");
-                LOG.info("Rejected Transactions:\n" + r.getTransactionRetryHistogram());
-                LOG.info("Unexpected Errors:\n" + r.getTransactionErrorHistogram());
-                if (r.getTransactionAbortMessageHistogram().isEmpty() == false)
-                    LOG.info("User Aborts:\n" + StringUtil.formatMaps(r.getTransactionAbortMessageHistogram()));
-            } else if (LOG.isDebugEnabled()) {
-                LOG.warn("No bucket size specified");
-            }
-
-            r.writeAllCSVAbsoluteTiming(rs);
-
-            ps.close();
-            rs.close();
-        } else {
-            LOG.info("Skipping benchmark workload execution");
+        } else if (LOG.isDebugEnabled()) {
+            LOG.warn("No bucket size specified");
         }
+        
+        if (ps != null) ps.close();
+        if (rs != null) rs.close();
     }
 
     /* buggy piece of shit of Java XPath implementation made me do it 
        replaces good old [@bench="{plugin_name}", which doesn't work in Java XPath with lists
      */
-    private static List<String> get_weights(String plugin, SubnodeConfiguration work) {
-            
-            List<String> weight_strings = new LinkedList<String>();
-            @SuppressWarnings("unchecked")
-            List<SubnodeConfiguration> weights = work.configurationsAt("weights");
-            boolean weights_started = false;
-            
-            for (SubnodeConfiguration weight : weights) {
-                
-                // stop if second attributed node encountered
-                if (weights_started && weight.getRootNode().getAttributeCount() > 0) {
-                    break;
-                }
-                //start adding node values, if node with attribute equal to current plugin encountered
-                if (weight.getRootNode().getAttributeCount() > 0 && weight.getRootNode().getAttribute(0).getValue().equals(plugin)) {
-                    weights_started = true;
-                }
-                if (weights_started) {
-                    weight_strings.add(weight.getString(""));
-                }
-                
+    private static List<String> getWeights(String plugin, SubnodeConfiguration work) {
+
+        List<String> weight_strings = new LinkedList<String>();
+        @SuppressWarnings("unchecked")
+        List<SubnodeConfiguration> weights = work.configurationsAt("weights");
+        boolean weights_started = false;
+
+        for (SubnodeConfiguration weight : weights) {
+
+            // stop if second attributed node encountered
+            if (weights_started && weight.getRootNode().getAttributeCount() > 0) {
+                break;
             }
-            return weight_strings;
+            // start adding node values, if node with attribute equal to current
+            // plugin encountered
+            if (weight.getRootNode().getAttributeCount() > 0 && weight.getRootNode().getAttribute(0).getValue().equals(plugin)) {
+                weights_started = true;
+            }
+            if (weights_started) {
+                weight_strings.add(weight.getString(""));
+            }
+
+        }
+        return weight_strings;
     }
     
     private static void runScript(BenchmarkModule bench, String script) {
@@ -699,14 +784,16 @@ public class DBWorkload {
     }
 
     private static Results runWorkload(List<BenchmarkModule> benchList, boolean verbose, int intervalMonitor) throws QueueLimitException, IOException {
-        List<Worker> workers = new ArrayList<Worker>();
+        List<Worker<?>> workers = new ArrayList<Worker<?>>();
         List<WorkloadConfiguration> workConfs = new ArrayList<WorkloadConfiguration>();
         for (BenchmarkModule bench : benchList) {
             LOG.info("Creating " + bench.getWorkloadConfiguration().getTerminals() + " virtual terminals...");
             workers.addAll(bench.makeWorkers(verbose));
             // LOG.info("done.");
-            LOG.info(String.format("Launching the %s Benchmark with %s Phases...",
-                    bench.getBenchmarkName(), bench.getWorkloadConfiguration().getNumberOfPhases()));
+            
+            int num_phases = bench.getWorkloadConfiguration().getNumberOfPhases();
+            LOG.info(String.format("Launching the %s Benchmark with %s Phase%s...",
+                    bench.getBenchmarkName().toUpperCase(), num_phases, (num_phases > 1 ? "s" : "")));
             workConfs.add(bench.getWorkloadConfiguration());
             
         }

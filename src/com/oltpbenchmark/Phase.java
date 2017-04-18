@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import com.oltpbenchmark.util.StringUtil;
+
 public class Phase {
     public enum Arrival {
         REGULAR,POISSON,
@@ -171,24 +173,28 @@ public class Phase {
     
     /**
      * Returns a string for logging purposes when entering the phase
-     * 
-     * @return Loggin String
      */
     public String currentPhaseString() {
-        String retString ="[Starting Phase] [Workload= " + benchmarkName + "] ";
+        List<String> inner = new ArrayList<String>();
+        inner.add("[Workload=" + benchmarkName.toUpperCase() + "]");
         if (isDisabled()){
-            retString += "[Disabled= true]";
+            inner.add("[Disabled=true]");
         } else {
             if (isLatencyRun()) {
-                retString += "[Serial= true] [Time= n/a] ";
+                inner.add("[Serial=true]");
+                inner.add("[Time=n/a]");
             }
             else {
-                retString += "[Serial= " + (isSerial()? "true" : "false")
-                             + "] [Time= " + time + "] ";
+                inner.add("[Serial="+ isSerial() + "]");
+                inner.add("[Time=" + time + "]");
             }
-            retString += "[Rate= " + (isRateLimited() ? rate : "unlimited") + "] [Arrival= " + arrival + "] [Ratios= " + getWeights() + "] [Active Workers=" + getActiveTerminals() + "]";
+            inner.add("[Rate=" + (isRateLimited() ? rate : "unlimited") + "]");
+            inner.add("[Arrival=" + arrival + "]");
+            inner.add("[Ratios=" + getWeights() + "]");
+            inner.add("[ActiveWorkers=" + getActiveTerminals() + "]");
         }
-        return retString;
+        
+        return StringUtil.bold("PHASE START") + " :: " + StringUtil.join(" ", inner);
     }
 
 }

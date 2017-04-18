@@ -36,20 +36,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.StringTokenizer;
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.util.SimpleSystemPrinter;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 
-import com.oltpbenchmark.benchmarks.tpch.queries.Q1;
-
-public class TPCHLoader extends Loader {
+public class TPCHLoader extends Loader<TPCHBenchmark> {
     private static final Logger LOG = Logger.getLogger(TPCHLoader.class);
     private final static int configCommitCount = 10000; // commit every n records
     private static PreparedStatement customerPrepStmt;
@@ -60,21 +56,21 @@ public class TPCHLoader extends Loader {
     private static PreparedStatement partsuppPrepStmt;
     private static PreparedStatement regionPrepStmt;
     private static PreparedStatement supplierPrepStmt;
-    private static final int numCustomerCols = 8;
-    private static final int numLineItemCols = 16;
-    private static final int numNationCols = 4;
-    private static final int numOrdersCols = 9;
-    private static final int numPartCols = 9;
-    private static final int numPartSuppCols = 5;
-    private static final int numRegionCols = 3;
-    private static final int numSupplierCols = 7;
+//    private static final int numCustomerCols = 8;
+//    private static final int numLineItemCols = 16;
+//    private static final int numNationCols = 4;
+//    private static final int numOrdersCols = 9;
+//    private static final int numPartCols = 9;
+//    private static final int numPartSuppCols = 5;
+//    private static final int numRegionCols = 3;
+//    private static final int numSupplierCols = 7;
 
     private static Date now;
     private static long lastTimeMS;
     private static Connection conn;
 
 
-    public TPCHLoader(BenchmarkModule benchmark, Connection c) {
+    public TPCHLoader(TPCHBenchmark benchmark, Connection c) {
         super(benchmark, c);
         conn =c;
     }
@@ -166,7 +162,14 @@ public class TPCHLoader extends Loader {
         CastTypes.DOUBLE, // s_acctbal
         CastTypes.STRING, // s_comment
     };
+    
+    @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
+    @Override
     public void load() throws SQLException {
         try {
             customerPrepStmt = conn.prepareStatement("INSERT INTO customer "
@@ -235,35 +238,35 @@ public class TPCHLoader extends Loader {
     }
 
     Thread loadCustomers() {
-        return new Thread(new CSVLoader("Customer", customerTypes, customerPrepStmt, this));
+        return new Thread(new TableLoader("Customer", customerTypes, customerPrepStmt, this));
     }
 
     Thread loadLineItems() {
-        return new Thread(new CSVLoader("LineItem", lineitemTypes, lineitemPrepStmt, this));
+        return new Thread(new TableLoader("LineItem", lineitemTypes, lineitemPrepStmt, this));
     }
 
     Thread loadNations() {
-        return new Thread(new CSVLoader("Nation", nationTypes, nationPrepStmt, this));
+        return new Thread(new TableLoader("Nation", nationTypes, nationPrepStmt, this));
     }
 
     Thread loadOrders() {
-        return new Thread(new CSVLoader("Orders", ordersTypes, ordersPrepStmt, this));
+        return new Thread(new TableLoader("Orders", ordersTypes, ordersPrepStmt, this));
     }
 
     Thread loadParts() {
-        return new Thread(new CSVLoader("Part", partTypes, partPrepStmt, this));
+        return new Thread(new TableLoader("Part", partTypes, partPrepStmt, this));
     }
 
     Thread loadPartSupps() {
-        return new Thread(new CSVLoader("PartSupp", partsuppTypes, partsuppPrepStmt, this));
+        return new Thread(new TableLoader("PartSupp", partsuppTypes, partsuppPrepStmt, this));
     }
 
     Thread loadRegions() {
-        return new Thread(new CSVLoader("Region", regionTypes, regionPrepStmt, this));
+        return new Thread(new TableLoader("Region", regionTypes, regionPrepStmt, this));
     }
 
     Thread loadSuppliers() {
-        return new Thread(new CSVLoader("Supplier", supplierTypes, supplierPrepStmt, this));
+        return new Thread(new TableLoader("Supplier", supplierTypes, supplierPrepStmt, this));
     }
 
     protected long totalRows = 0;
@@ -295,7 +298,7 @@ public class TPCHLoader extends Loader {
         return this.totalRows;
     }
 
-    private class CSVLoader implements Runnable {
+    private class TableLoader implements Runnable {
         String tableName;
         PreparedStatement prepStmt;
         CastTypes[] types;
@@ -303,7 +306,7 @@ public class TPCHLoader extends Loader {
 
         private Connection conn;
 
-        CSVLoader(String tableName, CastTypes[] types
+        TableLoader(String tableName, CastTypes[] types
                   , PreparedStatement prepStmt, TPCHLoader parent)
         {
             this.tableName = tableName;
@@ -311,7 +314,43 @@ public class TPCHLoader extends Loader {
             this.types = types;
             this.parent = parent;
         }
+        
+        private String getFileFormat(){
+            String format = workConf.getXmlConfig().getString("fileFormat");
+            /*
+               Previouse configuration migh not have a fileFormat and assume
+                that the files are csv.
+            */
+            if (format == null) return "csv";
+            
+            if((!"csv".equals(format) && !"tbl".equals(format))){
+                throw new IllegalArgumentException("Configuration doesent"
+                        + " have a valid fileFormat");
+            }
+            return format;
+        }
+        
+        private Pattern getFormatPattern(String format){
+            
+            if("csv".equals(format)){
+                // The following pattern parses the lines by commas, except for
+                // ones surrounded by double-quotes. Further, strings that are
+                // double-quoted have the quotes dropped (we don't need them).
+               return  Pattern.compile("\\s*(\"[^\"]*\"|[^,]*)\\s*,?");
+            }else{
+                return Pattern.compile("[^\\|]*\\|");
+            }
+        }
+        
+        private int getFormatGroup(String format){
+            if("csv".equals(format)){
+               return  1;
+            }else{
+                return 0;
+            }
+        }
 
+        @Override
         public void run() {
             BufferedReader br = null;
             int recordsRead = 0;
@@ -334,26 +373,32 @@ public class TPCHLoader extends Loader {
                 try {
                     now = new java.util.Date();
                     LOG.debug("\nStart " + tableName + " load @ " + now + "...");
-
+                    String format = getFileFormat();
                     File file = new File(workConf.getDataDir()
-                                         , tableName.toLowerCase() + ".csv");
+                                         , tableName.toLowerCase() + "." 
+                                                 + format);
                     br = new BufferedReader(new FileReader(file));
                     String line;
                     // The following pattern parses the lines by commas, except for
                     // ones surrounded by double-quotes. Further, strings that are
                     // double-quoted have the quotes dropped (we don't need them).
-                    Pattern csvPattern = Pattern.compile("\\s*(\"[^\"]*\"|[^,]*)\\s*,?");
-                    Matcher matcher = null;
+                    Pattern pattern = getFormatPattern(format);
+                    int group = getFormatGroup(format);
+                    Matcher matcher;
                     while ((line = br.readLine()) != null) {
-                        matcher = csvPattern.matcher(line);
+                        matcher = pattern.matcher(line);
                         try {
                             for (int i = 0; i < types.length; ++i) {
                                 matcher.find();
-                                String field = matcher.group(1);
+                                String field = matcher.group(group);
 
                                 // Remove quotes that may surround a field.
                                 if (field.charAt(0) == '\"') {
                                     field = field.substring(1, field.length() - 1);
+                                }
+                                
+                                if(group==0){
+                                    field = field.substring(0, field.length() -1);
                                 }
 
                                 switch(types[i]) {

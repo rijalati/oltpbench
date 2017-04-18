@@ -23,7 +23,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,11 +33,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.WorkloadConfiguration;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.catalog.Catalog;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.types.DatabaseType;
 import com.oltpbenchmark.util.ClassUtil;
 import com.oltpbenchmark.util.ScriptRunner;
+import com.oltpbenchmark.util.ThreadUtil;
 
 /**
  * Base class for all benchmark implementations
@@ -46,6 +47,15 @@ import com.oltpbenchmark.util.ScriptRunner;
 public abstract class BenchmarkModule {
     private static final Logger LOG = Logger.getLogger(BenchmarkModule.class);
 
+    /**
+     * Each benchmark must put their all of the DBMS-specific DDLs
+     * in this directory.
+     */
+    public static final String DDLS_DIR = "ddls";
+    
+    /**
+     * The identifier for this benchmark
+     */
     protected final String benchmarkName;
 
     /**
@@ -67,11 +77,6 @@ public abstract class BenchmarkModule {
      * Supplemental Procedures
      */
     private final Set<Class<? extends Procedure>> supplementalProcedures = new HashSet<Class<? extends Procedure>>();
-
-    /**
-     * The last Connection that was created using this BenchmarkModule
-     */
-    private Connection last_connection;
 
     /**
      * A single Random object that should be re-used by all a benchmark's components
@@ -103,21 +108,13 @@ public abstract class BenchmarkModule {
      * @return
      * @throws SQLException
      */
-    protected final Connection makeConnection() throws SQLException {
-        Connection conn = DriverManager.getConnection(workConf.getDBConnection(),
+    public final Connection makeConnection() throws SQLException {
+        Connection conn = DriverManager.getConnection(
+                workConf.getDBConnection(),
                 workConf.getDBUsername(),
                 workConf.getDBPassword());
         Catalog.setSeparator(conn);
-        this.last_connection = conn;
         return (conn);
-    }
-
-    /**
-     * Return the last Connection handle created by this BenchmarkModule
-     * @return
-     */
-    protected final Connection getLastConnection() {
-        return (this.last_connection);
     }
 
     // --------------------------------------------------------------------------
@@ -129,7 +126,7 @@ public abstract class BenchmarkModule {
      * @return
      * @throws IOException
      */
-    protected abstract List<Worker> makeWorkersImpl(boolean verbose) throws IOException;
+    protected abstract List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException;
 
     /**
      * Each BenchmarkModule needs to implement this method to load a sample
@@ -143,7 +140,7 @@ public abstract class BenchmarkModule {
      * @throws SQLException
      *             TODO
      */
-    protected abstract Loader makeLoaderImpl(Connection conn) throws SQLException;
+    protected abstract Loader<? extends BenchmarkModule> makeLoaderImpl(Connection conn) throws SQLException;
 
     /**
      * @param txns
@@ -178,14 +175,18 @@ public abstract class BenchmarkModule {
      */
     public URL getDatabaseDDL(DatabaseType db_type) {
         String ddlNames[] = {
-                this.benchmarkName + "-" + (db_type != null ? db_type.name().toLowerCase() : "") + "-ddl.sql",
-                this.benchmarkName + "-ddl.sql",
+            this.benchmarkName + "-" + (db_type != null ? db_type.name().toLowerCase() : "") + "-ddl.sql",
+            this.benchmarkName + "-ddl.sql",
         };
 
         for (String ddlName : ddlNames) {
             if (ddlName == null) continue;
-            URL ddlURL = this.getClass().getResource(ddlName);
-            if (ddlURL != null) return ddlURL;
+            URL ddlURL = this.getClass().getResource(DDLS_DIR + File.separator + ddlName);
+            if (ddlURL != null) {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Found DDL file for " + db_type + ": " + ddlURL );
+                return ddlURL;
+            }
         } // FOR
         LOG.trace(ddlNames[0]+" :or: "+ddlNames[1]);
         LOG.error("Failed to find DDL file for " + this.benchmarkName);
@@ -206,7 +207,7 @@ public abstract class BenchmarkModule {
         return (null);
     }
 
-    public final List<Worker> makeWorkers(boolean verbose) throws IOException {
+    public final List<Worker<? extends BenchmarkModule>> makeWorkers(boolean verbose) throws IOException {
         return (this.makeWorkersImpl(verbose));
     }
 
@@ -276,12 +277,33 @@ public abstract class BenchmarkModule {
      * Invoke this benchmark's database loader using the given Connection handle
      * @param conn
      */
-    protected final void loadDatabase(Connection conn) {
+    protected final void loadDatabase(final Connection conn) {
         try {
-            Loader loader = this.makeLoaderImpl(conn);
+            Loader<? extends BenchmarkModule> loader = this.makeLoaderImpl(conn);
             if (loader != null) {
                 conn.setAutoCommit(false);
-                loader.load();
+                
+                // PAVLO: 2016-12-23
+                // We are going to eventually migrate everything over to use the
+                // same API for creating multi-threaded loaders. For now we will support
+                // both. So if createLoaderTheads() returns null, we will use the old load()
+                // method.
+                List<? extends LoaderThread> loaderThreads = loader.createLoaderTheads();
+                if (loaderThreads != null) {
+                    int maxConcurrent = workConf.getLoaderThreads();
+                    assert(maxConcurrent > 0);
+                    if (LOG.isDebugEnabled())
+                        LOG.debug(String.format("Starting %d %s.LoaderThreads [maxConcurrent=%d]",
+                                                loaderThreads.size(),
+                                                loader.getClass().getSimpleName(),
+                                                maxConcurrent));
+                    ThreadUtil.runNewPool(loaderThreads, maxConcurrent);
+                } else {
+                    if (LOG.isDebugEnabled())
+                        LOG.debug(String.format("Using legacy %s.load() method",
+                                                loader.getClass().getSimpleName()));
+                    loader.load();
+                }
                 conn.commit();
 
                 if (loader.getTableCounts().isEmpty() == false) {
@@ -289,8 +311,13 @@ public abstract class BenchmarkModule {
                 }
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(String.format("Unexpected error when trying to load the %s database", this.benchmarkName), ex);
+            String msg = String.format("Unexpected error when trying to load the %s database",
+                                       this.benchmarkName.toUpperCase());
+            throw new RuntimeException(msg, ex);
         }
+        if (LOG.isDebugEnabled())
+            LOG.debug(String.format("Finished loading the %s database",
+                                    this.getBenchmarkName().toUpperCase()));
     }
 
     /**
@@ -300,7 +327,7 @@ public abstract class BenchmarkModule {
     public final void clearDatabase() {
         try {
             Connection conn = this.makeConnection();
-            Loader loader = this.makeLoaderImpl(conn);
+            Loader<? extends BenchmarkModule> loader = this.makeLoaderImpl(conn);
             if (loader != null) {
                 conn.setAutoCommit(false);
                 loader.unload(this.catalog);
@@ -328,6 +355,18 @@ public abstract class BenchmarkModule {
         return (this.catalog);
     }
     /**
+     * Get the catalog object for the given table name
+     * 
+     * @param tableName
+     * @return
+     */
+    public Table getTableCatalog(String tableName) {
+        Table catalog_tbl = this.catalog.getTable(tableName.toUpperCase());
+        assert (catalog_tbl != null) : "Invalid table name '" + tableName + "'";
+        return (catalog_tbl);
+    }
+    
+    /**
      * Return the StatementDialects loaded for this benchmark
      */
     public final StatementDialects getStatementDialects() {
@@ -338,6 +377,7 @@ public abstract class BenchmarkModule {
         return benchmarkName.toUpperCase();
     }
 
+    
     /**
      * Initialize a TransactionType handle for the get procedure name and id
      * This should only be invoked a start-up time
@@ -348,7 +388,7 @@ public abstract class BenchmarkModule {
     @SuppressWarnings("unchecked")
     public final TransactionType initTransactionType(String procName, int id) {
         if (id == TransactionType.INVALID_ID) {
-            LOG.error(String.format("Procedure %s.%s cannot the reserved id '%d' for %s",
+            LOG.error(String.format("Procedure %s.%s cannot use the reserved id '%d' for %s",
                     this.benchmarkName, procName, id,
                     TransactionType.INVALID.getClass().getSimpleName()));
             return null;
