@@ -54,7 +54,7 @@ import com.oltpbenchmark.util.RandomDistribution.Zipf;
  * @author pavlo
  * @author visawee
  */
-public class AuctionMarkLoader extends Loader {
+public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
     private static final Logger LOG = Logger.getLogger(AuctionMarkLoader.class);
     
     // -----------------------------------------------------------------
@@ -129,6 +129,10 @@ public class AuctionMarkLoader extends Loader {
     // LOADING METHODS
     // -----------------------------------------------------------------
     
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        return (null);
+    }
+    
     @Override
     public void load() {
         if (LOG.isDebugEnabled())
@@ -186,6 +190,7 @@ public class AuctionMarkLoader extends Loader {
         }
         LOG.info("Finished generating data for all tables");
     }
+    
     
     private void registerGenerator(AbstractTableGenerator generator) {
         // Register this one as well as any sub-generators

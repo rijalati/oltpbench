@@ -18,24 +18,29 @@ package com.oltpbenchmark.benchmarks.jpab;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.apache.commons.lang.NotImplementedException;
-
-import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.benchmarks.jpab.tests.BasicTest;
 import com.oltpbenchmark.benchmarks.jpab.tests.Test;
 
-public class JPABLoader extends Loader {
+public class JPABLoader extends Loader<JPABBenchmark> {
 
     String persistanceUnit;
-    public JPABLoader(BenchmarkModule benchmark, Connection conn, String persistanceUnit) throws SQLException {
+    public JPABLoader(JPABBenchmark benchmark, Connection conn, String persistanceUnit) throws SQLException {
         super(benchmark, conn);
         this.persistanceUnit=persistanceUnit;
+    }
+    
+    @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

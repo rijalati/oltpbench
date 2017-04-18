@@ -19,6 +19,8 @@ package com.oltpbenchmark.benchmarks.ycsb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +29,7 @@ import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.TextGenerator;
 
-public class YCSBLoader extends Loader {
+public class YCSBLoader extends Loader<YCSBBenchmark> {
     private static final Logger LOG = Logger.getLogger(YCSBLoader.class);
     private final int num_record;
 
@@ -38,24 +40,43 @@ public class YCSBLoader extends Loader {
             LOG.debug("# of RECORDS:  " + this.num_record);
         }
     }
-
+    
     @Override
-    public void load() throws SQLException {
-        Table catalog_tbl = this.getTableCatalog("USERTABLE");
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        List<LoaderThread> threads = new ArrayList<LoaderThread>();
+        int count = 0;
+        while (count < this.num_record) {
+            final int start = count;
+            final int stop = Math.min(start+YCSBConstants.THREAD_BATCH_SIZE, this.num_record);
+            threads.add(new LoaderThread() {
+                @Override
+                public void load(Connection conn) throws SQLException {
+                    if (LOG.isDebugEnabled())
+                        LOG.debug(String.format("YCSBLoadThread[%d, %d]", start, stop));
+                    loadRecords(conn, start, stop);
+                }
+            });
+            count = stop;
+        }
+        return (threads);
+    }
+
+    private void loadRecords(Connection conn, int start, int stop) throws SQLException {
+        Table catalog_tbl = this.benchmark.getTableCatalog("USERTABLE");
         assert (catalog_tbl != null);
         
-        String sql = SQLUtil.getInsertSQL(catalog_tbl);
-        PreparedStatement stmt = this.conn.prepareStatement(sql);
+        String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType().shouldEscapeNames());
+        PreparedStatement stmt = conn.prepareStatement(sql);
         long total = 0;
         int batch = 0;
-        for (int i = 0; i < this.num_record; i++) {
+        for (int i = start; i < stop; i++) {
             stmt.setInt(1, i);
             for (int j = 2; j <= 11; j++) {
                 stmt.setString(j, TextGenerator.randomStr(rng(), 100));
             }
             stmt.addBatch();
             total++;
-            if (++batch >= YCSBConstants.configCommitCount) {
+            if (++batch >= YCSBConstants.COMMIT_BATCH_SIZE) {
                 int result[] = stmt.executeBatch();
                 assert (result != null);
                 conn.commit();
@@ -66,10 +87,13 @@ public class YCSBLoader extends Loader {
         } // FOR
         if (batch > 0) {
             stmt.executeBatch();
+            conn.commit();
             if (LOG.isDebugEnabled())
                 LOG.debug(String.format("Records Loaded %d / %d", total, this.num_record));
         }
         stmt.close();
         if (LOG.isDebugEnabled()) LOG.debug("Finished loading " + catalog_tbl.getName());
+        return;
     }
+    
 }

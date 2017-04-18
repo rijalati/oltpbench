@@ -19,12 +19,14 @@ package com.oltpbenchmark.benchmarks.voter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
 
-public class VoterLoader extends Loader {
+public class VoterLoader extends Loader<VoterBenchmark> {
 
     // Domain data: matching lists of Area codes and States
     private static final short[] areaCodes = new short[]{
@@ -74,13 +76,20 @@ public class VoterLoader extends Loader {
     }
 
     @Override
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
     public void load() throws SQLException {
         String[] contestants = VoterConstants.CONTESTANT_NAMES_CSV.split(",");
         
         int numContestants = ((VoterBenchmark)this.benchmark).numContestants;
         
-        Table tbl = getTableCatalog(VoterConstants.TABLENAME_CONTESTANTS);
-        PreparedStatement ps = this.conn.prepareStatement(SQLUtil.getInsertSQL(tbl));
+        boolean escapeNames = this.getDatabaseType().shouldEscapeNames();
+        Table tbl = benchmark.getTableCatalog(VoterConstants.TABLENAME_CONTESTANTS);
+        PreparedStatement ps = this.conn.prepareStatement(SQLUtil.getInsertSQL(tbl, escapeNames));
         for (int i = 0; i < numContestants; i++) {
             ps.setInt(1, i + 1);
             ps.setString(2, contestants[i]);
@@ -88,8 +97,8 @@ public class VoterLoader extends Loader {
         }
         ps.executeBatch();
         
-        tbl = getTableCatalog(VoterConstants.TABLENAME_LOCATIONS);
-        ps = this.conn.prepareStatement(SQLUtil.getInsertSQL(tbl));
+        tbl = benchmark.getTableCatalog(VoterConstants.TABLENAME_LOCATIONS);
+        ps = this.conn.prepareStatement(SQLUtil.getInsertSQL(tbl, escapeNames));
         for (int i = 0; i < areaCodes.length; i++) {
             ps.setShort(1, areaCodes[i]);
             ps.setString(2, states[i]);

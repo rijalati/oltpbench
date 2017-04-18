@@ -26,19 +26,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
-import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Nation;
 import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Region;
 import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Supplier;
 import com.oltpbenchmark.util.RandomGenerator;
 
-public class CHBenCHmarkLoader extends Loader {
+public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	private static final Logger LOG = Logger.getLogger(CHBenCHmarkLoader.class);
+	
 	private final static int configCommitCount = 1000; // commit every n records
 	private static final RandomGenerator ran = new RandomGenerator(0);
 	private static PreparedStatement regionPrepStmt;
@@ -63,9 +64,15 @@ public class CHBenCHmarkLoader extends Loader {
         }
 	}
 	
-	public CHBenCHmarkLoader(BenchmarkModule benchmark, Connection c) {
+	public CHBenCHmarkLoader(CHBenCHmark benchmark, Connection c) {
 		super(benchmark, c);
 		conn =c;
+	}
+	
+	@Override
+	public List<LoaderThread> createLoaderTheads() throws SQLException {
+	    // TODO Auto-generated method stub
+	    return null;
 	}
 
 	public void load() throws SQLException {
@@ -92,9 +99,6 @@ public class CHBenCHmarkLoader extends Loader {
 
 		} // end try
 		
-//		truncateTable("supplier");
-//		truncateTable("nation");
-//		truncateTable("region");
 		loadHelper();
 		conn.commit();
 	}

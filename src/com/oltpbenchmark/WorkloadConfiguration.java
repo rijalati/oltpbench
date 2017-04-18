@@ -29,6 +29,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import com.oltpbenchmark.api.TransactionTypes;
 import com.oltpbenchmark.types.DatabaseType;
 import com.oltpbenchmark.util.StringUtil;
+import com.oltpbenchmark.util.ThreadUtil;
 
 public class WorkloadConfiguration {
     
@@ -48,7 +49,9 @@ public class WorkloadConfiguration {
 	private String db_password;
 	private String db_driver;	
 	private double scaleFactor = 1.0;
+	private double selectivity = -1.0;
 	private int terminals;
+	private int loaderThreads = ThreadUtil.availableProcessors();
 	private int numTxnTypes;
     private TraceReader traceReader = null;
     public TraceReader getTraceReader() {
@@ -109,6 +112,18 @@ public class WorkloadConfiguration {
 		this.db_name = dbname;
 	}
 	
+	public void setLoaderThreads(int loaderThreads) {
+        this.loaderThreads = loaderThreads;
+    }
+	
+	/**
+	 * The number of loader threads that the framework is allowed to use.
+	 * @return
+	 */
+	public int getLoaderThreads() {
+        return this.loaderThreads;
+    }
+	
 	public int getNumTxnTypes() {
 		return numTxnTypes;
 	}
@@ -135,6 +150,14 @@ public class WorkloadConfiguration {
 	
 	public String getDBPassword() {
 		return this.db_password;
+	}
+
+	public void setSelectivity(double selectivity) {
+        this.selectivity = selectivity;
+    }
+	
+	public double getSelectivity() {
+	    return this.selectivity;
 	}
 
 	public void setDBDriver(String driver) {
