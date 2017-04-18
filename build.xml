@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="benchmark">
+<project basedir="." default="build" name="benchmark" xmlns:sonar="antlib:org.sonar.ant">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="javac.target" value="1.7"/>
     <property name="javac.source" value="1.7"/>
 
     <!-- *************************************** CONFIGURATION *************************************** -->
-    
+    <!-- Define the SonarQube project properties -->
+    <property name="sonar.host.url" value="https://sonarqube.com" />
+<property name="sonar.projectKey" value="oltpbenchmark" />
+<property name="sonar.projectName" value="Oltpbenchmark - RDBMS benchmarking made easy." />
+<property name="sonar.projectVersion" value="1.0" />
+<property name="sonar.sources" value="src" />
+<property name="sonar.java.binaries" value="build" />
+<property name="sonar.java.libraries" value="lib/*.jar" /> 
+<property name="sonar.organization" value="rijalati-github" />
+<property name="sonar.login" value="31a30bd7bb5dba1f317e34047e8e05b1effadb93" />
+<property name="sonar.exclusions" value="**/UserIdGenerator.java" />
     <property name="src.dir"                    location="src" />
     <property name="tests.dir"                  location="tests" />
     <property name="lib.dir"                    location="lib" />
@@ -62,7 +72,7 @@
             <src path="${src.dir}"/>
             <classpath refid="project.classpath" />
             <compilerclasspath>
-                <pathelement location="${lib.dir}/error_prone_ant-2.0.12.jar"/>
+                <pathelement location="${lib.dir}/error_prone_ant-2.0.19.jar"/>
             </compilerclasspath>
             <compilerarg value="-Xlint:all"/>
         </javac>
@@ -230,7 +240,16 @@
         </run_junit>
         <fail if="junit.failures" message="JUnit had failures" />
     </target>
-        
+       <!-- Define SonarQube Scanner for Ant Target -->
+<target name="sonar">
+    <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+        <!-- Update the following line, or put the "sonarqube-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+        <classpath path="lib/sonarqube-ant-task-*.jar" />
+    </taskdef>
+ 
+    <!-- Execute SonarQube Scanner for Ant Analysis -->
+    <sonar:sonar />
+</target> 
     <!-- *************************************** UTILITY *************************************** -->
 
     <target name="dialects-export"

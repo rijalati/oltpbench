@@ -5,6 +5,8 @@ output.res
 .classpath
 .settings
 results
+.scannerwork/
+.sonar/
 
 ## -------------------------------
 ## Kate Swap Files
