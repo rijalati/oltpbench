@@ -20,7 +20,7 @@ package com.oltpbenchmark.util;
 import java.io.File;
 import java.util.Iterator;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
 
 import com.oltpbenchmark.catalog.Column;
 import com.oltpbenchmark.catalog.Table;
