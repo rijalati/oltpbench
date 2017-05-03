@@ -108,7 +108,7 @@ public abstract class ClassUtil {
                 ParameterizedType next = (ParameterizedType)t;
 //                System.err.println("PT: " + next);
                 classes.add((Class<?>)next.getRawType());
-                getGenericTypesImpl(next, classes);
+                getGenericTypesImpl(ptype, classes);
             }
         } // FOR
         return;

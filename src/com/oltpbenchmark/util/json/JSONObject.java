@@ -1390,7 +1390,7 @@ public class JSONObject {
                 sb.append(quote(o.toString()));
                 sb.append(": ");
                 sb.append(valueToString(this.map.get(o), indentFactor,
-                        newindent));
+                        indent));
             }
             if (sb.length() > 1) {
                 sb.append('\n');

@@ -911,7 +911,7 @@ public class JSONArray {
                         sb.append(", ");
                 }
                 sb.append(JSONObject.valueToString(this.myArrayList.get(i),
-                        indentFactor, newindent));
+                        indentFactor, indent));
             }
             if (intType == false) {
                 sb.append('\n');
