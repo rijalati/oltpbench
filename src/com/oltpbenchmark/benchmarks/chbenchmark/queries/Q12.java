@@ -37,7 +37,7 @@ public class Q12 extends GenericQuery {
             + "ORDER BY o_ol_cnt"
         );
 	
-		@Override protected SQLStmt get_query() {
+		protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

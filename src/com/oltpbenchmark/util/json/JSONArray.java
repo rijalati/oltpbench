@@ -154,7 +154,7 @@ public class JSONArray {
             case ']':
             case ')':
                 if (q != c) {
-                    throw x.syntaxError("Expected a '" + q + "'");
+                    throw x.syntaxError("Expected a '" + new Character(q) + "'");
                 }
                 return;
             default:
@@ -635,7 +635,7 @@ public class JSONArray {
      * @return this.
      */
     public JSONArray put(double value) throws JSONException {
-        Double d = value;
+        Double d = new Double(value);
         JSONObject.testValidity(d);
         put(d);
         return this;
@@ -649,7 +649,7 @@ public class JSONArray {
      * @return this.
      */
     public JSONArray put(int value) {
-        put(Integer.valueOf(value));
+        put(new Integer(value));
         return this;
     }
 
@@ -661,7 +661,7 @@ public class JSONArray {
      * @return this.
      */
     public JSONArray put(long value) {
-        put(Long.valueOf(value));
+        put(new Long(value));
         return this;
     }
 
@@ -732,7 +732,7 @@ public class JSONArray {
      * not finite.
      */
     public JSONArray put(int index, double value) throws JSONException {
-        put(index, Double.valueOf(value));
+        put(index, new Double(value));
         return this;
     }
 
@@ -747,7 +747,7 @@ public class JSONArray {
      * @throws JSONException If the index is negative.
      */
     public JSONArray put(int index, int value) throws JSONException {
-        put(index, Integer.valueOf(value));
+        put(index, new Integer(value));
         return this;
     }
 
@@ -762,7 +762,7 @@ public class JSONArray {
      * @throws JSONException If the index is negative.
      */
     public JSONArray put(int index, long value) throws JSONException {
-        put(index, Long.valueOf(value));
+        put(index, new Long(value));
         return this;
     }
 
@@ -843,7 +843,7 @@ public class JSONArray {
      * @return a printable, displayable, transmittable
      *  representation of the array.
      */
-    @Override public String toString() {
+    public String toString() {
         try {
             return '[' + join(",") + ']';
         } catch (Exception e) {
@@ -911,7 +911,7 @@ public class JSONArray {
                         sb.append(", ");
                 }
                 sb.append(JSONObject.valueToString(this.myArrayList.get(i),
-                        indentFactor, indent));
+                        indentFactor, newindent));
             }
             if (intType == false) {
                 sb.append('\n');

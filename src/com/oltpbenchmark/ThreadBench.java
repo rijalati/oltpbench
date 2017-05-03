@@ -17,14 +17,6 @@
 
 package com.oltpbenchmark;
 
-import com.oltpbenchmark.LatencyRecord.Sample;
-import com.oltpbenchmark.api.BenchmarkModule;
-import com.oltpbenchmark.api.TransactionType;
-import com.oltpbenchmark.api.Worker;
-import com.oltpbenchmark.types.State;
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.QueueLimitException;
-import com.oltpbenchmark.util.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,10 +27,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
+
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.log4j.Logger;
+
+import com.oltpbenchmark.LatencyRecord.Sample;
+import com.oltpbenchmark.api.BenchmarkModule;
+import com.oltpbenchmark.api.TransactionType;
+import com.oltpbenchmark.api.Worker;
+import com.oltpbenchmark.types.State;
+import com.oltpbenchmark.util.Histogram;
+import com.oltpbenchmark.util.QueueLimitException;
+import com.oltpbenchmark.util.StringUtil;
 
 public class ThreadBench implements Thread.UncaughtExceptionHandler {
     private static final Logger LOG = Logger.getLogger(ThreadBench.class);
@@ -130,7 +131,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                 // Check if a TX Type filter is set, in the default case,
                 // INVALID TXType means all should be reported, if a filter is
                 // set, only this specific transaction
-                if (Objects.equals(txType, TransactionType.INVALID) || txType.getId() == sample.tranType)
+                if (txType == TransactionType.INVALID || txType.getId() == sample.tranType)
                     latencies.add(sample.latencyUs);
 
                 if (samples.hasNext()) {
@@ -540,7 +541,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    private static long getInterval(int lowestRate, Phase.Arrival arrival) {
+    private long getInterval(int lowestRate, Phase.Arrival arrival) {
         // TODO Auto-generated method stub
         if (arrival == Phase.Arrival.POISSON)
             return (long) ((-Math.log(1 - Math.random()) / lowestRate) * 1000000000.);

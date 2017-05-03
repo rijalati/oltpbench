@@ -59,7 +59,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
      */
     public static enum Transaction {
     	DeleteCallForwarding(new TransactionInvoker<DeleteCallForwarding>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
             	long s_id = TATPUtil.getSubscriberId(subscriberSize);
             	((DeleteCallForwarding)proc).run(
             			 conn,
@@ -70,7 +70,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         GetAccessData(new TransactionInvoker<GetAccessData>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((GetAccessData)proc).run(
                 		conn,
@@ -80,7 +80,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         GetNewDestination(new TransactionInvoker<GetNewDestination>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((GetNewDestination)proc).run(
                 		conn,
@@ -92,7 +92,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         GetSubscriberData(new TransactionInvoker<GetSubscriberData>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((GetSubscriberData)proc).run(
                 		conn,
@@ -101,7 +101,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         InsertCallForwarding(new TransactionInvoker<InsertCallForwarding>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((InsertCallForwarding)proc).run(
                 		conn,
@@ -114,7 +114,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         UpdateLocation(new TransactionInvoker<UpdateLocation>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((UpdateLocation)proc).run(
                 		conn,
@@ -124,7 +124,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
             }
         }),
         UpdateSubscriberData(new TransactionInvoker<UpdateSubscriberData>() {
-            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
                 ((UpdateSubscriberData)proc).run(
                 		conn,
@@ -174,7 +174,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
 	}
 	
 	@Override
-	protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+	protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
 	    Transaction t = Transaction.get(txnType.getName());
         assert(t != null) : "Unexpected " + txnType;
         

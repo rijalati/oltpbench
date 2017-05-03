@@ -50,7 +50,7 @@ public class JPABWorker extends Worker<JPABBenchmark> {
 
 
 	@Override
-	protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+	protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
 		if (txnType.getProcedureClass().equals(Persist.class)) {			
 			persistTest();
 		}

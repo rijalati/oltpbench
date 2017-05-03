@@ -75,11 +75,11 @@ public class Test {
                 return "x";
             }
             
-            @Override public String toJSONString() {
+            public String toJSONString() {
                 return "{" + JSONObject.quote(this.aString) + ":" + 
                 JSONObject.doubleToString(this.aNumber) + "}";
             }            
-            @Override public String toString() {
+            public String toString() {
                 return this.getString() + " " + this.getNumber() + " " + 
                         this.isBoolean() + "." + this.getBENT() + " " + this.getX();
             }

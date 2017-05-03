@@ -16,16 +16,13 @@
 
 package com.oltpbenchmark;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ListIterator;
+import java.util.List;
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -67,7 +64,7 @@ public class TraceReader {
      */
     public TraceReader(String filename) {
         try {
-            BufferedReader br = Files.newBufferedReader(Paths.get(filename), UTF_8);
+            BufferedReader br = new BufferedReader(new FileReader(filename));
             String line = br.readLine();
 
             if (line == null) {
@@ -169,7 +166,7 @@ public class TraceReader {
             {
                 break;
             }
-            readyProcedures.add(new SubmittedProcedure(curr.txnId, phaseStartTime));
+            readyProcedures.add(new SubmittedProcedure(curr.txnId, nowNs));
             iter.remove();
         }
 
@@ -208,7 +205,7 @@ public class TraceReader {
     /**
      * Converts the list of procedures to a CSV string for easy validation.
      */
-    @Override public String toString() {
+    public String toString() {
         StringBuilder sb = new StringBuilder(10*tracedProcedures.size());
         sb.append("TraceReader");
         for(TraceElement t : tracedProcedures) {

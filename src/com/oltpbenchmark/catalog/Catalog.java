@@ -17,14 +17,6 @@
 
 package com.oltpbenchmark.catalog;
 
-import static java.util.Objects.requireNonNull;
-
-import com.oltpbenchmark.api.BenchmarkModule;
-import com.oltpbenchmark.types.DatabaseType;
-import com.oltpbenchmark.types.SortDirectionType;
-import com.oltpbenchmark.util.Pair;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.StringUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -41,9 +33,16 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.IOUtils;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.jdbcDriver;
+import org.apache.commons.io.IOUtils;
+
+import com.oltpbenchmark.api.BenchmarkModule;
+import com.oltpbenchmark.types.DatabaseType;
+import com.oltpbenchmark.types.SortDirectionType;
+import com.oltpbenchmark.util.Pair;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.StringUtil;
 
 /**
  * 
@@ -85,7 +84,7 @@ public final class Catalog {
         Connection conn;
         String dbName = String.format("catalog-%s-%d.db", benchmark.getBenchmarkName(), rand.nextInt());
         try {
-            requireNonNull(jdbcDriver.class);
+            Class.forName(DB_JDBC);
             conn = DriverManager.getConnection(DB_CONNECTION + dbName, null, null);
         } catch (Exception ex) {
             throw new RuntimeException(ex);

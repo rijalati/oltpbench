@@ -17,6 +17,24 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
+
 import com.oltpbenchmark.benchmarks.auctionmark.procedures.LoadConfig;
 import com.oltpbenchmark.benchmarks.auctionmark.procedures.ResetDatabase;
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
@@ -38,23 +56,6 @@ import com.oltpbenchmark.util.RandomDistribution.Zipf;
 import com.oltpbenchmark.util.RandomGenerator;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.StringUtil;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
 
 
 /**
@@ -734,7 +735,7 @@ public class AuctionMarkProfile {
         for (LinkedList<ItemInfo> items : allItemSets) {
             // If the items is already in the completed queue, then we don't need
             // to do anything with it.
-            if (Objects.equals(items, this.items_completed)) continue;
+            if (items == this.items_completed) continue;
             
             for (ItemInfo itemInfo : items) {
                 this.addItemToProperQueue(itemInfo, currentTime);

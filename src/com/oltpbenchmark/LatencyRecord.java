@@ -164,7 +164,7 @@ public class LatencyRecord implements Iterable<LatencyRecord.Sample> {
 		}
 	}
 
-	@Override public Iterator<Sample> iterator() {
+	public Iterator<Sample> iterator() {
 		return new LatencyRecordIterator();
 	}
 }

@@ -197,7 +197,7 @@ public class ZipfDistribution implements ProbabilityDistribution {
    * parts of formula are precomputed in init since they are expensive
    * to calculate and only depend on the distribution parameters
    */
-  @Override public long quantile(double p) {
+  public long quantile(double p) {
     double uz = p * zetan;
     long n = max - min;
     if (uz < 1) return min;

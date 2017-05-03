@@ -33,7 +33,7 @@ public class UniformDistribution implements ProbabilityDistribution {
   private long max = 1;
   private double scale = 1.0;
 
-  @Override public void init(long min, long max, Properties props, String keyPrefix) {
+  public void init(long min, long max, Properties props, String keyPrefix) {
     if (max <= min) {
       throw new IllegalArgumentException("max = " + max + " <= min = " + min +
           ": probability distribution cannot have zero or negative domain");
@@ -76,7 +76,7 @@ public class UniformDistribution implements ProbabilityDistribution {
    * @param id
    * @return
    */
-  @Override public double cdf(long id) {
+  public double cdf(long id) {
     if (id >= max) {
       return 1.0;
     }
@@ -92,7 +92,7 @@ public class UniformDistribution implements ProbabilityDistribution {
   /**
    * Quantile function
    */
-  @Override public long quantile(double p) {
+  public long quantile(double p) {
     assert(p >= 0.0 && p <= 1.0);
     long n = max - min;
     long i = (long)Math.floor(p * n);
@@ -104,7 +104,7 @@ public class UniformDistribution implements ProbabilityDistribution {
   private static final long UINT_RANGE = Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
 
   /** Choose an id X uniformly in the range*/
-  @Override public long choose(Random rng) {
+  public long choose(Random rng) {
     long n = max - min;
     // Java's random number generator has less randomness in lower bits
     // so just taking a mod doesn't give a good quality result.
@@ -125,7 +125,7 @@ public class UniformDistribution implements ProbabilityDistribution {
    * @param n
    * @return
    */
-  private static long randint2(Random rng, long n) {
+  private long randint2(Random rng, long n) {
     assert(n < UINT_RANGE);
     double p = Integer.MAX_VALUE / (double)n;
     if (rng.nextDouble() < p) {

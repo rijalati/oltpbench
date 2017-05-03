@@ -29,7 +29,7 @@ public class Q14 extends GenericQuery {
             +   "AND ol_delivery_d < '2020-01-02 00:00:00.000000'"
         );
 	
-		@Override protected SQLStmt get_query() {
+		protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

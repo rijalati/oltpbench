@@ -41,7 +41,7 @@ public class NoOpWorker extends Worker<NoOpBenchmark> {
     }
     
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
         // Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
         LOG.debug("Executing " + this.procNoOp);
         try {

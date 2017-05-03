@@ -50,7 +50,7 @@ public class Q11 extends GenericQuery {
             +     "value desc"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

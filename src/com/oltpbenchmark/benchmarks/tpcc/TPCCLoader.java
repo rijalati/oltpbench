@@ -34,19 +34,6 @@ package com.oltpbenchmark.benchmarks.tpcc;
  *
  */
 
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.District;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.History;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Item;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.NewOrder;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Oorder;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.OrderLine;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Stock;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Warehouse;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -56,7 +43,14 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
 import org.apache.log4j.Logger;
+
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.benchmarks.tpcc.pojo.*;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 
 /**
  * TPC-C Benchmark Loader

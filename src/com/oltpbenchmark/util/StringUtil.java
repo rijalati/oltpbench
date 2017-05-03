@@ -17,8 +17,6 @@
 
 package com.oltpbenchmark.util;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -119,7 +117,7 @@ public abstract class StringUtil {
             throw new RuntimeException("Unable to compute md5sum for string", ex);
         }
         assert(digest != null);
-        digest.update(input.getBytes(UTF_8));
+        digest.update(input.getBytes());
         BigInteger hash = new BigInteger(1, digest.digest());
         return (hash.toString(16));
     }

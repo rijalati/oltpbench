@@ -55,11 +55,11 @@ public class Q15 extends GenericQuery {
               "DROP VIEW revenue0"
         );
 	
-		@Override protected SQLStmt get_query() {
+		protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 
-    @Override public ResultSet run(Connection conn) throws SQLException {
+    public ResultSet run(Connection conn) throws SQLException {
         // With this query, we have to set up a view before we execute the
         // query, then drop it once we're done.
         Statement stmt = conn.createStatement();

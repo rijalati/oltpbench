@@ -55,7 +55,7 @@ public class Link {
     visibility = LinkBenchConstants.VISIBILITY_DEFAULT;
   }
 
-  @Override public boolean equals(Object other) {
+  public boolean equals(Object other) {
     if (other instanceof Link) {
       Link o = (Link) other;
       return id1 == o.id1 && id2 == o.id2 &&
@@ -68,18 +68,18 @@ public class Link {
     }
   }
 
-  @Override public String toString() {
+  public String toString() {
     return String.format("Link(id1=%d, id2=%d, link_type=%d," +
         "visibility=%d, version=%d," +
         "time=%d, data=%s", id1, id2, link_type,
-        visibility, version, time, Arrays.toString(data));
+        visibility, version, time, data.toString());
   }
 
   /**
    * Clone an existing link
    * @param l
    */
-  @Override public Link clone() {
+  public Link clone() {
     Link l = new Link();
     l.id1 = this.id1;
     l.link_type = this.link_type;

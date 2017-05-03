@@ -116,7 +116,7 @@ public class MotifDataGenerator implements DataGenerator {
                                      LinkBenchConstants.UNIFORM_GEN_ENDBYTE);
     double uniqueness = ConfigUtil.getDouble(props, keyPrefix +
                                      LinkBenchConstants.MOTIF_GEN_UNIQUENESS);
-    if (props.containsValue(keyPrefix + LinkBenchConstants.MOTIF_GEN_LENGTH)) {
+    if (props.contains(keyPrefix + LinkBenchConstants.MOTIF_GEN_LENGTH)) {
       int motifBytes = ConfigUtil.getInt(props, keyPrefix
                                + LinkBenchConstants.MOTIF_GEN_LENGTH);
       init(startByte, endByte, uniqueness, motifBytes);

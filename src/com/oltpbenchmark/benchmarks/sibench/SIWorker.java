@@ -44,7 +44,7 @@ public class SIWorker extends Worker<SIBenchmark> {
     }
 
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
         
         if (procClass.equals(MinRecord.class)) {

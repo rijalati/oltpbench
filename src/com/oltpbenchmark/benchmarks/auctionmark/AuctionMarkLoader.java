@@ -17,9 +17,25 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
+
 import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
 import com.oltpbenchmark.benchmarks.auctionmark.util.CategoryParser;
+import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
 import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeGroupId;
 import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeValueId;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
@@ -29,39 +45,9 @@ import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
 import com.oltpbenchmark.benchmarks.auctionmark.util.UserIdGenerator;
 import com.oltpbenchmark.catalog.Column;
 import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.CollectionUtil;
-import com.oltpbenchmark.util.CompositeId;
-import com.oltpbenchmark.util.EventObservable;
-import com.oltpbenchmark.util.EventObservableExceptionHandler;
-import com.oltpbenchmark.util.EventObserver;
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.Pair;
+import com.oltpbenchmark.util.*;
 import com.oltpbenchmark.util.RandomDistribution.Flat;
 import com.oltpbenchmark.util.RandomDistribution.Zipf;
-import com.oltpbenchmark.util.SQLUtil;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-import org.apache.commons.collections15.CollectionUtils;
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -143,7 +129,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
     // LOADING METHODS
     // -----------------------------------------------------------------
     
-    @Override public List<LoaderThread> createLoaderTheads() throws SQLException {
+    public List<LoaderThread> createLoaderTheads() throws SQLException {
         return (null);
     }
     
@@ -400,7 +386,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
          */
         protected abstract int populateRow(Object[] row);
         
-        @Override public void run() {
+        public void run() {
             // First block on the CountDownLatches of all the tables that we depend on
             if (this.dependencyTables.size() > 0 && LOG.isDebugEnabled())
                 LOG.debug(String.format("%s: Table generator is blocked waiting for %d other tables: %s",
@@ -638,7 +624,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
             // Nothing to do...
         }
         @Override
-        public final synchronized boolean hasMore() {
+        public final boolean hasMore() {
             return (this.getNext() != null);
         }
         @Override

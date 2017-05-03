@@ -62,12 +62,12 @@ public abstract class PiecewiseLinearDistribution implements ProbabilityDistribu
       this.probability = input_probability;
     }
 
-    @Override public int compareTo(Point obj) {
+    public int compareTo(Point obj) {
       Point p = (Point)obj;
       return this.value - p.value;
     }
 
-    @Override public String toString() {
+    public String toString() {
       return "(" + value + ", " + probability + ")";
     }
   }

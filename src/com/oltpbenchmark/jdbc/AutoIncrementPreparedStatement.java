@@ -551,10 +551,10 @@ public class AutoIncrementPreparedStatement implements PreparedStatement {
     }
     
     // Java7 Fixes
-    @Override public void closeOnCompletion() throws SQLException {
+    public void closeOnCompletion() throws SQLException {
         throw new SQLException();
     }
-    @Override public boolean isCloseOnCompletion() throws SQLException {
+    public boolean isCloseOnCompletion() throws SQLException {
         throw new SQLException();
     }
 

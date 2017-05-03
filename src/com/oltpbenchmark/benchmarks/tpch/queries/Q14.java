@@ -36,7 +36,7 @@ public class Q14 extends GenericQuery {
             +     "and l_shipdate < date '1997-04-01' + interval '1' month"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

@@ -35,12 +35,7 @@
 
 package com.oltpbenchmark.benchmarks.jpab.objects;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 
 
@@ -89,7 +84,7 @@ public class Node implements TestEntity {
         return child2;
     }
 
-    @Override public void load() {
+    public void load() {
         if (child1 != null) {
             child1.load();
         }
@@ -98,7 +93,7 @@ public class Node implements TestEntity {
         }
     }
 
-    @Override public void update() {
+    public void update() {
         changeCount++;
         if (child1 != null) {
             child1.update();

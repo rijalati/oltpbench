@@ -60,7 +60,7 @@ public class Q20 extends GenericQuery {
             +     "s_name"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

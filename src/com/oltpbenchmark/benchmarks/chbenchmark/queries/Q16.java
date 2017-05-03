@@ -39,7 +39,7 @@ public class Q16 extends GenericQuery {
             + "ORDER BY supplier_cnt DESC"
         );
 	
-		@Override protected SQLStmt get_query() {
+		protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

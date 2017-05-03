@@ -45,7 +45,7 @@ public class Q3 extends GenericQuery {
             +     "o_orderdate"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

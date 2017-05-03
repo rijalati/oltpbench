@@ -156,7 +156,7 @@ public class AccessDistributions {
   }
 
   public static AccessDistribution loadAccessDistribution(Properties props,
-      long minid, long maxid, DistributionType kind) {
+      long minid, long maxid, DistributionType kind) throws LinkBenchConfigError {
     Logger logger = Logger.getLogger(ConfigUtil.LINKBENCH_LOGGER);
     String keyPrefix;
     switch(kind) {

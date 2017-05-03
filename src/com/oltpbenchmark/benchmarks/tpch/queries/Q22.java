@@ -60,7 +60,7 @@ public class Q22 extends GenericQuery {
             +     "cntrycode"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

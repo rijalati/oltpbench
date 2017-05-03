@@ -76,7 +76,7 @@ public class OrderStatus extends TPCCProcedure {
 	private PreparedStatement customerByName = null;
 
 
-    @Override public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+    public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
         boolean trace = LOG.isTraceEnabled();
         
         // initializing all prepared statements

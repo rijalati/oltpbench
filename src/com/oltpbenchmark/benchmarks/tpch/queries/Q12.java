@@ -51,7 +51,7 @@ public class Q12 extends GenericQuery {
             +     "l_shipmode"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

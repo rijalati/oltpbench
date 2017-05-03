@@ -40,7 +40,7 @@ public class Q17 extends GenericQuery {
             +     ")"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

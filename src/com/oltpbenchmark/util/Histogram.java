@@ -17,27 +17,14 @@
 
 package com.oltpbenchmark.util;
 
-import com.oltpbenchmark.util.json.JSONException;
-import com.oltpbenchmark.util.json.JSONObject;
-import com.oltpbenchmark.util.json.JSONStringer;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+
 import org.apache.log4j.Logger;
+
+import com.oltpbenchmark.util.json.*;
 
 /**
  * A very nice and simple generic Histogram
@@ -65,7 +52,7 @@ public class Histogram<X> implements JSONSerializable {
     /**
      * 
      */
-    protected transient volatile Map<Object, String> debug_names; 
+    protected transient Map<Object, String> debug_names; 
     
     /**
      * The Min/Max values are the smallest/greatest values we have seen based
@@ -327,7 +314,7 @@ public class Histogram<X> implements JSONSerializable {
      */
     public SortedSet<X> sortedValues() {
         SortedSet<X> sorted = new TreeSet<X>(new Comparator<X>() {
-            @Override public int compare(final X item0, final X item1) {
+            public int compare(final X item0, final X item1) {
                 final Integer v0 = Histogram.this.get(item0);
                 final Integer v1 = Histogram.this.get(item1);
                 if (v0.equals(v1)) return (-1);
@@ -566,7 +553,7 @@ public class Histogram<X> implements JSONSerializable {
     /**
      * Histogram Pretty Print
      */
-    @Override public String toString() {
+    public String toString() {
         return (this.toString(MAX_CHARS, MAX_VALUE_LENGTH));
     }
     

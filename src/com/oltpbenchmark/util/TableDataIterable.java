@@ -71,7 +71,7 @@ public class TableDataIterable implements Iterable<Object[]> {
     }
     
     
-    @Override public Iterator<Object[]> iterator() {
+    public Iterator<Object[]> iterator() {
         return (new TableIterator());
     }
     

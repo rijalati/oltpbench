@@ -648,7 +648,7 @@ public class DBWorkload {
         PrintStream rs = null;
         String baseFileName = "oltpbench";
         if (argsLine.hasOption("o")) {
-            if ("-".equals(argsLine.getOptionValue("o"))) {
+            if (argsLine.getOptionValue("o") == "-") {
                 ps = System.out;
                 rs = System.out;
                 baseFileName = null;

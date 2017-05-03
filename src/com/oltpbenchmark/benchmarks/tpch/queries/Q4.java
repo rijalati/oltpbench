@@ -44,7 +44,7 @@ public class Q4 extends GenericQuery {
             +     "o_orderpriority"
         );
 
-    @Override protected SQLStmt get_query() {
+    protected SQLStmt get_query() {
         return query_stmt;
     }
 }

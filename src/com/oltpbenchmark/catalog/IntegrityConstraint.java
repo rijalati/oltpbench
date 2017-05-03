@@ -55,8 +55,7 @@ public abstract class IntegrityConstraint implements Serializable{
 		this.id = id;
 	}
 	
-	@Override
-public abstract boolean equals(Object ic);
+	public abstract boolean equals(IntegrityConstraint ic);
 	
 
 }
