@@ -12,87 +12,92 @@
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-	<directory>src</directory>
-	<includes>
-	  <include>**/*.sql</include>
-	</includes>
+	      <directory>src</directory>
+	      <includes>
+	        <include>**/*.sql</include>
+	      </includes>
       </resource>
     </resources>
     <plugins>
- <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.3</version>
-      <configuration>
-        <compilerId>javac-with-errorprone</compilerId>
-         <showWarnings>true</showWarnings>
-        <forceJavacCompilerUse>true</forceJavacCompilerUse>
-        <!-- maven-compiler-plugin defaults to targeting Java 5, but our javac
-             only supports >=6 -->
-        <source>8</source>
-        <target>8</target>
-      </configuration>
-      <dependencies>
-        <dependency>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-compiler-javac-errorprone</artifactId>
-          <version>2.8</version>
-        </dependency>
-        <!-- override plexus-compiler-javac-errorprone's dependency on
-             Error Prone with the latest version -->
-        <dependency>
-          <groupId>com.google.errorprone</groupId>
-          <artifactId>error_prone_core</artifactId>
-          <version>2.0.19</version>
-        </dependency>
-      </dependencies>
-    </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <compilerId>javac-with-errorprone</compilerId>
+          <showWarnings>true</showWarnings>
+          <forceJavacCompilerUse>true</forceJavacCompilerUse>
+          <!-- maven-compiler-plugin defaults to targeting Java 5, but our javac
+               only supports >=6 -->
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-compiler-javac-errorprone</artifactId>
+            <version>2.8</version>
+          </dependency>
+          <!-- override plexus-compiler-javac-errorprone's dependency on
+               Error Prone with the latest version -->
+          <dependency>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_core</artifactId>
+            <version>2.0.19</version>
+          </dependency>
+        </dependencies>
+      </plugin>
 
       <!-- In addition to the standard JAR file,this will create an executable 
 	         JAR with dependencies -->
-	   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <executions>
-      <execution>
-        <id>copy-dependencies</id>
-        <phase>package</phase>
-        <goals>
-          <goal>copy-dependencies</goal>
-        </goals>
-        <configuration>
-          <outputDirectory>${project.build.directory}</outputDirectory>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteSnapshots>true</overWriteSnapshots>
-        </configuration>
-      </execution>
-    </executions>
-  </plugin>
+	    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<configuration>
-	  <archive>
-	    <manifest>
-	      <mainClass>com.oltpbenchmark.DBWorkload</mainClass>
-	    </manifest>
-	  </archive>
-	  <descriptorRefs>
-	    <descriptorRef>jar-with-dependencies</descriptorRef>
-	  </descriptorRefs>
-	</configuration>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
-	  </execution>
-	</executions>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+	        <archive>
+	          <manifest>
+	            <mainClass>com.oltpbenchmark.DBWorkload</mainClass>
+	          </manifest>
+	        </archive>
+	        <descriptorRefs>
+	          <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
+	      </configuration>
+	      <executions>
+	        <execution>
+	          <phase>package</phase>
+	          <goals>
+	            <goal>single</goal>
+	          </goals>
+	        </execution>
+	      </executions>
       </plugin>
     </plugins>
   </build>
 
-    <profiles>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <profiles>
     <profile>
       <id>fixerrors</id>
       <build>
@@ -103,8 +108,8 @@
             <configuration>
               <compilerArgs combine.children="append">
                 <compilerArg>-Xlint:all</compilerArg>
-                <compilerArg>-XepPatchLocation:${basedir}</compilerArg>
-                <compilerArg>-XepPatchChecks:DeadException,GetClassOnClass</compilerArg>
+                <compilerArg>-XepPatchLocation:/home/rjl/src/git/oltpbench</compilerArg>
+                <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,ReferenceEquality,MethodCanBeStatic,DefaultCharset</compilerArg>
               </compilerArgs>
             </configuration>
           </plugin>
@@ -113,41 +118,13 @@
     </profile>
   </profiles>
 
-   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+  <!--ORACLE_CFG1-->
 
-<repositories>
-  <repository>
-    <id>maven.oracle.com</id>
-    <name>oracle-maven-repo</name>
-    <url>https://maven.oracle.com</url>
-    <layout>default</layout>
-    <releases>
-      <enabled>true</enabled>
-      <updatePolicy>always</updatePolicy>
-    </releases>
-  </repository>
-</repositories>
-
-<pluginRepositories>
-  <pluginRepository>
-    <id>maven.oracle.com</id>
-    <name>oracle-maven-repo</name> 
-    <url>https://maven.oracle.com</url>
-    <layout>default</layout>
-    <releases>
-      <enabled>true</enabled>
-      <updatePolicy>always</updatePolicy>
-    </releases>
-  </pluginRepository>
-</pluginRepositories>
   <dependencies>
     <dependency>
-	<groupId>org.hsqldb</groupId>
-	<artifactId>hsqldb</artifactId>
-	<version>2.4.0</version>
+	    <groupId>org.hsqldb</groupId>
+	    <artifactId>hsqldb</artifactId>
+	    <version>2.4.0</version>
     </dependency>
     <dependency>
       <groupId>javax.persistence</groupId>
@@ -194,23 +171,22 @@
 	    <artifactId>httpmime</artifactId>
 	    <version>4.5.3</version>
     </dependency>
-<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>5.1.41</version>
-</dependency>
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.41</version>
+    </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
       <version>1.4</version>
     </dependency>
- <dependency>
+    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>javax.jdo</groupId>
       <artifactId>jdo2-api</artifactId>
@@ -256,19 +232,6 @@
       <artifactId>commons-io</artifactId>
       <version>2.5</version>
     </dependency>
-      <dependency>
-    <groupId>com.oracle.jdbc</groupId>
-    <artifactId>ojdbc8</artifactId>
-    <version>12.2.0.1</version>
-  </dependency>   
-    <!--
-	Because this isn't an open source jar this is required:
-    $ mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.1.0 -Dpackaging=jar -Dfile=lib/ojdbc14-10.2.jar -DgeneratePom=true
-    <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc14</artifactId>
-      <version>10.2.0.1.0</version>
-    </dependency>
-    -->
+    <!--ORACLE_CFG2-->
   </dependencies>
-  </project>
+</project>
