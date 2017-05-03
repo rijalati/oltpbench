@@ -169,7 +169,7 @@ public class TraceReader {
             {
                 break;
             }
-            readyProcedures.add(new SubmittedProcedure(curr.txnId, nowNs));
+            readyProcedures.add(new SubmittedProcedure(curr.txnId, phaseStartTime));
             iter.remove();
         }
 
