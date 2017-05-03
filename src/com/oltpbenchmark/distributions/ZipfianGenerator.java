@@ -32,7 +32,7 @@ package com.oltpbenchmark.distributions;
  * LICENSE file.                                                                                                                                                                   
  */
 
-import java.util.Random;
+
 
 /**
  * A generator of a zipfian distribution. It produces a sequence of items, such that some items are more popular than others, according

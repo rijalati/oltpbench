@@ -32,14 +32,14 @@
 package com.oltpbenchmark.benchmarks.linkbench.utils;
 
 import java.io.File;
-import java.io.IOException;
+
 import java.util.Properties;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
+
+
+
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
 
 import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
 import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
@@ -63,7 +63,7 @@ public class ConfigUtil {
   }
 
   public static Level getDebugLevel(Properties props)
-                                    throws LinkBenchConfigError {
+                                    {
     if (props == null) {
       return Level.DEBUG;
     }
@@ -128,7 +128,7 @@ public class ConfigUtil {
    * @throws LinkBenchConfigError thrown if key not present
    */
   public static String getPropertyRequired(Properties props, String key)
-    throws LinkBenchConfigError {
+    {
     String v = props.getProperty(key);
     if (v == null) {
       throw new LinkBenchConfigError("Expected configuration key " + key +
@@ -138,7 +138,7 @@ public class ConfigUtil {
   }
 
   public static int getInt(Properties props, String key)
-      throws LinkBenchConfigError {
+      {
     return getInt(props, key, null);
   }
 
@@ -150,7 +150,7 @@ public class ConfigUtil {
    * @throws LinkBenchConfigError if not present or not integer
    */
   public static int getInt(Properties props, String key, Integer defaultVal)
-      throws LinkBenchConfigError {
+      {
     if (defaultVal != null && !props.containsKey(key)) {
       return defaultVal;
     }
@@ -164,7 +164,7 @@ public class ConfigUtil {
   }
 
   public static long getLong(Properties props, String key)
-      throws LinkBenchConfigError {
+      {
     return getLong(props, key, null);
   }
 
@@ -177,7 +177,7 @@ public class ConfigUtil {
    * @throws LinkBenchConfigError if not present or not integer
    */
   public static long getLong(Properties props, String key, Long defaultVal)
-      throws LinkBenchConfigError {
+      {
     if (defaultVal != null && !props.containsKey(key)) {
       return defaultVal;
     }
@@ -192,7 +192,7 @@ public class ConfigUtil {
 
 
   public static double getDouble(Properties props, String key)
-                throws LinkBenchConfigError {
+                {
     return getDouble(props, key, null);
   }
 
@@ -205,7 +205,7 @@ public class ConfigUtil {
    * @throws LinkBenchConfigError if not present or not double
    */
   public static double getDouble(Properties props, String key,
-        Double defaultVal) throws LinkBenchConfigError {
+        Double defaultVal) {
     if (defaultVal != null && !props.containsKey(key)) {
       return defaultVal;
     }
@@ -227,7 +227,7 @@ public class ConfigUtil {
    * @throws LinkBenchConfigError if not present or not boolean
    */
   public static boolean getBool(Properties props, String key)
-      throws LinkBenchConfigError {
+      {
     String v = getPropertyRequired(props, key).trim().toLowerCase();
     // Parse manually since parseBoolean accepts many things as "false"
     if (v.equals("true")) {

@@ -174,7 +174,7 @@ public class TATPWorker extends Worker<TATPBenchmark> {
 	}
 	
 	@Override
-	protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
+	protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
 	    Transaction t = Transaction.get(txnType.getName());
         assert(t != null) : "Unexpected " + txnType;
         

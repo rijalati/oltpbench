@@ -61,7 +61,7 @@ public class WikipediaWorker extends Worker<WikipediaBenchmark> {
 	}
 
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
         WikipediaOperation t = null;
         
         Class<? extends Procedure> procClass = nextTransaction.getProcedureClass();

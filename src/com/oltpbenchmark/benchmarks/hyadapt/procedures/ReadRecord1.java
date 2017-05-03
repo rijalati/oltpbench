@@ -22,12 +22,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+
 
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTLoader;
+
 
 public class ReadRecord1 extends Procedure{
     

@@ -35,7 +35,12 @@
 
 package com.oltpbenchmark.benchmarks.jpab.objects;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 
 

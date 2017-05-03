@@ -16,25 +16,38 @@
 
 package com.oltpbenchmark.benchmarks.linkbench;
 
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.Procedure.UserAbortException;
+import com.oltpbenchmark.api.TransactionType;
+import com.oltpbenchmark.api.Worker;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.AccessDistribution;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.ID2Chooser;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.LogNormalDistribution;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.ProbabilityDistribution;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+import com.oltpbenchmark.benchmarks.linkbench.generators.DataGenerator;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.AddLink;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.AddNode;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.CountLink;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.DeleteLink;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.DeleteNode;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.GetLink;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.GetLinkList;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.GetNode;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.UpdateLink;
+import com.oltpbenchmark.benchmarks.linkbench.procedures.UpdateNode;
+import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
+import com.oltpbenchmark.types.TransactionStatus;
+import com.oltpbenchmark.util.ClassUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.distributions.*;
-import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
-import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.*;
-import com.oltpbenchmark.benchmarks.linkbench.generators.*;
-import com.oltpbenchmark.api.*;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
-import com.oltpbenchmark.benchmarks.linkbench.pojo.*;
-import com.oltpbenchmark.benchmarks.linkbench.procedures.*;
-import com.oltpbenchmark.benchmarks.linkbench.utils.*;
-import com.oltpbenchmark.types.*;
-import com.oltpbenchmark.util.*;
 
 public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
 
@@ -181,7 +194,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
     }
 
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
 
         if (procClass.equals(AddNode.class)) {

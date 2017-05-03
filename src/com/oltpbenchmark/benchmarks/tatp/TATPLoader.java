@@ -17,17 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.tatp;
 
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.*;
-import com.oltpbenchmark.util.SQLUtil;
 
 public class TATPLoader extends Loader<TATPBenchmark> {
     private static final Logger LOG = Logger.getLogger(TATPLoader.class);

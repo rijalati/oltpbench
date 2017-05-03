@@ -23,7 +23,7 @@ public class ApproxHarmonic {
 
   // Euler Mascheroni constant
   private static final double EULER_MASCHERONI =
-                  0.5772156649015328606065120900824024310421;
+                  0.5772156649015329;
 
 
   /**

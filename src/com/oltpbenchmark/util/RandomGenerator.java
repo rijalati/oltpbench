@@ -19,7 +19,9 @@ package com.oltpbenchmark.util;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 @SuppressWarnings("serial")
 public class RandomGenerator extends Random {

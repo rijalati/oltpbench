@@ -19,12 +19,12 @@ package com.oltpbenchmark;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
+
 import java.util.LinkedList;
-import java.util.List;
+
 import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
@@ -39,7 +39,7 @@ public class TraceReader {
     private static final Logger LOG = Logger.getLogger(TraceReader.class);
 
     // POD for tracking submitted/read procedures.
-    private class TraceElement {
+    private static class TraceElement {
         int txnId;
         int phaseId;
         long startTimeNs;

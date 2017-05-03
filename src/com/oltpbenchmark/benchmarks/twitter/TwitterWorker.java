@@ -51,7 +51,7 @@ public class TwitterWorker extends Worker<TwitterBenchmark> {
     }
 
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
         TwitterOperation t = generator.nextTransaction();
         t.uid = this.rng().nextInt(this.num_users); // HACK
         

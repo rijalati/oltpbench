@@ -18,12 +18,12 @@ package com.oltpbenchmark.benchmarks.tpch.queries;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.oltpbenchmark.DBWorkload;
+
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.api.Worker;
 import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -32,7 +32,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 import org.apache.log4j.Logger;
 
 public abstract class GenericQuery extends Procedure {

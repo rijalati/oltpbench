@@ -18,7 +18,7 @@
 package com.oltpbenchmark.benchmarks.twitter.util;
 
 import java.util.List;
-import java.util.Random;
+
 
 import com.oltpbenchmark.api.TransactionGenerator;
 import com.oltpbenchmark.distributions.CounterGenerator;

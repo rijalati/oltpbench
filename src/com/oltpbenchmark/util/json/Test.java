@@ -186,7 +186,7 @@ public class Test {
             j.put("JSONObject", new JSONObject());
             j.put("JSONArray", new JSONArray());
             j.put("int", 57);
-            j.put("double", 123456789012345678901234567890.);
+            j.put("double", 1.2345678901234568E+29);
             j.put("true", true);
             j.put("false", false);
             j.put("null", JSONObject.NULL);

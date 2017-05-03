@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.LoaderUtil;
+
 import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.benchmarks.twitter.util.NameHistogram;
 import com.oltpbenchmark.benchmarks.twitter.util.TweetHistogram;

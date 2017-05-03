@@ -1,12 +1,7 @@
 package com.oltpbenchmark.benchmarks.smallbank;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-
-import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.smallbank.procedures.Amalgamate;
@@ -16,7 +11,11 @@ import com.oltpbenchmark.benchmarks.smallbank.procedures.SendPayment;
 import com.oltpbenchmark.benchmarks.smallbank.procedures.TransactSavings;
 import com.oltpbenchmark.benchmarks.smallbank.procedures.WriteCheck;
 import com.oltpbenchmark.types.TransactionStatus;
-import com.oltpbenchmark.util.RandomDistribution.*;
+import com.oltpbenchmark.util.RandomDistribution.DiscreteRNG;
+import com.oltpbenchmark.util.RandomDistribution.Flat;
+import java.sql.SQLException;
+import java.util.Arrays;
+import org.apache.log4j.Logger;
 
 /**
  * SmallBank Benchmark Work Driver
@@ -81,7 +80,7 @@ public class SmallBankWorker extends Worker<SmallBankBenchmark> {
     
 
     @Override
-    protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
         Class<? extends Procedure> procClass = txnType.getProcedureClass();
         
         // Amalgamate

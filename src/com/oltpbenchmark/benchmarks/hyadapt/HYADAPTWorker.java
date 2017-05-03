@@ -78,7 +78,7 @@ public class HYADAPTWorker extends Worker<HYADAPTBenchmark> {
     }
 
     @Override
-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
                 
         if (procClass.equals(ReadRecord1.class)) {

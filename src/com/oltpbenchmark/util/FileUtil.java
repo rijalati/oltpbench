@@ -19,7 +19,12 @@ package com.oltpbenchmark.util;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.util.Arrays;
