@@ -17,17 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.tatp;
 
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.*;
-import com.oltpbenchmark.util.SQLUtil;
 
 public class TATPLoader extends Loader<TATPBenchmark> {
     private static final Logger LOG = Logger.getLogger(TATPLoader.class);
@@ -54,7 +52,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         
         Thread threads[] = new Thread[] {
             new Thread() {
-                public void run() {
+                @Override public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_SUBSCRIBER);
                     Table catalog_tbl = benchmark.getTableCatalog(TATPConstants.TABLENAME_SUBSCRIBER);
                     try {
@@ -67,7 +65,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
                 }
             },
             new Thread() {
-                public void run() {
+                @Override public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_ACCESS_INFO);
                     Table catalog_tbl = benchmark.getTableCatalog(TATPConstants.TABLENAME_ACCESS_INFO);
                     try {
@@ -80,7 +78,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
                 }
             },
             new Thread() {
-                public void run() {
+                @Override public void run() {
                     if (LOG.isDebugEnabled()) LOG.debug("Start loading " + TATPConstants.TABLENAME_SPECIAL_FACILITY + " and " + TATPConstants.TABLENAME_CALL_FORWARDING);
                     Table catalog_spe = benchmark.getTableCatalog(TATPConstants.TABLENAME_SPECIAL_FACILITY);
                     Table catalog_cal = benchmark.getTableCatalog(TATPConstants.TABLENAME_CALL_FORWARDING);

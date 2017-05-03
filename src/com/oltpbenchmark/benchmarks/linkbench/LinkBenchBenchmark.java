@@ -80,7 +80,7 @@ public class LinkBenchBenchmark extends BenchmarkModule {
      * @param configKey config key for the seed value
      * @return
      */
-    private Random createMasterRNG(Properties props, String configKey) {
+    private static Random createMasterRNG(Properties props, String configKey) {
         long seed;
         if (props.containsKey(configKey)) {
             seed = ConfigUtil.getLong(props, configKey);

@@ -55,7 +55,7 @@ public class Q18 extends GenericQuery {
             +     "o_orderdate"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

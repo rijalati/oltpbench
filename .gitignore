@@ -7,7 +7,7 @@ output.res
 results
 .scannerwork/
 .sonar/
-
+error-prone.patch
 ## -------------------------------
 ## Kate Swap Files
 ## -------------------------------

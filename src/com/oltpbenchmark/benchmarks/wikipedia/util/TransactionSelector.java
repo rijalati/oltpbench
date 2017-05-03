@@ -17,6 +17,10 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.oltpbenchmark.api.TransactionTypes;
+import com.oltpbenchmark.util.FileUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,9 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.oltpbenchmark.api.TransactionTypes;
-import com.oltpbenchmark.util.FileUtil;
 
 public class TransactionSelector {
 
@@ -84,9 +85,9 @@ public class TransactionSelector {
     }
 
     public static void writeEntry(OutputStream out, int userId, int pageNamespace, String pageTitle) throws IOException {
-        out.write(String.format("%d %d %s\n", userId, pageNamespace, pageTitle).getBytes());
+        out.write(String.format("%d %d %s\n", userId, pageNamespace, pageTitle).getBytes(UTF_8));
     }
     public static void writeEntryDebug(OutputStream out, int userId, int pageNamespace, String pageTitle, int pageid) throws IOException {
-        out.write(String.format("%d %d %s %d\n", userId, pageNamespace, pageTitle, pageid).getBytes());
+        out.write(String.format("%d %d %s %d\n", userId, pageNamespace, pageTitle, pageid).getBytes(UTF_8));
     }
 }

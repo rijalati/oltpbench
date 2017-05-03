@@ -35,14 +35,14 @@
 
 package com.oltpbenchmark.benchmarks.jpab.tests;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
-
-import javax.persistence.*;
-
 import com.oltpbenchmark.api.LoaderUtil;
 import com.oltpbenchmark.benchmarks.jpab.objects.Node;
 import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 
 /**

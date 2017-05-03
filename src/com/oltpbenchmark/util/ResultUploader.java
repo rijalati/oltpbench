@@ -20,6 +20,14 @@ import com.oltpbenchmark.Results;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.collectors.DBParameterCollector;
 import com.oltpbenchmark.api.collectors.DBParameterCollectorGen;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.zip.GZIPOutputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -34,12 +42,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
-import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.zip.GZIPOutputStream;
 
 public class ResultUploader {
     private static final Logger LOG = Logger.getLogger(ResultUploader.class);

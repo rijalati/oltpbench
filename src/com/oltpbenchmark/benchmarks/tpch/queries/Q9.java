@@ -55,7 +55,7 @@ public class Q9 extends GenericQuery {
             +     "o_year desc"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

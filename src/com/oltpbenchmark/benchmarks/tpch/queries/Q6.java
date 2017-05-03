@@ -32,7 +32,7 @@ public class Q6 extends GenericQuery {
             +     "and l_quantity < 24"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

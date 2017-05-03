@@ -108,8 +108,8 @@
             <configuration>
               <compilerArgs combine.children="append">
                 <compilerArg>-Xlint:all</compilerArg>
-                <compilerArg>-XepPatchLocation:/tmp</compilerArg>
-                <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,ReferenceEquality,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ArrayEquals,ArrayToString,FilesLinesLeak,HashtableContains,IncompatibleArgumentType,RemoveUnusedImports,UnnecessaryStaticImport,ThrowsUncheckedException,WildcardImport,StringEquality,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,EqualsIncompatibleType,TypeParameterUnusedInFormals,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg>
+                <compilerArg>-XepPatchLocation:${project.build.directory}</compilerArg>
+                <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,ReferenceEquality,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ArrayEquals,ArrayToString,FilesLinesLeak,HashtableContains,IncompatibleArgumentType,UnnecessaryStaticImport,ThrowsUncheckedException,WildcardImport,StringEquality,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,EqualsIncompatibleType,TypeParameterUnusedInFormals,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg>
               </compilerArgs>
             </configuration>
           </plugin>

@@ -66,7 +66,7 @@ public class Q2 extends GenericQuery {
             +     "p_partkey"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

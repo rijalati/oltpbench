@@ -107,7 +107,7 @@ public class NewOrder extends TPCCProcedure {
 	private PreparedStatement stmtInsertOrderLine = null;
 
 
-    public ResultSet run(Connection conn, Random gen,
+    @Override public ResultSet run(Connection conn, Random gen,
 			int terminalWarehouseID, int numWarehouses,
 			int terminalDistrictLowerID, int terminalDistrictUpperID,
 			TPCCWorker w) throws SQLException {

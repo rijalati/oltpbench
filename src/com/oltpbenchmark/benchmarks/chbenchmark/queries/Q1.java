@@ -33,7 +33,7 @@ public class Q1 extends GenericQuery {
             + "ORDER BY ol_number"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

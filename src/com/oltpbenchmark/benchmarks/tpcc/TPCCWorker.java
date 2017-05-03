@@ -68,7 +68,7 @@ public class TPCCWorker extends Worker<TPCCBenchmark> {
 	 * Executes a single TPCC transaction of type transactionType.
 	 */
 	@Override
-    protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
+    protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
         try {
             TPCCProcedure proc = (TPCCProcedure) this.getProcedure(nextTransaction.getProcedureClass());
             proc.run(conn, gen, terminalWarehouseID, numWarehouses,

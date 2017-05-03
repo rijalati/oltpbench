@@ -35,11 +35,18 @@
 
 package com.oltpbenchmark.benchmarks.jpab.objects;
 
-import java.util.*;
-import javax.persistence.*;
-
 import com.oltpbenchmark.api.LoaderUtil;
 import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+import java.util.Date;
+import java.util.Random;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * A simple entity class with one index.
@@ -104,7 +111,7 @@ public class IndexedPerson implements TestEntity {
 
 	// Methods:
 
-    public void load() {
+    @Override public void load() {
 		assert firstName != null && middleName != null && lastName != null &&
 			street != null && city != null && state != null &&
 			zip != null && country != null && phone != null && email != null &&
@@ -112,7 +119,7 @@ public class IndexedPerson implements TestEntity {
 			lastLoginDate != null && loginCount > 0;
     }
 
-    public void update() {
+    @Override public void update() {
     	lastLoginDate = new Date();
     	loginCount++;
     }

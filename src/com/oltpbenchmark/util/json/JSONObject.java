@@ -116,7 +116,7 @@ public class JSONObject {
          * so the clone method returns itself.
          * @return     NULL.
          */
-        protected final Object clone() {
+        @Override protected final Object clone() {
             return this;
         }
 
@@ -127,7 +127,7 @@ public class JSONObject {
          * @return true if the object parameter is the JSONObject.NULL object
          *  or null.
          */
-        public boolean equals(Object object) {
+        @Override public boolean equals(Object object) {
             return object == null || object == this;
         }
 
@@ -136,7 +136,7 @@ public class JSONObject {
          * Get the "null" string value.
          * @return The string "null".
          */
-        public String toString() {
+        @Override public String toString() {
             return "null";
         }
     }
@@ -368,7 +368,7 @@ public class JSONObject {
         }
     }
 
-    private boolean isStandardProperty(Class<?> clazz) {
+    private static boolean isStandardProperty(Class<?> clazz) {
         return clazz.isPrimitive()                  ||
             clazz.isAssignableFrom(Byte.class)      ||
             clazz.isAssignableFrom(Short.class)     ||
@@ -844,7 +844,7 @@ public class JSONObject {
         try {
             Object o = opt(key);
             return o instanceof Number ? ((Number)o).doubleValue() :
-                new Double((String)o).doubleValue();
+                Double.valueOf((String)o).doubleValue();
         } catch (Exception e) {
             return defaultValue;
         }
@@ -995,7 +995,7 @@ public class JSONObject {
      * @throws JSONException If the key is null or if the number is invalid.
      */
     public JSONObject put(String key, double value) throws JSONException {
-        put(key, new Double(value));
+        put(key, Double.valueOf(value));
         return this;
     }
 
@@ -1009,7 +1009,7 @@ public class JSONObject {
      * @throws JSONException If the key is null.
      */
     public JSONObject put(String key, int value) throws JSONException {
-        put(key, new Integer(value));
+        put(key, Integer.valueOf(value));
         return this;
     }
 
@@ -1023,7 +1023,7 @@ public class JSONObject {
      * @throws JSONException If the key is null.
      */
     public JSONObject put(String key, long value) throws JSONException {
-        put(key, new Long(value));
+        put(key, Long.valueOf(value));
         return this;
     }
 
@@ -1224,27 +1224,27 @@ public class JSONObject {
                 if (s.length() > 2 &&
                         (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
                     try {
-                        return new Integer(Integer.parseInt(s.substring(2),
-                                16));
+                        return Integer.parseInt(s.substring(2),
+                                16);
                     } catch (Exception e) {
                         /* Ignore the error */
                     }
                 } else {
                     try {
-                        return new Integer(Integer.parseInt(s, 8));
+                        return Integer.parseInt(s, 8);
                     } catch (Exception e) {
                         /* Ignore the error */
                     }
                 }
             }
             try {
-                return new Integer(s);
+                return Integer.valueOf(s);
             } catch (Exception e) {
                 try {
-                    return new Long(s);
+                    return Long.valueOf(s);
                 } catch (Exception f) {
                     try {
-                        return new Double(s);
+                        return Double.valueOf(s);
                     }  catch (Exception g) {
                         /* Ignore the error */
                     }
@@ -1308,7 +1308,7 @@ public class JSONObject {
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
-    public String toString() {
+    @Override public String toString() {
         try {
             Iterator<String> keys = keys();
             StringBuffer sb = new StringBuffer("{");
@@ -1390,7 +1390,7 @@ public class JSONObject {
                 sb.append(quote(o.toString()));
                 sb.append(": ");
                 sb.append(valueToString(this.map.get(o), indentFactor,
-                        newindent));
+                        indent));
             }
             if (sb.length() > 1) {
                 sb.append('\n');

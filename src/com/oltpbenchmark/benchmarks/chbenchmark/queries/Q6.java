@@ -28,7 +28,7 @@ public class Q6 extends GenericQuery {
             +   "AND ol_quantity BETWEEN 1 AND 100000"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

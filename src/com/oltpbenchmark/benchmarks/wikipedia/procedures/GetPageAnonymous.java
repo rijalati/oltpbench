@@ -65,7 +65,7 @@ public class GetPageAnonymous extends Procedure {
     // -----------------------------------------------------------------
 	
 	public Article run(Connection conn, boolean forSelect, String userIp,
-			                            int pageNamespace, String pageTitle) throws UserAbortException, SQLException {		
+			                            int pageNamespace, String pageTitle) throws SQLException {		
 	    int param = 1;
 	    
 		PreparedStatement st = this.getPreparedStatement(conn, selectPage);
