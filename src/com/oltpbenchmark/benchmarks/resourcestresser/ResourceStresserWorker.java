@@ -20,7 +20,7 @@ package com.oltpbenchmark.benchmarks.resourcestresser;
 import java.sql.SQLException;
 import java.util.Random;
 
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.resourcestresser.procedures.CPU1;

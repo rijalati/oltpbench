@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.jpab.procedures.Delete;

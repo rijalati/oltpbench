@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.benchmarks.tatp.procedures.DeleteCallForwarding;
 import com.oltpbenchmark.benchmarks.tatp.procedures.GetAccessData;
 import com.oltpbenchmark.benchmarks.tatp.procedures.GetNewDestination;

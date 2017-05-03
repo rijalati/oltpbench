@@ -17,7 +17,7 @@
 package com.oltpbenchmark.benchmarks.linkbench;
 
 import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions;

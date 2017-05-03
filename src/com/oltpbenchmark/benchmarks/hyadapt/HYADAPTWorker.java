@@ -22,7 +22,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.hyadapt.procedures.ReadRecord1;

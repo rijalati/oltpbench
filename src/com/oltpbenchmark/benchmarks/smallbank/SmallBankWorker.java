@@ -1,7 +1,7 @@
 package com.oltpbenchmark.benchmarks.smallbank;
 
 import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.smallbank.procedures.Amalgamate;

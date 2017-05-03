@@ -20,7 +20,7 @@ package com.oltpbenchmark.benchmarks.twitter;
 import java.sql.SQLException;
 import java.sql.Time;
 
-import com.oltpbenchmark.api.Procedure.UserAbortException;
+
 import com.oltpbenchmark.api.TransactionGenerator;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
