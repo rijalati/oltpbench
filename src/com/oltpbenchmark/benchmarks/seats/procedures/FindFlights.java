@@ -175,7 +175,7 @@ public class FindFlights extends Procedure {
                 
                 finalResults.add(row);
                 if (debug)
-                    LOG.debug(String.format("Flight %d / %s /  %s -> %s / %s",
+                    LOG.debug(String.format("Flight %s / %s /  %s -> %s / %s",
                                             row[0], row[2], row[4], row[9], row[03]));
             } // WHILE
             //ai_stmt.close();
