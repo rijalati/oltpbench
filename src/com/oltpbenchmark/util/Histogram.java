@@ -65,7 +65,7 @@ public class Histogram<X> implements JSONSerializable {
     /**
      * 
      */
-    protected transient Map<Object, String> debug_names; 
+    protected transient volatile Map<Object, String> debug_names; 
     
     /**
      * The Min/Max values are the smallest/greatest values we have seen based

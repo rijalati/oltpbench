@@ -109,7 +109,7 @@
               <compilerArgs combine.children="append">
                 <compilerArg>-Xlint:all</compilerArg>
                 <compilerArg>-XepPatchLocation:/home/rjl/src/git/oltpbench</compilerArg>
-                <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,ReferenceEquality,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ArrayEquals,ArrayToString,FilesLinesLeak,HashtableContains,IncompatibleArgumentType,RemoveUnusedImports,UnnecessaryStaticImport,ThrowsUncheckedException,WildcardImport,StringEquality,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,EqualsIncompatibleType,TypeParameterUnusedInFormals,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor</compilerArg>
+                <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,ReferenceEquality,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ArrayEquals,ArrayToString,FilesLinesLeak,HashtableContains,IncompatibleArgumentType,RemoveUnusedImports,UnnecessaryStaticImport,ThrowsUncheckedException,WildcardImport,StringEquality,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,EqualsIncompatibleType,TypeParameterUnusedInFormals,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg>
               </compilerArgs>
             </configuration>
           </plugin>
