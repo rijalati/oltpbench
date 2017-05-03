@@ -39,4 +39,6 @@
 	<classpathentry kind="lib" path="lib/httpmime-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-42.0.0.jar"/>
 	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="output" path="target"/>
+	<!--ORACLE_CFG3-->
 </classpath>
