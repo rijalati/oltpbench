@@ -63,7 +63,7 @@ public class Node {
     this.data = data;
   }
 
-  public Node clone() {
+  @Override public Node clone() {
     return new Node(id, type, version, time, data);
   }
   @Override
@@ -76,7 +76,7 @@ public class Node {
         && time == o.time && Arrays.equals(data, o.data);
   }
 
-  public String toString() {
+  @Override public String toString() {
     return "Node(" + "id=" + id + ",type=" + type + ",version=" + version + ","
                    + "timestamp=" + time + ",data="
                    + Arrays.toString(data) + ")";

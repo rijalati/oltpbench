@@ -59,12 +59,12 @@ public class Pair<T, U> implements Comparable<Pair<T, U>> {
                (second == null ? 0 : second.hashCode());
     }
     
-    public int hashCode() {
+    @Override public int hashCode() {
         if (hash != null) return (hash.intValue());
         return (this.computeHashCode());
     }
 
-    public String toString() {
+    @Override public String toString() {
         return String.format("<%s, %s>", first, second);
     }
     
@@ -90,7 +90,7 @@ public class Pair<T, U> implements Comparable<Pair<T, U>> {
         return ((first == null) || (second == null));
     }
 
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }

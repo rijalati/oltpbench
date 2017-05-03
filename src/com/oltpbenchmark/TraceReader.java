@@ -208,7 +208,7 @@ public class TraceReader {
     /**
      * Converts the list of procedures to a CSV string for easy validation.
      */
-    public String toString() {
+    @Override public String toString() {
         StringBuilder sb = new StringBuilder(10*tracedProcedures.size());
         sb.append("TraceReader");
         for(TraceElement t : tracedProcedures) {

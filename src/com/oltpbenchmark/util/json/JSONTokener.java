@@ -432,7 +432,7 @@ public class JSONTokener {
      *
      * @return " at character [this.index]"
      */
-    public String toString() {
+    @Override public String toString() {
         return " at character " + index;
     }
 }

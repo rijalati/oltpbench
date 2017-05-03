@@ -46,7 +46,7 @@ public class Q18 extends GenericQuery {
             + "ORDER BY amount_sum DESC, o_entry_d"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

@@ -284,7 +284,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         this.profile = new SEATSProfile(benchmark, rng); 
     }
     
-    protected void initialize() {
+    @Override protected void initialize() {
         try {
             this.profile.loadProfile(this);
         } catch (SQLException ex) {

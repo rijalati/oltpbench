@@ -53,7 +53,7 @@ public class Q2 extends GenericQuery {
             +          "i_id"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

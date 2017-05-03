@@ -43,7 +43,7 @@ public class Q13 extends GenericQuery {
             +     "c_count desc"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

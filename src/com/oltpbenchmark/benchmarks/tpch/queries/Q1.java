@@ -44,7 +44,7 @@ public class Q1 extends GenericQuery {
             +     "l_linestatus"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }
