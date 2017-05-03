@@ -93,6 +93,7 @@
   </build>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -130,11 +131,6 @@
       <groupId>javax.persistence</groupId>
       <artifactId>persistence-api</artifactId>
       <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>
@@ -231,6 +227,26 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hdrhistogram</groupId>
+      <artifactId>HdrHistogram</artifactId>
+      <version>2.1.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tinylog</groupId>
+      <artifactId>tinylog</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tinylog</groupId>
+      <artifactId>jcl-binding</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tinylog</groupId>
+      <artifactId>log4j-facade</artifactId>
+      <version>1.2</version>
     </dependency>
     <!--ORACLE_CFG2-->
   </dependencies>
