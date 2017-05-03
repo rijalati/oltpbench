@@ -119,6 +119,7 @@
   </profiles>
 
   <!--ORACLE_CFG1-->
+
   <dependencies>
     <dependency>
 	    <groupId>org.hsqldb</groupId>
