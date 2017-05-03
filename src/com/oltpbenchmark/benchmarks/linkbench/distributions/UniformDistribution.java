@@ -125,7 +125,7 @@ public class UniformDistribution implements ProbabilityDistribution {
    * @param n
    * @return
    */
-  private long randint2(Random rng, long n) {
+  private static long randint2(Random rng, long n) {
     assert(n < UINT_RANGE);
     double p = Integer.MAX_VALUE / (double)n;
     if (rng.nextDouble() < p) {

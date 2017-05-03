@@ -16,13 +16,16 @@
 
 package com.oltpbenchmark;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.List;
 import java.util.LinkedList;
-
+import java.util.List;
+import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
 /**
@@ -64,7 +67,7 @@ public class TraceReader {
      */
     public TraceReader(String filename) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = Files.newBufferedReader(Paths.get(filename), UTF_8);
             String line = br.readLine();
 
             if (line == null) {

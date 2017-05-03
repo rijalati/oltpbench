@@ -17,14 +17,16 @@
 
 package com.oltpbenchmark.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.*;
-
-import org.apache.log4j.Logger;
-
+import java.io.Writer;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+import org.apache.log4j.Logger;
 
 /**
  * @author pavlo
@@ -188,7 +190,7 @@ public abstract class FileUtil {
     }
 
     public static File writeStringToFile(File file, String content) throws IOException {
-        FileWriter writer = new FileWriter(file);
+        Writer writer = Files.newBufferedWriter(file.toPath(), UTF_8);
         writer.write(content);
         writer.flush();
         writer.close();
@@ -286,10 +288,10 @@ public abstract class FileUtil {
         if (file.getPath().endsWith(".gz")) {
             FileInputStream fin = new FileInputStream(file);
             GZIPInputStream gzis = new GZIPInputStream(fin);
-            in = new BufferedReader(new InputStreamReader(gzis));
+            in = new BufferedReader(new InputStreamReader(gzis, UTF_8));
             LOG.debug("Reading in the zipped contents of '" + file.getName() + "'");
         } else {
-            in = new BufferedReader(new FileReader(file));
+            in = Files.newBufferedReader(file.toPath(), UTF_8);
             LOG.debug("Reading in the contents of '" + file.getName() + "'");
         }
         return (in);

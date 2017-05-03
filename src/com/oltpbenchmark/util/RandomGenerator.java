@@ -17,6 +17,8 @@
 
 package com.oltpbenchmark.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -177,6 +179,6 @@ public class RandomGenerator extends Random {
         for (int i = 0; i < length; ++i) {
             bytes[i] = (byte)(baseByte + number(0, numCharacters-1));
         }
-        return new String(bytes);
+        return new String(bytes, UTF_8);
     }
 }

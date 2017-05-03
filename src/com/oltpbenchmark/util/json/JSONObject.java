@@ -368,7 +368,7 @@ public class JSONObject {
         }
     }
 
-    private boolean isStandardProperty(Class<?> clazz) {
+    private static boolean isStandardProperty(Class<?> clazz) {
         return clazz.isPrimitive()                  ||
             clazz.isAssignableFrom(Byte.class)      ||
             clazz.isAssignableFrom(Short.class)     ||

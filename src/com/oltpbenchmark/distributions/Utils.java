@@ -32,6 +32,8 @@ package com.oltpbenchmark.distributions;
  * LICENSE file.                                                                                                                                                                   
  */
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.util.Random;
 
 /**
@@ -66,7 +68,7 @@ public class Utils
             buf[i] = (byte)((buf[i] % interval) + ' ');
           }
         }
-        return new String(buf);
+        return new String(buf, UTF_8);
       }
       
       /**
