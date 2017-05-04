@@ -35,11 +35,18 @@
 
 package com.oltpbenchmark.benchmarks.jpab.objects;
 
-import java.util.*;
-import javax.persistence.*;
-
 import com.oltpbenchmark.api.LoaderUtil;
 import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+import java.util.Date;
+import java.util.Random;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**

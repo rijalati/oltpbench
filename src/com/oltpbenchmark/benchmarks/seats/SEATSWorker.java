@@ -40,13 +40,6 @@
 
 package com.oltpbenchmark.benchmarks.seats;
 
-import java.sql.Timestamp;
-import java.sql.SQLException;
-import java.util.*;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
-
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
@@ -62,6 +55,20 @@ import com.oltpbenchmark.benchmarks.seats.util.FlightId;
 import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.RandomGenerator;
 import com.oltpbenchmark.util.StringUtil;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 
 public class SEATSWorker extends Worker<SEATSBenchmark> {
     private static final Logger LOG = Logger.getLogger(SEATSWorker.class);

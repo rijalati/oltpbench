@@ -17,18 +17,17 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-import com.oltpbenchmark.api.*;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 
 public class FindFlights extends Procedure {
     private static final Logger LOG = Logger.getLogger(FindFlights.class);
