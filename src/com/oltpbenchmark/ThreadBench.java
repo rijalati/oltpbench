@@ -541,7 +541,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    private long getInterval(int lowestRate, Phase.Arrival arrival) {
+    private static long getInterval(int lowestRate, Phase.Arrival arrival) {
         // TODO Auto-generated method stub
         if (arrival == Phase.Arrival.POISSON)
             return (long) ((-Math.log(1 - Math.random()) / lowestRate) * 1000000000.);

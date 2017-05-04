@@ -156,7 +156,7 @@ public class ID2Chooser {
    * @param id2
    * @return
    */
-  private boolean contains(long[] id2s, int n, long id2) {
+  private static boolean contains(long[] id2s, int n, long id2) {
     for (int i = 0; i < n; i++) {
       if (id2s[i] == id2) {
         return true;
@@ -166,7 +166,7 @@ public class ID2Chooser {
   }
 
 
-  private long calcID2Range(double pExisting, long nlinks) {
+  private static long calcID2Range(double pExisting, long nlinks) {
     long range = (long) Math.ceil((1/pExisting) * nlinks);
     range = Math.max(1, range);// Ensure non-empty range
     return range;

@@ -82,7 +82,7 @@ public class GetLink extends Procedure{
         return results;
     }
     
-    private Link createLinkFromRow(ResultSet rs) throws SQLException {
+    private static Link createLinkFromRow(ResultSet rs) throws SQLException {
         Link l = new Link();
         l.id1 = rs.getLong(1);
         l.id2 = rs.getLong(2);
