@@ -53,7 +53,7 @@ public class Q22 extends GenericQuery {
             + "ORDER BY substring(c_state,1,1)"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

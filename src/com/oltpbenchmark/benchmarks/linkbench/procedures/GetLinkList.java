@@ -100,7 +100,7 @@ public class GetLinkList extends Procedure{
       // Retry logic in getLinkList
       return run(conn, id1, link_type, 0, Long.MAX_VALUE, 0, LinkBenchConstants.DEFAULT_LIMIT);
     }
-    private Link createLinkFromRow(ResultSet rs) throws SQLException {
+    private static Link createLinkFromRow(ResultSet rs) throws SQLException {
         Link l = new Link();
         l.id1 = rs.getLong(1);
         l.id2 = rs.getLong(2);

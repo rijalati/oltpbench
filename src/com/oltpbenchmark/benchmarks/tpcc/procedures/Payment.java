@@ -120,7 +120,7 @@ public class Payment extends TPCCProcedure {
     private PreparedStatement payInsertHist = null;
     private PreparedStatement customerByName = null;
 
-    public ResultSet run(Connection conn, Random gen,
+    @Override public ResultSet run(Connection conn, Random gen,
                          int w_id, int numWarehouses,
                          int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
 

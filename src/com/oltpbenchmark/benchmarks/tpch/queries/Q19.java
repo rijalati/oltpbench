@@ -58,7 +58,7 @@ public class Q19 extends GenericQuery {
             +     ")"
         );
 
-    protected SQLStmt get_query() {
+    @Override protected SQLStmt get_query() {
         return query_stmt;
     }
 }

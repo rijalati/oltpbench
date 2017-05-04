@@ -40,7 +40,7 @@ public class Q20 extends GenericQuery {
             + "ORDER BY su_name"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

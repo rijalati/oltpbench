@@ -40,7 +40,7 @@ public class Q11 extends GenericQuery {
             + "ORDER BY ordercount DESC"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

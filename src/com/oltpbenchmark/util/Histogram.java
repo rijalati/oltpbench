@@ -327,7 +327,7 @@ public class Histogram<X> implements JSONSerializable {
      */
     public SortedSet<X> sortedValues() {
         SortedSet<X> sorted = new TreeSet<X>(new Comparator<X>() {
-            public int compare(final X item0, final X item1) {
+            @Override public int compare(final X item0, final X item1) {
                 final Integer v0 = Histogram.this.get(item0);
                 final Integer v1 = Histogram.this.get(item1);
                 if (v0.equals(v1)) return (-1);
@@ -566,7 +566,7 @@ public class Histogram<X> implements JSONSerializable {
     /**
      * Histogram Pretty Print
      */
-    public String toString() {
+    @Override public String toString() {
         return (this.toString(MAX_CHARS, MAX_VALUE_LENGTH));
     }
     

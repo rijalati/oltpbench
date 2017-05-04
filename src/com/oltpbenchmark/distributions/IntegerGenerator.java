@@ -59,7 +59,7 @@ public abstract class IntegerGenerator extends Generator
 	/**
 	 * Generate the next string in the distribution.
 	 */
-	public String nextString()
+	@Override public String nextString()
 	{
 		return ""+nextInt();
 	}

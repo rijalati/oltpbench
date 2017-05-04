@@ -143,7 +143,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
     // LOADING METHODS
     // -----------------------------------------------------------------
     
-    public List<LoaderThread> createLoaderTheads() throws SQLException {
+    @Override public List<LoaderThread> createLoaderTheads() throws SQLException {
         return (null);
     }
     
@@ -400,7 +400,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
          */
         protected abstract int populateRow(Object[] row);
         
-        public void run() {
+        @Override public void run() {
             // First block on the CountDownLatches of all the tables that we depend on
             if (this.dependencyTables.size() > 0 && LOG.isDebugEnabled())
                 LOG.debug(String.format("%s: Table generator is blocked waiting for %d other tables: %s",

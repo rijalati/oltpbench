@@ -595,7 +595,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
         /**
          * Generate the iterator
          */
-        public Iterator<Object[]> iterator() {
+        @Override public Iterator<Object[]> iterator() {
             Iterator<Object[]> it = new Iterator<Object[]>() {
                 @Override
                 public boolean hasNext() {
@@ -1214,7 +1214,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             // running. Once this thread has generate a new tuple, it will block itself and then
             // poke the hasNext() thread. This is sort of like a hacky version of Python's yield
             new Thread() { 
-                public void run() {
+                @Override public void run() {
                     try {
                         ReservationIterable.this.generateData();
                     } catch (Throwable ex) {
