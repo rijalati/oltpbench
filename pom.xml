@@ -110,7 +110,7 @@
                 <compilerArg>-Xlint:all</compilerArg>
                 <compilerArg>-XepPatchLocation:/tmp</compilerArg>
                 <!-- <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ThrowsUncheckedException,WildcardImport,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,ArrayToString,EqualsIncompatibleType,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg> -->
-                <compilerArg>-XepPatchChecks:WildcardImport</compilerArg>
+                <compilerArg>-XepPatchChecks:WildcardImport,BoxedPrimitiveConstructor</compilerArg>
               </compilerArgs>
             </configuration>
           </plugin>
