@@ -8,12 +8,23 @@
   <artifactId>oltpbench</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
-  <repositories>
+<!--  <repositories>
     <repository>
       <id>repo</id>
+      <name>Local Repo</name>
       <url>file://${basedir}/lib/repo</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
     </repository>
-  </repositories>
+  </repositories>-->
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
