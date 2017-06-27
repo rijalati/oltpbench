@@ -38,7 +38,7 @@
 	<classpathentry kind="lib" path="lib/httpclient-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.3.1.jar"/>
     <classpathentry kind="lib" path="lib/postgresql-42.0.0.jar"/>
-    <!--IBM_CFG2-->
+    <!--IBM_CFG3-->
 	<classpathentry kind="output" path="build"/>
 	<classpathentry kind="output" path="target"/>
 	<!--ORACLE_CFG3-->
