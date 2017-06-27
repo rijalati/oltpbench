@@ -25,6 +25,28 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+        <configuration>
+          <groupId>org.ibm.db2.jcc</groupId>
+          <artifactId>db2jcc4</artifactId>
+          <version>4.23.42</version>
+          <packaging>jar</packaging>
+          <file>${basedir}/lib/repo/db2jcc4-4.23.42.jar</file>
+          <generatePom>true</generatePom>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install-jar-lib</id>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+      </plugin>
       <!-- In addition to the standard JAR file,this will create an executable 
 	         JAR with dependencies -->
       <plugin>
@@ -74,6 +96,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
 	      <artifactId>maven-assembly-plugin</artifactId>
 	      <configuration>
