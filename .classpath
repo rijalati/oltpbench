@@ -40,5 +40,6 @@
 	<classpathentry kind="lib" path="lib/postgresql-42.0.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 	<classpathentry kind="output" path="target"/>
+  <!--IBM_CFG2-->
 	<!--ORACLE_CFG3-->
 </classpath>
