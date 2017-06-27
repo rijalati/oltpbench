@@ -37,9 +37,9 @@
 	<classpathentry kind="lib" path="lib/httpcore-4.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/postgresql-42.0.0.jar"/>
+    <classpathentry kind="lib" path="lib/postgresql-42.0.0.jar"/>
+    <!--IBM_CFG2-->
 	<classpathentry kind="output" path="build"/>
 	<classpathentry kind="output" path="target"/>
-  <!--IBM_CFG2-->
 	<!--ORACLE_CFG3-->
 </classpath>

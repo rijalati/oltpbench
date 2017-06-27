@@ -11,7 +11,7 @@
   <repositories>
     <repository>
       <id>repo</id>
-      <url>file://${project.basedir}/lib</url>
+      <url>file://${basedir}/lib/repo</url>
     </repository>
   </repositories>
   <build>
@@ -126,6 +126,7 @@
   </profiles>
 
   <!--ORACLE_CFG1-->
+
 
   <dependencies>
     <dependency>
