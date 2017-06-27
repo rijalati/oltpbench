@@ -8,6 +8,12 @@
   <artifactId>oltpbench</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
+  <repositories>
+    <repository>
+      <id>repo</id>
+      <url>file://${project.basedir}/lib</url>
+    </repository>
+  </repositories>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -120,10 +126,6 @@
   </profiles>
 
   <!--ORACLE_CFG1-->
-  <repository>
-    <id>repo</id>
-    <url>file://${project.basedir}/lib</url>
-  </repository>
 
   <dependencies>
     <dependency>
