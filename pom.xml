@@ -8,7 +8,7 @@
   <artifactId>oltpbench</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
-<!--  <repositories>
+  <repositories>
     <repository>
       <id>repo</id>
       <name>Local Repo</name>
@@ -24,7 +24,7 @@
         <checksumPolicy>fail</checksumPolicy>
       </snapshots>
     </repository>
-  </repositories>-->
+  </repositories>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
