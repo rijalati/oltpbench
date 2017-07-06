@@ -58,7 +58,6 @@ EOF
 function updatepom_xml
 {
     ORACLE_CFG1="$(cat <<-EOF
-  <repositories>
     <repository>
       <id>maven.oracle.com</id>
       <name>oracle-maven-repo</name>
@@ -69,8 +68,9 @@ function updatepom_xml
         <updatePolicy>always</updatePolicy>
       </releases>
     </repository>
-  </repositories>
-
+EOF
+)"
+    ORACLE_CFG5="$(cat <<-EOF
   <pluginRepositories>
     <pluginRepository>
       <id>maven.oracle.com</id>
@@ -114,7 +114,8 @@ EOF
 EOF
 )"
     awk -v cfg="${ORACLE_CFG1}" "{ gsub(/<!--ORACLE_CFG1-->/,cfg); print}" /oltpbench/pom.xml > /tmp/mod.pom.xml
-    awk -v cfg="${ORACLE_CFG2}" "{ gsub(/<!--ORACLE_CFG2-->/,cfg); print}" /tmp/mod.pom.xml > /oltpbench/pom.xml
+    awk -v cfg="${ORACLE_CFG2}" "{ gsub(/<!--ORACLE_CFG2-->/,cfg); print}" /tmp/mod.pom.xml > /tmp/mod.mod.pom.xml
+    awk -v cfg="${ORACLE_CFG5}" "{ gsub(/<!--ORACLE_CFG5-->/,cfg); print}" /tmp/mod.mod.pom.xml > /oltpbench/pom.xml
     awk -v cfg="${ORACLE_CFG3}" "{ gsub(/<!--ORACLE_CFG3-->/,cfg); print}" /oltpbench/.classpath > /oltpbench/mod.classpath
     #awk -v cfg="${ORACLE_CFG4}" "{ gsub(/<!--ORACLE_CFG4-->/,cfg); print}" /oltpbench/config-templates/benchmarks/tpcc.xml > /tmp/mod.tpcc.xml
     mv /oltpbench/mod.classpath /oltpbench/.classpath
