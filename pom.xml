@@ -26,6 +26,7 @@
     </repository>
 	    <!--ORACLE_CFG1-->
   </repositories>
+  <!--ORACLE_CFG5-->
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -36,7 +37,7 @@
 	      </includes>
       </resource>
     </resources>
-	  <!--ORACLE_CFG5-->
+	 
     <plugins>
       <!--IBM_CFG2-->
       <!-- In addition to the standard JAR file,this will create an executable 
