@@ -1,5 +1,6 @@
 dist: trusty
 sudo: required
+group: deprecated-2017Q2
 
 # lib contains jar files to support running tests
 cache:
@@ -74,6 +75,7 @@ env:
   - TEST=noop
   - TEST=smallbank
   - TEST=twitter
+  - TEST=resourcestresser
 
 # Missing loader com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserBenchmark.makeLoaderImpl(ResourceStresserBenchmark.java:58)
 # -> org.apache.commons.lang.NotImplementedException: Code is not implemented

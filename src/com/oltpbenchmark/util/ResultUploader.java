@@ -38,7 +38,9 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
 
 public class ResultUploader {
@@ -68,7 +70,7 @@ public class ResultUploader {
     String dbUrl, dbType;
     String username, password;
     String benchType;
-    int windowSize;
+//    int windowSize;
     String uploadCode, uploadUrl;
 
     public ResultUploader(Results r, XMLConfiguration conf, CommandLine argsLine) {
@@ -81,7 +83,12 @@ public class ResultUploader {
         username = expConf.getString("username");
         password = expConf.getString("password");
         benchType = argsLine.getOptionValue("b");
-        windowSize = Integer.parseInt(argsLine.getOptionValue("s"));
+//        windowSize = 1;
+//        if (argsLine.hasOption("s")) {
+//        	windowSize = Integer.parseInt(argsLine.getOptionValue("s"));
+//        } else {
+//        	windowSize = 1;
+//        }
         uploadCode = expConf.getString("uploadCode");
         uploadUrl = expConf.getString("uploadUrl");
 
@@ -97,6 +104,10 @@ public class ResultUploader {
         String dbConf = collector.collectParameters();
         os.print(dbConf);
     }
+    
+    public void writeDBMetrics(PrintStream os) {
+    	os.print(collector.collectMetrics());
+    }
 
     public void writeBenchmarkConf(PrintStream os) throws ConfigurationException {
         XMLConfiguration outputConf = (XMLConfiguration) expConf.clone();
@@ -107,44 +118,51 @@ public class ResultUploader {
     }
 
     public void writeSummary(PrintStream os) {
+    	Map<String, Object> summaryMap = new TreeMap<String, Object>();
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         Date now = new Date();
-        os.println(now.getTime() / 1000L);
-        os.println(dbType);
-        os.println(collector.collectVersion());
-        os.println(benchType);
-        os.println(results.latencyDistribution.toString());
-        os.println(results.getRequestsPerSecond());
+        summaryMap.put("Current Timestamp (milliseconds)", now.getTime());
+        summaryMap.put("DBMS Type", dbType);
+        summaryMap.put("DBMS Version", collector.collectVersion());
+        summaryMap.put("Benchmark Type", benchType);
+        summaryMap.put("Latency Distribution", results.latencyDistribution.toMap());
+        summaryMap.put("Throughput (requests/second)", results.getRequestsPerSecond());
         for (String field: BENCHMARK_KEY_FIELD) {
-            os.println(field + "=" + expConf.getString(field));
+        	summaryMap.put(field, expConf.getString(field));
         }
+        os.println(JSONUtil.format(JSONUtil.toJSONString(summaryMap)));
     }
 
     public void uploadResult(List<TransactionType> activeTXTypes) throws ParseException {
         try {
-            File expConfFile = File.createTempFile("expConf", ".tmp");
-            File sampleFile = File.createTempFile("sample", ".tmp");
+            File expConfigFile = File.createTempFile("expconfig", ".tmp");
+            File samplesFile = File.createTempFile("samples", ".tmp");
             File summaryFile = File.createTempFile("summary", ".tmp");
-            File dbConfFile = File.createTempFile("dbConf", ".tmp");
-            File rawDataFile = File.createTempFile("raw", ".gz");
+            File paramsFile = File.createTempFile("params", ".tmp");
+            File metricsFile = File.createTempFile("metrics", ".tmp");
+            File csvDataFile = File.createTempFile("csv", ".gz");
 
-            PrintStream confOut = new PrintStream(new FileOutputStream(expConfFile));
+            PrintStream confOut = new PrintStream(new FileOutputStream(expConfigFile));
             writeBenchmarkConf(confOut);
             confOut.close();
 
-            confOut = new PrintStream(new FileOutputStream(dbConfFile));
+            confOut = new PrintStream(new FileOutputStream(paramsFile));
             writeDBParameters(confOut);
             confOut.close();
 
-            confOut = new PrintStream(new FileOutputStream(sampleFile));
-            results.writeCSV(windowSize, confOut);
+            confOut = new PrintStream(new FileOutputStream(metricsFile));
+            writeDBMetrics(confOut);
+            confOut.close();
+
+            confOut = new PrintStream(new FileOutputStream(samplesFile));
+            results.writeCSV2(confOut);
             confOut.close();
 
             confOut = new PrintStream(new FileOutputStream(summaryFile));
             writeSummary(confOut);
             confOut.close();
 
-            confOut = new PrintStream(new GZIPOutputStream(new FileOutputStream(rawDataFile)));
+            confOut = new PrintStream(new GZIPOutputStream(new FileOutputStream(csvDataFile)));
             results.writeAllCSVAbsoluteTiming(activeTXTypes, confOut);
             confOut.close();
 
@@ -153,10 +171,11 @@ public class ResultUploader {
 
             HttpEntity reqEntity = MultipartEntityBuilder.create()
                     .addTextBody("upload_code", uploadCode)
-                    .addPart("sample_data", new FileBody(sampleFile))
-                    .addPart("raw_data", new FileBody(rawDataFile))
-                    .addPart("db_conf_data", new FileBody(dbConfFile))
-                    .addPart("benchmark_conf_data", new FileBody(expConfFile))
+                    .addPart("sample_data", new FileBody(samplesFile))
+                    .addPart("raw_data", new FileBody(csvDataFile))
+                    .addPart("db_parameters_data", new FileBody(paramsFile))
+                    .addPart("db_metrics_data", new FileBody(metricsFile))
+                    .addPart("benchmark_conf_data", new FileBody(expConfigFile))
                     .addPart("summary_data", new FileBody(summaryFile))
                     .build();
 
