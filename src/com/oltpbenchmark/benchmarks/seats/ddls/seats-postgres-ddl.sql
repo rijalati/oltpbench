@@ -1,272 +1,272 @@
--- drop tables
-drop table if exists config_profile;
-drop table if exists config_histograms;
-drop table if exists country;
-drop table if exists airport;
-drop table if exists airport_distance;
-drop table if exists airline;
-drop table if exists customer;
-drop table if exists frequent_flyer;
-drop table if exists flight;
-drop table if exists reservation;
+-- Drop Tables
+DROP TABLE IF EXISTS "CONFIG_PROFILE";
+DROP TABLE IF EXISTS "CONFIG_HISTOGRAMS";
+DROP TABLE IF EXISTS "COUNTRY";
+DROP TABLE IF EXISTS "AIRPORT";
+DROP TABLE IF EXISTS "AIRPORT_DISTANCE";
+DROP TABLE IF EXISTS "AIRLINE";
+DROP TABLE IF EXISTS "CUSTOMER";
+DROP TABLE IF EXISTS "FREQUENT_FLYER";
+DROP TABLE IF EXISTS "FLIGHT";
+DROP TABLE IF EXISTS "RESERVATION";
 
 -- 
--- config_profile
+-- CONFIG_PROFILE
 --
-create table config_profile (
-    cfp_scale_factor            float not null,
-    cfp_aiport_max_customer     varchar(10001) not null,
-    cfp_flight_start            timestamp not null,
-    cfp_flight_upcoming         timestamp not null,
-    cfp_flight_past_days        int not null,
-    cfp_flight_future_days      int not null,
-    cfp_flight_offset           int,
-    cfp_reservation_offset      int,
-    cfp_num_reservations        bigint not null,
-    cfp_code_ids_xrefs          varchar(16004) not null
+CREATE TABLE "CONFIG_PROFILE" (
+    CFP_SCALE_FACTOR            FLOAT NOT NULL,
+    CFP_AIPORT_MAX_CUSTOMER     VARCHAR(10001) NOT NULL,
+    CFP_FLIGHT_START            TIMESTAMP NOT NULL,
+    CFP_FLIGHT_UPCOMING         TIMESTAMP NOT NULL,
+    CFP_FLIGHT_PAST_DAYS        INT NOT NULL,
+    CFP_FLIGHT_FUTURE_DAYS      INT NOT NULL,
+    CFP_FLIGHT_OFFSET           INT,
+    CFP_RESERVATION_OFFSET      INT,
+    CFP_NUM_RESERVATIONS        BIGINT NOT NULL,
+    CFP_CODE_IDS_XREFS          VARCHAR(16004) NOT NULL
 );
 
 --
--- config_histograms
+-- CONFIG_HISTOGRAMS
 --
-create table config_histograms (
-    cfh_name             varchar(128) not null,
-    cfh_data             varchar(10005) not null,
-    cfh_is_airport       int default 0,
-    primary key (cfh_name)
+CREATE TABLE "CONFIG_HISTOGRAMS" (
+    CFH_NAME             VARCHAR(128) NOT NULL,
+    CFH_DATA             VARCHAR(10005) NOT NULL,
+    CFH_IS_AIRPORT       INT DEFAULT 0,
+    PRIMARY KEY (CFH_NAME)
 );
 
 -- 
--- country
+-- COUNTRY
 --
-create table country (
-    co_id        bigint not null,
-    co_name      varchar(64) not null,
-    co_code_2    varchar(2) not null,
-    co_code_3    varchar(3) not null,
-    primary key (co_id)
+CREATE TABLE "COUNTRY" (
+    CO_ID        BIGINT NOT NULL,
+    CO_NAME      VARCHAR(64) NOT NULL,
+    CO_CODE_2    VARCHAR(2) NOT NULL,
+    CO_CODE_3    VARCHAR(3) NOT NULL,
+    PRIMARY KEY (CO_ID)
 );
 
 --
--- airport
+-- AIRPORT
 --
-create table airport (
-    ap_id          bigint not null,
-    ap_code        varchar(3) not null,
-    ap_name        varchar(128) not null,
-    ap_city        varchar(64) not null,
-    ap_postal_code varchar(12),
-    ap_co_id       bigint not null references country (co_id),
-    ap_longitude   float,
-    ap_latitude    float,
-    ap_gmt_offset  float,
-    ap_wac         bigint,
-    ap_iattr00     bigint,
-    ap_iattr01     bigint,
-    ap_iattr02     bigint,
-    ap_iattr03     bigint,
-    ap_iattr04     bigint,
-    ap_iattr05     bigint,
-    ap_iattr06     bigint,
-    ap_iattr07     bigint,
-    ap_iattr08     bigint,
-    ap_iattr09     bigint,
-    ap_iattr10     bigint,
-    ap_iattr11     bigint,
-    ap_iattr12     bigint,
-    ap_iattr13     bigint,
-    ap_iattr14     bigint,
-    ap_iattr15     bigint,
-    primary key (ap_id)
+CREATE TABLE "AIRPORT" (
+    AP_ID          BIGINT NOT NULL,
+    AP_CODE        VARCHAR(3) NOT NULL,
+    AP_NAME        VARCHAR(128) NOT NULL,
+    AP_CITY        VARCHAR(64) NOT NULL,
+    AP_POSTAL_CODE VARCHAR(12),
+    AP_CO_ID       BIGINT NOT NULL REFERENCES "COUNTRY" (CO_ID),
+    AP_LONGITUDE   FLOAT,
+    AP_LATITUDE    FLOAT,
+    AP_GMT_OFFSET  FLOAT,
+    AP_WAC         BIGINT,
+    AP_IATTR00     BIGINT,
+    AP_IATTR01     BIGINT,
+    AP_IATTR02     BIGINT,
+    AP_IATTR03     BIGINT,
+    AP_IATTR04     BIGINT,
+    AP_IATTR05     BIGINT,
+    AP_IATTR06     BIGINT,
+    AP_IATTR07     BIGINT,
+    AP_IATTR08     BIGINT,
+    AP_IATTR09     BIGINT,
+    AP_IATTR10     BIGINT,
+    AP_IATTR11     BIGINT,
+    AP_IATTR12     BIGINT,
+    AP_IATTR13     BIGINT,
+    AP_IATTR14     BIGINT,
+    AP_IATTR15     BIGINT,
+    PRIMARY KEY (AP_ID)
 );
 
 --
--- airport_distance
+-- AIRPORT_DISTANCE
 --
-create table airport_distance (
-    d_ap_id0       bigint not null references airport (ap_id),
-    d_ap_id1       bigint not null references airport (ap_id),
-    d_distance     float not null,
-    primary key (d_ap_id0, d_ap_id1)
+CREATE TABLE "AIRPORT_DISTANCE" (
+    D_AP_ID0       BIGINT NOT NULL REFERENCES "AIRPORT" (AP_ID),
+    D_AP_ID1       BIGINT NOT NULL REFERENCES "AIRPORT" (AP_ID),
+    D_DISTANCE     FLOAT NOT NULL,
+    PRIMARY KEY (D_AP_ID0, D_AP_ID1)
 );
 
 --
--- airline
+-- "AIRLINE"
 --
-create table airline (
-    al_id          bigint not null,
-    al_iata_code   varchar(3),
-    al_icao_code   varchar(3),
-    al_call_sign   varchar(32),
-    al_name        varchar(128) not null,
-    al_co_id       bigint not null references country (co_id),
-    al_iattr00     bigint,
-    al_iattr01     bigint,
-    al_iattr02     bigint,
-    al_iattr03     bigint,
-    al_iattr04     bigint,
-    al_iattr05     bigint,
-    al_iattr06     bigint,
-    al_iattr07     bigint,
-    al_iattr08     bigint,
-    al_iattr09     bigint,
-    al_iattr10     bigint,
-    al_iattr11     bigint,
-    al_iattr12     bigint,
-    al_iattr13     bigint,
-    al_iattr14     bigint,
-    al_iattr15     bigint,
-    primary key (al_id)
+CREATE TABLE "AIRLINE" (
+    AL_ID          BIGINT NOT NULL,
+    AL_IATA_CODE   VARCHAR(3),
+    AL_ICAO_CODE   VARCHAR(3),
+    AL_CALL_SIGN   VARCHAR(32),
+    AL_NAME        VARCHAR(128) NOT NULL,
+    AL_CO_ID       BIGINT NOT NULL REFERENCES "COUNTRY" (CO_ID),
+    AL_IATTR00     BIGINT,
+    AL_IATTR01     BIGINT,
+    AL_IATTR02     BIGINT,
+    AL_IATTR03     BIGINT,
+    AL_IATTR04     BIGINT,
+    AL_IATTR05     BIGINT,
+    AL_IATTR06     BIGINT,
+    AL_IATTR07     BIGINT,
+    AL_IATTR08     BIGINT,
+    AL_IATTR09     BIGINT,
+    AL_IATTR10     BIGINT,
+    AL_IATTR11     BIGINT,
+    AL_IATTR12     BIGINT,
+    AL_IATTR13     BIGINT,
+    AL_IATTR14     BIGINT,
+    AL_IATTR15     BIGINT,
+    PRIMARY KEY (AL_ID)
 );
 
 --
--- customer
+-- CUSTOMER
 --
-create table customer (
-    c_id           bigint not null,
-    c_id_str       varchar(64) unique not null,
-    c_base_ap_id   bigint references airport (ap_id),
-    c_balance      float not null,
-    c_sattr00      varchar(32),
-    c_sattr01      varchar(8),
-    c_sattr02      varchar(8),
-    c_sattr03      varchar(8),
-    c_sattr04      varchar(8),
-    c_sattr05      varchar(8),
-    c_sattr06      varchar(8),
-    c_sattr07      varchar(8),
-    c_sattr08      varchar(8),
-    c_sattr09      varchar(8),
-    c_sattr10      varchar(8),
-    c_sattr11      varchar(8),
-    c_sattr12      varchar(8),
-    c_sattr13      varchar(8),
-    c_sattr14      varchar(8),
-    c_sattr15      varchar(8),
-    c_sattr16      varchar(8),
-    c_sattr17      varchar(8),
-    c_sattr18      varchar(8),
-    c_sattr19      varchar(8),
-    c_iattr00      bigint,
-    c_iattr01      bigint,
-    c_iattr02      bigint,
-    c_iattr03      bigint,
-    c_iattr04      bigint,
-    c_iattr05      bigint,
-    c_iattr06      bigint,
-    c_iattr07      bigint,
-    c_iattr08      bigint,
-    c_iattr09      bigint,
-    c_iattr10      bigint,
-    c_iattr11      bigint,
-    c_iattr12      bigint,
-    c_iattr13      bigint,
-    c_iattr14      bigint,
-    c_iattr15      bigint,
-    c_iattr16      bigint,
-    c_iattr17      bigint,
-    c_iattr18      bigint,
-    c_iattr19      bigint,
-    primary key (c_id)
+CREATE TABLE "CUSTOMER" (
+    C_ID           BIGINT NOT NULL,
+    C_ID_STR       VARCHAR(64) UNIQUE NOT NULL,
+    C_BASE_AP_ID   BIGINT REFERENCES "AIRPORT" (AP_ID),
+    C_BALANCE      FLOAT NOT NULL,
+    C_SATTR00      VARCHAR(32),
+    C_SATTR01      VARCHAR(8),
+    C_SATTR02      VARCHAR(8),
+    C_SATTR03      VARCHAR(8),
+    C_SATTR04      VARCHAR(8),
+    C_SATTR05      VARCHAR(8),
+    C_SATTR06      VARCHAR(8),
+    C_SATTR07      VARCHAR(8),
+    C_SATTR08      VARCHAR(8),
+    C_SATTR09      VARCHAR(8),
+    C_SATTR10      VARCHAR(8),
+    C_SATTR11      VARCHAR(8),
+    C_SATTR12      VARCHAR(8),
+    C_SATTR13      VARCHAR(8),
+    C_SATTR14      VARCHAR(8),
+    C_SATTR15      VARCHAR(8),
+    C_SATTR16      VARCHAR(8),
+    C_SATTR17      VARCHAR(8),
+    C_SATTR18      VARCHAR(8),
+    C_SATTR19      VARCHAR(8),
+    C_IATTR00      BIGINT,
+    C_IATTR01      BIGINT,
+    C_IATTR02      BIGINT,
+    C_IATTR03      BIGINT,
+    C_IATTR04      BIGINT,
+    C_IATTR05      BIGINT,
+    C_IATTR06      BIGINT,
+    C_IATTR07      BIGINT,
+    C_IATTR08      BIGINT,
+    C_IATTR09      BIGINT,
+    C_IATTR10      BIGINT,
+    C_IATTR11      BIGINT,
+    C_IATTR12      BIGINT,
+    C_IATTR13      BIGINT,
+    C_IATTR14      BIGINT,
+    C_IATTR15      BIGINT,
+    C_IATTR16      BIGINT,
+    C_IATTR17      BIGINT,
+    C_IATTR18      BIGINT,
+    C_IATTR19      BIGINT,
+    PRIMARY KEY (C_ID)
 );
 
 --
--- frequent_flyer
+-- FREQUENT_FLYER
 --
-create table frequent_flyer (
-    ff_c_id        bigint not null references customer (c_id),
-    ff_al_id       bigint not null references airline (al_id),
-    ff_c_id_str    varchar(64) not null,
-    ff_sattr00     varchar(32),
-    ff_sattr01     varchar(32),
-    ff_sattr02     varchar(32),
-    ff_sattr03     varchar(32),
-    ff_iattr00     bigint,
-    ff_iattr01     bigint,
-    ff_iattr02     bigint,
-    ff_iattr03     bigint,
-    ff_iattr04     bigint,
-    ff_iattr05     bigint,
-    ff_iattr06     bigint,
-    ff_iattr07     bigint,
-    ff_iattr08     bigint,
-    ff_iattr09     bigint,
-    ff_iattr10     bigint,
-    ff_iattr11     bigint,
-    ff_iattr12     bigint,
-    ff_iattr13     bigint,
-    ff_iattr14     bigint,
-    ff_iattr15     bigint,
-   primary key (ff_c_id, ff_al_id)
+CREATE TABLE "FREQUENT_FLYER" (
+    FF_C_ID        BIGINT NOT NULL REFERENCES "CUSTOMER" (C_ID),
+    FF_AL_ID       BIGINT NOT NULL REFERENCES "AIRLINE" (AL_ID),
+    FF_C_ID_STR    VARCHAR(64) NOT NULL,
+    FF_SATTR00     VARCHAR(32),
+    FF_SATTR01     VARCHAR(32),
+    FF_SATTR02     VARCHAR(32),
+    FF_SATTR03     VARCHAR(32),
+    FF_IATTR00     BIGINT,
+    FF_IATTR01     BIGINT,
+    FF_IATTR02     BIGINT,
+    FF_IATTR03     BIGINT,
+    FF_IATTR04     BIGINT,
+    FF_IATTR05     BIGINT,
+    FF_IATTR06     BIGINT,
+    FF_IATTR07     BIGINT,
+    FF_IATTR08     BIGINT,
+    FF_IATTR09     BIGINT,
+    FF_IATTR10     BIGINT,
+    FF_IATTR11     BIGINT,
+    FF_IATTR12     BIGINT,
+    FF_IATTR13     BIGINT,
+    FF_IATTR14     BIGINT,
+    FF_IATTR15     BIGINT,
+   PRIMARY KEY (FF_C_ID, FF_AL_ID)
 );
-create index idx_ff_customer_id on frequent_flyer (ff_c_id_str);
+CREATE INDEX IDX_FF_CUSTOMER_ID ON "FREQUENT_FLYER" (FF_C_ID_STR);
 
 --
--- flight
+-- FLIGHT
 --
-create table flight (
-    f_id            bigint not null,
-    f_al_id         bigint not null references airline (al_id),
-    f_depart_ap_id  bigint not null references airport (ap_id),
-    f_depart_time   timestamp not null,
-    f_arrive_ap_id  bigint not null references airport (ap_id),
-    f_arrive_time   timestamp not null,
-    f_status        bigint not null,
-    f_base_price    float not null,
-    f_seats_total   bigint not null,
-    f_seats_left    bigint not null,
-    f_iattr00       bigint,
-    f_iattr01       bigint,
-    f_iattr02       bigint,
-    f_iattr03       bigint,
-    f_iattr04       bigint,
-    f_iattr05       bigint,
-    f_iattr06       bigint,
-    f_iattr07       bigint,
-    f_iattr08       bigint,
-    f_iattr09       bigint,
-    f_iattr10       bigint,
-    f_iattr11       bigint,
-    f_iattr12       bigint,
-    f_iattr13       bigint,
-    f_iattr14       bigint,
-    f_iattr15       bigint,
-    f_iattr16       bigint,
-    f_iattr17       bigint,
-    f_iattr18       bigint,
-    f_iattr19       bigint,
-    f_iattr20       bigint,
-    f_iattr21       bigint,
-    f_iattr22       bigint,
-    f_iattr23       bigint,
-    f_iattr24       bigint,
-    f_iattr25       bigint,
-    f_iattr26       bigint,
-    f_iattr27       bigint,
-    f_iattr28       bigint,
-    f_iattr29       bigint,
-    primary key (f_id)
+CREATE TABLE "FLIGHT" (
+    F_ID            BIGINT NOT NULL,
+    F_AL_ID         BIGINT NOT NULL REFERENCES "AIRLINE" (AL_ID),
+    F_DEPART_AP_ID  BIGINT NOT NULL REFERENCES "AIRPORT" (AP_ID),
+    F_DEPART_TIME   TIMESTAMP NOT NULL,
+    F_ARRIVE_AP_ID  BIGINT NOT NULL REFERENCES "AIRPORT" (AP_ID),
+    F_ARRIVE_TIME   TIMESTAMP NOT NULL,
+    F_STATUS        BIGINT NOT NULL,
+    F_BASE_PRICE    FLOAT NOT NULL,
+    F_SEATS_TOTAL   BIGINT NOT NULL,
+    F_SEATS_LEFT    BIGINT NOT NULL,
+    F_IATTR00       BIGINT,
+    F_IATTR01       BIGINT,
+    F_IATTR02       BIGINT,
+    F_IATTR03       BIGINT,
+    F_IATTR04       BIGINT,
+    F_IATTR05       BIGINT,
+    F_IATTR06       BIGINT,
+    F_IATTR07       BIGINT,
+    F_IATTR08       BIGINT,
+    F_IATTR09       BIGINT,
+    F_IATTR10       BIGINT,
+    F_IATTR11       BIGINT,
+    F_IATTR12       BIGINT,
+    F_IATTR13       BIGINT,
+    F_IATTR14       BIGINT,
+    F_IATTR15       BIGINT,
+    F_IATTR16       BIGINT,
+    F_IATTR17       BIGINT,
+    F_IATTR18       BIGINT,
+    F_IATTR19       BIGINT,
+    F_IATTR20       BIGINT,
+    F_IATTR21       BIGINT,
+    F_IATTR22       BIGINT,
+    F_IATTR23       BIGINT,
+    F_IATTR24       BIGINT,
+    F_IATTR25       BIGINT,
+    F_IATTR26       BIGINT,
+    F_IATTR27       BIGINT,
+    F_IATTR28       BIGINT,
+    F_IATTR29       BIGINT,
+    PRIMARY KEY (F_ID)
 );
-create index f_depart_time_idx on flight (f_depart_time);
+create index F_DEPART_TIME_IDX on "FLIGHT" (F_DEPART_TIME);
 
 --
--- reservation
+-- RESERVATION
 --
-create table reservation (
-    r_id            bigint not null,
-    r_c_id          bigint not null references customer (c_id),
-    r_f_id          bigint not null references flight (f_id),
-    r_seat          bigint not null,
-    r_price         float not null,
-    r_iattr00       bigint,
-    r_iattr01       bigint,
-    r_iattr02       bigint,
-    r_iattr03       bigint,
-    r_iattr04       bigint,
-    r_iattr05       bigint,
-    r_iattr06       bigint,
-    r_iattr07       bigint,
-    r_iattr08       bigint,
-    unique (r_f_id, r_seat),
-    primary key (r_id, r_c_id, r_f_id)
+CREATE TABLE "RESERVATION" (
+    R_ID            BIGINT NOT NULL,
+    R_C_ID          BIGINT NOT NULL REFERENCES "CUSTOMER" (C_ID),
+    R_F_ID          BIGINT NOT NULL REFERENCES "FLIGHT" (F_ID),
+    R_SEAT          BIGINT NOT NULL,
+    R_PRICE         FLOAT NOT NULL,
+    R_IATTR00       BIGINT,
+    R_IATTR01       BIGINT,
+    R_IATTR02       BIGINT,
+    R_IATTR03       BIGINT,
+    R_IATTR04       BIGINT,
+    R_IATTR05       BIGINT,
+    R_IATTR06       BIGINT,
+    R_IATTR07       BIGINT,
+    R_IATTR08       BIGINT,
+    UNIQUE (R_F_ID, R_SEAT),
+    PRIMARY KEY (R_ID, R_C_ID, R_F_ID)
 );
