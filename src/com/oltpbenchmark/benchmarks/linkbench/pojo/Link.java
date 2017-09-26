@@ -72,7 +72,7 @@ public class Link {
     return String.format("Link(id1=%d, id2=%d, link_type=%d," +
         "visibility=%d, version=%d," +
         "time=%d, data=%s", id1, id2, link_type,
-        visibility, version, time, data.toString());
+        visibility, version, time, Arrays.toString(data));
   }
 
   /**
@@ -112,7 +112,7 @@ public class Link {
 
   /** Arbitrary payload data */
   public byte[] data;
-  
+
   public static Link createLinkFromRow(ResultSet rs) throws SQLException {
       Link l = new Link();
       l.id1 = rs.getLong(1);

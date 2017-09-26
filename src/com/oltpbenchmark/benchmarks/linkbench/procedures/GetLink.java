@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Arrays;
 import org.apache.log4j.Logger;
 
 import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
@@ -32,7 +32,7 @@ public class GetLink extends Procedure{
     private static final Logger LOG = Logger.getLogger(GetLink.class);
 
     private PreparedStatement stmt = null;
-    
+
     public final SQLStmt getLinkStmt = new SQLStmt(
             " select id1, id2, link_type," +
             " visibility, data, time, " +
@@ -40,10 +40,10 @@ public class GetLink extends Procedure{
             " where id1 = ? and link_type = ? " +
             " and id2 in (?)"
     );
-    
+
     public Link[] run(Connection conn, long id1, long link_type, long[] id2s) throws SQLException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("getLink : " + id1 + " " + link_type + " " + id2s);
+            LOG.debug("getLink : " + id1 + " " + link_type + " " + Arrays.toString(id2s));
         }
         boolean first = true;
         String ids = "";
@@ -57,9 +57,9 @@ public class GetLink extends Procedure{
           }
         if(stmt == null)
           stmt = this.getPreparedStatement(conn, getLinkStmt);
-        stmt.setLong(1, id1);          
-        stmt.setLong(2, link_type);          
-        stmt.setString(3, ids);          
+        stmt.setLong(1, id1);
+        stmt.setLong(2, link_type);
+        stmt.setString(3, ids);
         ResultSet rs= stmt.executeQuery();
         // Get the row count to allocate result array
         assert(rs.getType() != ResultSet.TYPE_FORWARD_ONLY);
@@ -81,7 +81,7 @@ public class GetLink extends Procedure{
         rs.close();
         return results;
     }
-    
+
     private Link createLinkFromRow(ResultSet rs) throws SQLException {
         Link l = new Link();
         l.id1 = rs.getLong(1);
