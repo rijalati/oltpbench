@@ -30,11 +30,12 @@ public enum DatabaseType {
     /**
      * Parameters:
      * (1) JDBC Driver String
-     * (2) Should SQLUtil.getInserSQL escape table/col names
-     * (3) Should SQLUtil.getInserSQL include col names
+     * (2) Should SQLUtil.getInsertSQL escape table/col names
+     * (3) Should SQLUtil.getInsertSQL include col names
      */
     DB2("com.ibm.db2.jcc.DB2Driver", true, false),
     MYSQL("com.mysql.jdbc.Driver", true, false),
+    MYROCKS("com.mysql.jdbc.Driver", true, false),
     POSTGRES("org.postgresql.Driver", false, false),
     ORACLE("oracle.jdbc.driver.OracleDriver", true, false),
     SQLSERVER("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, false),
