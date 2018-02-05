@@ -275,13 +275,15 @@ public class AuctionMarkProfile {
         // CONFIG_PROFILE
         Table catalog_tbl = this.benchmark.getCatalog().getTable(AuctionMarkConstants.TABLENAME_CONFIG_PROFILE);
         assert(catalog_tbl != null);
-        PreparedStatement stmt = conn.prepareStatement(SQLUtil.getInsertSQL(catalog_tbl));
+        String sql = SQLUtil.getInsertSQL(catalog_tbl, this.benchmark.getWorkloadConfiguration().getDBType());
+        PreparedStatement stmt = conn.prepareStatement(sql);
         int param_idx = 1;
         stmt.setObject(param_idx++, this.scale_factor); // CFP_SCALE_FACTOR
         stmt.setObject(param_idx++, this.loaderStartTime); // CFP_LOADER_START
         stmt.setObject(param_idx++, this.loaderStopTime); // CFP_LOADER_STOP
         stmt.setObject(param_idx++, this.users_per_itemCount.toJSONString()); // CFP_USER_ITEM_HISTOGRAM
         int result = stmt.executeUpdate();
+        conn.commit();
         stmt.close();
         assert(result == 1);
 
