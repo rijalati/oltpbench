@@ -1,7 +1,52 @@
 --DECLARE CONTINUE HANDLER FOR NOT FOUND SET at_end = 1 end;
 --CONNECT TO TPCC USER db2user USING db2;
 
---DROP TABLE customer;
+
+--#SET TERMINATOR @
+
+CREATE OR REPLACE PROCEDURE db2perf_quiet_drop( IN statement VARCHAR(1000) )
+LANGUAGE SQL
+BEGIN
+  DECLARE SQLSTATE CHAR(5);
+  DECLARE NotThere    CONDITION FOR SQLSTATE '42704';
+  DECLARE NotThereSig CONDITION FOR SQLSTATE '42883';
+
+  DECLARE EXIT HANDLER FOR NotThere, NotThereSig
+  SET SQLSTATE = '     ';
+
+  SET statement = 'DROP ' || statement;
+  EXECUTE IMMEDIATE statement;
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE customer');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE district');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE history');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE oorder');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE order_line');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE stock');
+END @
+
+BEGIN ATOMIC
+  CALL db2perf_quiet_drop('TABLE warehouse');
+END @
+
+
 CREATE TABLE customer (
   c_w_id int NOT NULL,
   c_d_id int NOT NULL,
@@ -25,10 +70,9 @@ CREATE TABLE customer (
   c_middle char(2) NOT NULL,
   c_data varchar(500) NOT NULL,
   PRIMARY KEY (c_w_id,c_d_id,c_id)
-);
-CREATE INDEX IDX_CUSTOMER_NAME ON customer (c_w_id,c_d_id,c_last,c_first);
+)@
+CREATE INDEX IDX_CUSTOMER_NAME ON customer (c_w_id,c_d_id,c_last,c_first)@
 
---DROP TABLE district;
 CREATE TABLE district (
   d_w_id int NOT NULL,
   d_id int NOT NULL,
@@ -42,9 +86,8 @@ CREATE TABLE district (
   d_state char(2) NOT NULL,
   d_zip char(9) NOT NULL,
   PRIMARY KEY (d_w_id,d_id)
-);
+)@
 
---DROP TABLE history;
 CREATE TABLE history (
   h_c_id int NOT NULL,
   h_c_d_id int NOT NULL,
@@ -54,9 +97,8 @@ CREATE TABLE history (
   h_date timestamp NOT NULL,
   h_amount decimal(6,2) NOT NULL,
   h_data varchar(24) NOT NULL
-);
+)@
 
---DROP TABLE item;
 CREATE TABLE item (
   i_id int NOT NULL,
   i_name varchar(24) NOT NULL,
@@ -64,17 +106,15 @@ CREATE TABLE item (
   i_data varchar(50) NOT NULL,
   i_im_id int NOT NULL,
   PRIMARY KEY (i_id)
-);
+)@
 
---DROP TABLE new_order;
 CREATE TABLE new_order (
   no_w_id int NOT NULL,
   no_d_id int NOT NULL,
   no_o_id int NOT NULL,
   PRIMARY KEY (no_w_id,no_d_id,no_o_id)
-);
+)@
 
---DROP TABLE oorder;
 CREATE TABLE oorder (
   o_w_id int NOT NULL,
   o_d_id int NOT NULL,
@@ -86,9 +126,8 @@ CREATE TABLE oorder (
   o_entry_d timestamp NOT NULL,
   PRIMARY KEY (o_w_id,o_d_id,o_id),
   UNIQUE (o_w_id,o_d_id,o_c_id,o_id)
-);
+)@
 
---DROP TABLE order_line;
 CREATE TABLE order_line (
   ol_w_id int NOT NULL,
   ol_d_id int NOT NULL,
@@ -101,9 +140,8 @@ CREATE TABLE order_line (
   ol_quantity decimal(2,0) NOT NULL,
   ol_dist_info char(24) NOT NULL,
   PRIMARY KEY (ol_w_id,ol_d_id,ol_o_id,ol_number)
-);
+)@
 
---DROP TABLE stock;
 CREATE TABLE stock (
   s_w_id int NOT NULL,
   s_i_id int NOT NULL,
@@ -123,9 +161,8 @@ CREATE TABLE stock (
   s_dist_09 char(24) NOT NULL,
   s_dist_10 char(24) NOT NULL,
   PRIMARY KEY (s_w_id,s_i_id)
-);
+)@
 
---DROP TABLE warehouse;
 CREATE TABLE warehouse (
   w_id int NOT NULL,
   w_ytd decimal(12,2) NOT NULL,
@@ -137,4 +174,4 @@ CREATE TABLE warehouse (
   w_state char(2) NOT NULL,
   w_zip char(9) NOT NULL,
   PRIMARY KEY (w_id)
-);
+)@
