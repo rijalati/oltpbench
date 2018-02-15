@@ -19,6 +19,7 @@ package com.oltpbenchmark.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -220,13 +221,21 @@ public abstract class BenchmarkModule {
         // URL ddlURL = this.getClass().getResource(xmlName);
         String xmlNames[] = {
             (db_type != null ? db_type.name().toLowerCase() : "") + "-dialects.xml",
+            
+            // TODO: We need to remove this!
             this.benchmarkName + "-dialects.xml",
         };
         for(String xmlName : xmlNames) { 
             URL ddlURL = this.getClass().getResource( DIALECTS_DIR + File.separator + xmlName);
-            if (ddlURL != null) return new File(ddlURL.getPath());
-                if (LOG.isDebugEnabled())
-                    LOG.warn(String.format("Failed to find SQL Dialect XML file '%s'", xmlName));
+            if (ddlURL != null) {
+                try {
+                    return new File(ddlURL.toURI().getPath());
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                    if (LOG.isDebugEnabled())
+                        LOG.warn(String.format("Failed to find SQL Dialect XML file '%s'", xmlName));
+                }
+            }
         }
         return (null);
     }
@@ -312,7 +321,7 @@ public abstract class BenchmarkModule {
                 // same API for creating multi-threaded loaders. For now we will support
                 // both. So if createLoaderTheads() returns null, we will use the old load()
                 // method.
-                List<? extends LoaderThread> loaderThreads = loader.createLoaderTheads();
+                List<? extends LoaderThread> loaderThreads = loader.createLoaderThreads();
                 if (loaderThreads != null) {
                     int maxConcurrent = workConf.getLoaderThreads();
                     assert(maxConcurrent > 0);
