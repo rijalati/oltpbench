@@ -18,6 +18,8 @@ results
 ## -------------------------------
 ~*
 *~
-
+walkmod.xml
+infer-out/
+*.patch
 # maven output
 target

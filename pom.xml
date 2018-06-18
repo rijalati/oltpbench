@@ -60,14 +60,14 @@
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-compiler-javac-errorprone</artifactId>
-            <version>2.8</version>
+            <version>2.8.3</version>
           </dependency>
           <!-- override plexus-compiler-javac-errorprone's dependency on
                Error Prone with the latest version -->
           <dependency>
             <groupId>com.google.errorprone</groupId>
             <artifactId>error_prone_core</artifactId>
-            <version>2.1.1</version>
+            <version>2.3.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -130,10 +130,11 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
               <compilerArgs combine.children="append">
-                <compilerArg>-Xlint:all</compilerArg>
-                <compilerArg>-XepPatchLocation:/tmp</compilerArg>
+		<compilerArg>-XepPatchChecks:DeadThread,DeadException,MissingOverride,DefaultCharset,Var</compilerArg>
+		<compilerArg>-XepPatchLocation:/home/rlatimore/src/git/oltpbench</compilerArg>
                 <!-- <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ThrowsUncheckedException,WildcardImport,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,ArrayToString,EqualsIncompatibleType,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg> -->
-                <compilerArg>-XepPatchChecks:WildcardImport,BoxedPrimitiveConstructor,DeadException,MethodCanBeStatic,MissingOverride,CollectionIncompatibleType,DefaultCharset,ArrayToString,ImmutableEnumChecker,GetClassOnClass,EmptyIf,BigDecimalLiteralDouble</compilerArg>
+		<!--    <compilerArg>-XepPatchChecks:InputStreamSlowMultibyteRead,ReferenceEquality,ArraysAsListPrimitiveArray,IncompatibleArgumentType,ChainingConstructorIgnoresParameter,ComparisonOutOfRange,DeadThread,DoNotCall,EqualsReference,EqualsNaN,HashtableContains,IndexOfChar,BoxedPrimitiveConstructor,DeadException,MethodCanBeStatic,MissingOverride,CollectionIncompatibleType,DefaultCharset,ArrayToString,ImmutableEnumChecker,GetClassOnClass,EmptyIf,BigDecimalLiteralDouble,DoubleCheckedLocking,AmbiguousMethodReference,FieldCanBeFinal,ThrowsUncheckedException,ReturnMissingNullable,FieldMissingNullable,UngroupedOverloads,MixedArrayDimensions,Var,WildcardImport</compilerArg> 
+		<compilerArg>-Xlint:all</compilerArg> -->
               </compilerArgs>
             </configuration>
           </plugin>
