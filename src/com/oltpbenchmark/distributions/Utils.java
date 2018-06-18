@@ -33,7 +33,7 @@ package com.oltpbenchmark.distributions;
  */
 
 import java.util.Random;
-
+import java.nio.charset.StandardCharsets;
 /**
  * Utility functions.
  */
@@ -66,7 +66,7 @@ public class Utils
             buf[i] = (byte)((buf[i] % interval) + ' ');
           }
         }
-        return new String(buf);
+        return new String(buf, StandardCharsets.UTF_8);
       }
       
       /**

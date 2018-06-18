@@ -16,6 +16,7 @@
 
 
 package com.oltpbenchmark.benchmarks.tatp;
+import java.nio.charset.StandardCharsets;
 
 import java.util.Random;
 
@@ -55,7 +56,7 @@ public abstract class TATPUtil {
         for (int i = 0; i < length; ++i) {
             bytes[i] = (byte)(baseByte + number(0, numCharacters-1));
         }
-        return new String(bytes);
+	return new String(bytes, StandardCharsets.UTF_8);
     }
 
     // taken from tpcc.RandomGenerator

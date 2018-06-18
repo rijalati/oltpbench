@@ -31,7 +31,7 @@ package com.oltpbenchmark.distributions;
  * permissions and limitations under the License. See accompanying                                                                                                                 
  * LICENSE file.                                                                                                                                                                   
  */
-
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 /**

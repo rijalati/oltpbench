@@ -20,7 +20,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public abstract class TimeUtil {
-
     public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final static SimpleDateFormat DATE_FORMAT_14 = new SimpleDateFormat("yyyyMMddHHmmss");
 

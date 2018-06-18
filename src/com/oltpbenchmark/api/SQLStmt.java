@@ -29,8 +29,9 @@ import org.apache.log4j.Logger;
 public final class SQLStmt {
     private static final Logger LOG = Logger.getLogger(SQLStmt.class);
     
-    private static final Pattern SUBSTITUTION_PATTERN = Pattern.compile("\\?\\?"); 
     
+    //private static final Pattern SUBSTITUTION_PATTERN = Pattern.compile("\\?\\?"); 
+    private static final Pattern SUBSTITUTION_PATTERN = Pattern.compile("\\?"); 
     private String orig_sql;
     private String sql;
     

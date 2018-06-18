@@ -16,7 +16,6 @@
 
 
 package com.oltpbenchmark;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -67,6 +66,7 @@ public class DBWorkload {
      */
     public static void main(String[] args) throws Exception {
         // Initialize log4j
+	System.setProperty("file.encoding", "UTF-8");
         String log4jPath = System.getProperty("log4j.configuration");
         if (log4jPath != null) {
             org.apache.log4j.PropertyConfigurator.configure(log4jPath);

@@ -179,7 +179,6 @@ public class Table extends AbstractCatalogObject {
     @Override
     public boolean equals(Object object) {
         if ((object instanceof Table) == false) return (false);
-
         Table table2 = (Table)object;
         return (this.name.equals(table2.name) &&
                 this.columns.equals(table2.columns) &&

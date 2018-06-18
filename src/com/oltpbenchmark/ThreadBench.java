@@ -19,6 +19,7 @@ package com.oltpbenchmark;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -131,7 +132,8 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                 // Check if a TX Type filter is set, in the default case,
                 // INVALID TXType means all should be reported, if a filter is
                 // set, only this specific transaction
-                if (txType == TransactionType.INVALID || txType.getId() == sample.tranType)
+                // if (txType == TransactionType.INVALID || txType.getId() == sample.tranType)
+		if (Objects.equals(txType, TransactionType.INVALID) || txType.getId() == sample.tranType)
                     latencies.add(sample.latencyUs);
 
                 if (samples.hasNext()) {

@@ -37,7 +37,7 @@ public enum DatabaseType {
     DB2("com.ibm.db2.jcc.DB2Driver", true, false, true),
     MYSQL("com.mysql.jdbc.Driver", true, false, true),
     MYROCKS("com.mysql.jdbc.Driver", true, false, true),
-    POSTGRES("org.postgresql.Driver", false, false, true),
+    POSTGRES("org.postgresql.Driver", true, false, true),
     ORACLE("oracle.jdbc.driver.OracleDriver", true, false, true),
     SQLSERVER("com.microsoft.sqlserver.jdbc.SQLServerDriver", true, false, true),
     SQLITE("org.sqlite.JDBC", true, false, true),
@@ -88,7 +88,8 @@ public enum DatabaseType {
      * For example, the Cassandra JDBC driver (as of 2018) throws a "Not Implemented" exception
      * when the framework tries to set the isolation level.
      */
-    private boolean supportTxns;
+
+    private final boolean supportTxns;
     
     // ---------------------------------------------------------------
     // ACCESSORS

@@ -18,6 +18,9 @@ package com.oltpbenchmark;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.List;
@@ -64,7 +67,7 @@ public class TraceReader {
      */
     public TraceReader(String filename) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            BufferedReader br = Files.newBufferedReader(Paths.get(filename), StandardCharsets.UTF_8);
             String line = br.readLine();
 
             if (line == null) {
@@ -205,6 +208,7 @@ public class TraceReader {
     /**
      * Converts the list of procedures to a CSV string for easy validation.
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(10*tracedProcedures.size());
         sb.append("TraceReader");
