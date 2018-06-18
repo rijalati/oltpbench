@@ -226,7 +226,7 @@ public abstract class BenchmarkModule {
             this.benchmarkName + "-dialects.xml",
         };
         for(String xmlName : xmlNames) { 
-            URL ddlURL = this.getClass().getResource( DIALECTS_DIR + File.separator + xmlName);
+            URL ddlURL = this.getClass().getResource( DIALECTS_DIR + "/" + xmlName);
             if (ddlURL != null) {
                 try {
                     return new File(ddlURL.toURI().getPath());

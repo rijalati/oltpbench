@@ -5,7 +5,8 @@ output.res
 .classpath
 .settings
 results
-
+*.orig
+*.rej
 ## -------------------------------
 ## Kate Swap Files
 ## -------------------------------
