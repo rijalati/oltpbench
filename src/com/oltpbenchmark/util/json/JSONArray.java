@@ -40,6 +40,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import com.google.errorprone.annotations.Var;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
@@ -121,7 +122,7 @@ public class JSONArray {
      */
     public JSONArray(JSONTokener x) throws JSONException {
         this();
-        char c = x.nextClean();
+        @Var char c = x.nextClean();
         char q;
         if (c == '[') {
             q = ']';
@@ -884,7 +885,7 @@ public class JSONArray {
         if (len == 0) {
             return "[]";
         }
-        int i;
+        @Var int i;
         StringBuffer sb = new StringBuffer("[");
         if (len == 1) {
             sb.append(JSONObject.valueToString(this.myArrayList.get(0),
@@ -893,7 +894,7 @@ public class JSONArray {
             int newindent = indent + indentFactor;
             //sb.append('\n');
             
-            boolean intType = false;
+            @Var boolean intType = false;
             for (i = 0; i < len; i += 1) {
                 if (this.myArrayList.get(i).getClass() != Integer.class) {
                     if (i == 0) {
@@ -937,7 +938,7 @@ public class JSONArray {
      */
     public Writer write(Writer writer) throws JSONException {
         try {
-            boolean b = false;
+            @Var boolean b = false;
             int     len = length();
 
             writer.write('[');

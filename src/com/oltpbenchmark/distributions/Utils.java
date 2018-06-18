@@ -32,8 +32,9 @@ package com.oltpbenchmark.distributions;
  * LICENSE file.                                                                                                                                                                   
  */
 
-import java.util.Random;
+import com.google.errorprone.annotations.Var;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 /**
  * Utility functions.
  */
@@ -43,7 +44,7 @@ public class Utils
   private static final ThreadLocal<Random> rng = new ThreadLocal<Random>();
 
   public static Random random() {
-    Random ret = rng.get();
+    @Var Random ret = rng.get();
     if(ret == null) {
       ret = new Random(rand.nextLong());
       rng.set(ret);
@@ -86,10 +87,10 @@ public class Utils
        * @param val The value to hash.
        * @return The hash value
        */
-      public static int FNVhash32(int val)
+      public static int FNVhash32(@Var int val)
       {
 	 //from http://en.wikipedia.org/wiki/Fowler_Noll_Vo_hash
-	 int hashval = FNV_offset_basis_32;
+	 @Var int hashval = FNV_offset_basis_32;
 	 
 	 for (int i=0; i<4; i++)
 	 {
@@ -112,10 +113,10 @@ public class Utils
        * @param val The value to hash.
        * @return The hash value
        */
-      public static long FNVhash64(long val)
+      public static long FNVhash64(@Var long val)
       {
 	 //from http://en.wikipedia.org/wiki/Fowler_Noll_Vo_hash
-	 long hashval = FNV_offset_basis_64;
+	 @Var long hashval = FNV_offset_basis_64;
 	 
 	 for (int i=0; i<8; i++)
 	 {

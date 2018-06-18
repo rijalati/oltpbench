@@ -17,15 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
 import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class GetPageAnonymous extends Procedure {
 	
@@ -66,12 +66,12 @@ public class GetPageAnonymous extends Procedure {
 	
 	public Article run(Connection conn, boolean forSelect, String userIp,
 			                            int pageNamespace, String pageTitle) throws UserAbortException, SQLException {		
-	    int param = 1;
+	    @Var int param = 1;
 	    
-		PreparedStatement st = this.getPreparedStatement(conn, selectPage);
+		@Var PreparedStatement st = this.getPreparedStatement(conn, selectPage);
         st.setInt(param++, pageNamespace);
         st.setString(param++, pageTitle);
-        ResultSet rs = st.executeQuery();
+        @Var ResultSet rs = st.executeQuery();
         if (!rs.next()) {
             String msg = String.format("Invalid Page: Namespace:%d / Title:--%s--", pageNamespace, pageTitle);
             throw new UserAbortException(msg);
@@ -126,7 +126,7 @@ public class GetPageAnonymous extends Procedure {
             String msg = "No such text: " + textId + " for page_id:" + pageId + " page_namespace: " + pageNamespace + " page_title:" + pageTitle;
             throw new UserAbortException(msg);
         }
-        Article a = null;
+        @Var Article a = null;
         if (!forSelect)
 			a = new Article(userIp, pageId, rs.getString("old_text"), textId, revisionId);
         assert !rs.next();

@@ -17,10 +17,10 @@
 
 package com.oltpbenchmark.benchmarks.seats.util;
 
-import java.sql.Timestamp;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import com.oltpbenchmark.util.CompositeId;
+import java.sql.Timestamp;
 
 public class FlightId extends CompositeId {
     
@@ -159,7 +159,7 @@ public class FlightId extends CompositeId {
     @Override
     public int hashCode() {
         int prime = 17;
-        int result = 1;
+        @Var int result = 1;
         result = prime * result + airline_id;
         result = prime * result + depart_airport_id;
         result = prime * result + arrive_airport_id;

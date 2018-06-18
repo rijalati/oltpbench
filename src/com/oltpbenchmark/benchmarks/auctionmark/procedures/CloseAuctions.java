@@ -17,21 +17,20 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * PostAuction
@@ -100,17 +99,17 @@ public class CloseAuctions extends Procedure {
             LOG.debug(String.format("startTime=%s, endTime=%s, currentTime=%s",
                                     startTime, endTime, currentTime));
 
-        int closed_ctr = 0;
-        int waiting_ctr = 0;
-        int round = AuctionMarkConstants.CLOSE_AUCTIONS_ROUNDS;
-        int updated = -1;
-        int col = -1;
-        int param = -1;
+        @Var int closed_ctr = 0;
+        @Var int waiting_ctr = 0;
+        @Var int round = AuctionMarkConstants.CLOSE_AUCTIONS_ROUNDS;
+        @Var int updated = -1;
+        @Var int col = -1;
+        @Var int param = -1;
         
         PreparedStatement dueItemsStmt = this.getPreparedStatement(conn, getDueItems);
-        ResultSet dueItemsTable = null;
+        @Var ResultSet dueItemsTable = null;
         PreparedStatement maxBidStmt = this.getPreparedStatement(conn, getMaxBid);
-        ResultSet maxBidResults = null;
+        @Var ResultSet maxBidResults = null;
         
         final List<Object[]> output_rows = new ArrayList<Object[]>();
         while (round-- > 0) {
@@ -119,7 +118,7 @@ public class CloseAuctions extends Procedure {
             dueItemsStmt.setTimestamp(param++, endTime);
             dueItemsStmt.setInt(param++, ItemStatus.OPEN.ordinal());
             dueItemsTable = dueItemsStmt.executeQuery();
-            boolean adv = dueItemsTable.next();
+            @Var boolean adv = dueItemsTable.next();
             if (adv == false) break;
 
             output_rows.clear();
@@ -131,9 +130,9 @@ public class CloseAuctions extends Procedure {
                 double currentPrice = dueItemsTable.getDouble(col++);
                 long numBids = dueItemsTable.getLong(col++);
                 Timestamp endDate = dueItemsTable.getTimestamp(col++);
-                ItemStatus itemStatus = ItemStatus.get(dueItemsTable.getLong(col++));
-                Long bidId = null;
-                Long buyerId = null;
+                @Var ItemStatus itemStatus = ItemStatus.get(dueItemsTable.getLong(col++));
+                @Var Long bidId = null;
+                @Var Long buyerId = null;
                 
                 if (debug)
                     LOG.debug(String.format("Getting max bid for itemId=%d / sellerId=%d", itemId, sellerId));

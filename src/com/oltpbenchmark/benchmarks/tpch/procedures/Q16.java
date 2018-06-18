@@ -16,11 +16,11 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHConstants;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHUtil;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -82,7 +82,7 @@ public class Q16 extends GenericQuery {
         Set<Integer> seen = new HashSet<>(8);
 
         for (int i = 0; i < 8; i++) {
-            int num = rand.number(1, 50);
+            @Var int num = rand.number(1, 50);
 
             while (seen.contains(num)) {
                 num = rand.number(1, 50);

@@ -17,13 +17,13 @@
 
 package com.oltpbenchmark.benchmarks.tatp.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.tatp.TATPConstants;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class UpdateSubscriberData extends Procedure {
 
@@ -36,10 +36,10 @@ public class UpdateSubscriberData extends Procedure {
     );
 
     public long run(Connection conn, long s_id, byte bit_1, short data_a, byte sf_type) throws SQLException {
-    	PreparedStatement stmt = this.getPreparedStatement(conn, updateSubscriber);
+    	@Var PreparedStatement stmt = this.getPreparedStatement(conn, updateSubscriber);
     	stmt.setByte(1, bit_1);
     	stmt.setLong(2, s_id);
-    	int updated = stmt.executeUpdate();
+    	@Var int updated = stmt.executeUpdate();
     	assert(updated == 1);
     	
     	stmt = this.getPreparedStatement(conn, updateSpecialFacility);

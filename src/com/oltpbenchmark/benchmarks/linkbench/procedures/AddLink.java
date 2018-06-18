@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
+import com.oltpbenchmark.util.StringUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
-import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.util.StringUtil;
 
 public class AddLink extends Procedure{
 
@@ -95,8 +94,8 @@ public class AddLink extends Procedure{
         // based on nrows, determine whether the previous query was an insert
         // or update
         boolean row_found;
-        boolean update_data = false;
-        int update_count = 0;
+        @Var boolean update_data = false;
+        @Var int update_count = 0;
 
         switch (nrows) {
             case 1:

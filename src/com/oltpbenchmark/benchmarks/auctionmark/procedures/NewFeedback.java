@@ -17,16 +17,16 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * NewFeedback
@@ -81,7 +81,7 @@ public class NewFeedback extends Procedure {
 
         // Check to make sure they're not trying to add feedback
         // twice for the same ITEM
-        PreparedStatement stmt = this.getPreparedStatement(conn, checkUserFeedback, user_id, i_id, seller_id, from_id);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, checkUserFeedback, user_id, i_id, seller_id, from_id);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             rs.close();
@@ -96,7 +96,7 @@ public class NewFeedback extends Procedure {
                                                                rating,
                                                                currentTime,
                                                                comment);
-        int updated = stmt.executeUpdate();
+        @Var int updated = stmt.executeUpdate();
         assert(updated == 1) :
             "Failed to add feedback for Item #" + i_id;
         updated = this.getPreparedStatement(conn, updateUser, rating, currentTime, user_id).executeUpdate();

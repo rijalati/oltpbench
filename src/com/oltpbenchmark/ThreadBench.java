@@ -17,22 +17,7 @@
 
 package com.oltpbenchmark;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.LatencyRecord.Sample;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.TransactionType;
@@ -41,6 +26,20 @@ import com.oltpbenchmark.types.State;
 import com.oltpbenchmark.util.Histogram;
 import com.oltpbenchmark.util.QueueLimitException;
 import com.oltpbenchmark.util.StringUtil;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 
 public class ThreadBench implements Thread.UncaughtExceptionHandler {
     private static final Logger LOG = Logger.getLogger(ThreadBench.class);
@@ -204,7 +203,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
      */
     private int finalizeWorkers(ArrayList<Thread> workerThreads) throws InterruptedException {
         assert testState.getState() == State.DONE || testState.getState() == State.EXIT;
-        int requests = 0;
+        @Var int requests = 0;
 
         WatchDogThread watchdog = new WatchDogThread();
         watchdog.start();
@@ -288,7 +287,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                 if (testState == null)
                     return;
                 // Compute the last throughput
-                long measuredRequests = 0;
+                @Var long measuredRequests = 0;
                 synchronized (testState) {
                     for (Worker<?> w : workers) {
                         measuredRequests += w.getAndResetIntervalRequests();
@@ -328,14 +327,14 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
 
         // long measureStart = start;
 
-        long start = System.nanoTime();
+        @Var long start = System.nanoTime();
         long warmupStart = System.nanoTime();
-        long warmup = warmupStart;
-        long measureEnd = -1;
+        @Var long warmup = warmupStart;
+        @Var long measureEnd = -1;
         // used to determine the longest sleep interval
-        int lowestRate = Integer.MAX_VALUE;
+        @Var int lowestRate = Integer.MAX_VALUE;
 
-        Phase phase = null;
+        @Var Phase phase = null;
 
         for (WorkloadState workState : this.workStates) {
             workState.switchToNextPhase();
@@ -346,16 +345,16 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
             }
         }
 
-        long intervalNs = getInterval(lowestRate, phase.arrival);
+        @Var long intervalNs = getInterval(lowestRate, phase.arrival);
 
-        long nextInterval = start + intervalNs;
-        int nextToAdd = 1;
-        int rateFactor;
+        @Var long nextInterval = start + intervalNs;
+        @Var int nextToAdd = 1;
+        @Var int rateFactor;
 
-        boolean resetQueues = true;
+        @Var boolean resetQueues = true;
 
-        long delta = phase.time * 1000000000L;
-        boolean lastEntry = false;
+        @Var long delta = phase.time * 1000000000L;
+        @Var boolean lastEntry = false;
 
         // Initialize the Monitor
         if(this.intervalMonitor > 0 ) {
@@ -378,11 +377,11 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
             resetQueues = false;
 
             // Wait until the interval expires, which may be "don't wait"
-            long now = System.nanoTime();
+            @Var long now = System.nanoTime();
             if (phase != null) {
                 warmup = warmupStart + phase.warmupTime * 1000000000L;
             }
-            long diff = nextInterval - now;
+            @Var long diff = nextInterval - now;
             while (diff > 0) { // this can wake early: sleep multiple times to
                                // avoid that
                 long ms = diff / 1000000;
@@ -397,9 +396,9 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
             }
             assert diff <= 0;
 
-            boolean phaseComplete = false;
+            @Var boolean phaseComplete = false;
             if (phase != null) {
-                TraceReader tr = workConfs.get(0).getTraceReader();
+                @Var TraceReader tr = workConfs.get(0).getTraceReader();
                 if (tr != null) {
                     // If a trace script is present, the phase complete iff the
                     // trace reader has no more 
@@ -549,7 +548,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                 results.txnErrors.putHistogram(w.getTransactionErrorHistogram());
 
                 for (Entry<TransactionType, Histogram<String>> e : w.getTransactionAbortMessageHistogram().entrySet()) {
-                    Histogram<String> h = results.txnAbortMessages.get(e.getKey());
+                    @Var Histogram<String> h = results.txnAbortMessages.get(e.getKey());
                     if (h == null) {
                         h = new Histogram<String>(true);
                         results.txnAbortMessages.put(e.getKey(), h);

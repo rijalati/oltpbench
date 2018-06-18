@@ -17,18 +17,18 @@
 
 package com.oltpbenchmark;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.LatencyRecord.Sample;
+import com.oltpbenchmark.ThreadBench.TimeBucketIterable;
+import com.oltpbenchmark.api.TransactionType;
+import com.oltpbenchmark.util.Histogram;
+import com.oltpbenchmark.util.StringUtil;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.oltpbenchmark.LatencyRecord.Sample;
-import com.oltpbenchmark.ThreadBench.TimeBucketIterable;
-import com.oltpbenchmark.api.TransactionType;
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.StringUtil;
 
 public final class Results {
     public final long nanoSeconds;
@@ -91,7 +91,7 @@ public final class Results {
     
     public void writeCSV(int windowSizeSeconds, PrintStream out, TransactionType txType) {
         out.println("time(sec), throughput(req/sec), avg_lat(ms), min_lat(ms), 25th_lat(ms), median_lat(ms), 75th_lat(ms), 90th_lat(ms), 95th_lat(ms), 99th_lat(ms), max_lat(ms), tp (req/s) scaled");
-        int i = 0;
+        @Var int i = 0;
         for (DistributionStatistics s : new TimeBucketIterable(latencySamples, windowSizeSeconds, txType)) {
             final double MILLISECONDS_FACTOR = 1e3;
             out.printf("%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n", i * windowSizeSeconds, (double) s.getCount() / windowSizeSeconds, s.getAverage() / MILLISECONDS_FACTOR,
@@ -122,7 +122,7 @@ public final class Results {
 	    	"Maximum Latency (microseconds)"
     	};
     	out.println(StringUtil.join(",", header));
-        int i = 0;
+        @Var int i = 0;
         for (DistributionStatistics s : new TimeBucketIterable(latencySamples, windowSizeSeconds, txType)) {
             out.printf("%d,%d,%.3f,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
             		i * windowSizeSeconds,

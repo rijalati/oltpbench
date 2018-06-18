@@ -99,7 +99,7 @@ public class Person implements TestEntity {
 
 	// Methods:
 
-    public void load() {
+    @Override public void load() {
 		assert firstName != null && middleName != null && lastName != null &&
 			street != null && city != null && state != null &&
 			zip != null && country != null && phone != null && email != null &&
@@ -108,7 +108,7 @@ public class Person implements TestEntity {
 		//System.out.println(firstName);
     }
 
-    public void update() {
+    @Override public void update() {
         Date last=lastLoginDate;
     	lastLoginDate = new Date();
     	loginCount++;

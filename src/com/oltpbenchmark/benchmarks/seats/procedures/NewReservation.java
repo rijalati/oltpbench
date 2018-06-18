@@ -17,18 +17,17 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
+import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.api.Procedure;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
-import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
-import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 
 public class NewReservation extends Procedure {
     private static final Logger LOG = Logger.getLogger(NewReservation.class);
@@ -115,11 +114,11 @@ public class NewReservation extends Procedure {
     
     public void run(Connection conn, long r_id, long c_id, long f_id, long seatnum, double price, long attrs[]) throws SQLException {
         final boolean debug = LOG.isDebugEnabled();
-        boolean found;
+        @Var boolean found;
         
         // Flight Information
-        PreparedStatement stmt = this.getPreparedStatement(conn, GetFlight, f_id);
-        ResultSet results = stmt.executeQuery();
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, GetFlight, f_id);
+        @Var ResultSet results = stmt.executeQuery();
         found = results.next();
         if (found == false) {
             results.close();
@@ -170,7 +169,7 @@ public class NewReservation extends Procedure {
         for (int i = 0; i < attrs.length; i++) {
             stmt.setLong(6 + i, attrs[i]);
         } // FOR
-        int updated = stmt.executeUpdate();
+        @Var int updated = stmt.executeUpdate();
         if (updated != 1) {
             String msg = String.format("Failed to add reservation for flight #%d - Inserted %d records for InsertReservation", f_id, updated);
             if (debug) LOG.warn(msg);

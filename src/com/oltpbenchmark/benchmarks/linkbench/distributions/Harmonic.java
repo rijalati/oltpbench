@@ -21,6 +21,7 @@ package com.oltpbenchmark.benchmarks.linkbench.distributions;
  *
  *  @author tarmstrong
  */
+import com.google.errorprone.annotations.Var;
 import org.apache.commons.math3.util.FastMath;
 
 public class Harmonic {
@@ -34,7 +35,7 @@ public class Harmonic {
    * @return the n<sup>th</sup> generalized harmonic number.
    */
   public static double generalizedHarmonic(final long n, final double m) {
-      double value = 0;
+      @Var double value = 0;
       for (long k = n; k > 0; --k) {
           value += 1.0 / FastMath.pow(k, m);
       }

@@ -54,7 +54,7 @@ public class Q8 extends GenericQuery {
             + "ORDER BY l_year"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

@@ -48,7 +48,7 @@ public class Q21 extends GenericQuery {
             + "ORDER BY numwait DESC, su_name"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

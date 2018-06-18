@@ -104,7 +104,7 @@ public class IndexedPerson implements TestEntity {
 
 	// Methods:
 
-    public void load() {
+    @Override public void load() {
 		assert firstName != null && middleName != null && lastName != null &&
 			street != null && city != null && state != null &&
 			zip != null && country != null && phone != null && email != null &&
@@ -112,7 +112,7 @@ public class IndexedPerson implements TestEntity {
 			lastLoginDate != null && loginCount > 0;
     }
 
-    public void update() {
+    @Override public void update() {
     	lastLoginDate = new Date();
     	loginCount++;
     }

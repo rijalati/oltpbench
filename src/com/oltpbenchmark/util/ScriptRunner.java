@@ -20,14 +20,18 @@
  */
 package com.oltpbenchmark.util;
 
-import java.net.URL;
-import java.io.InputStreamReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.errorprone.annotations.Var;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.net.URL;
 import java.sql.*;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -44,8 +48,8 @@ public class ScriptRunner {
 	private boolean stopOnError;
 	private boolean autoCommit;
 
-	private PrintWriter logWriter = new PrintWriter(System.out);
-	private PrintWriter errorLogWriter = new PrintWriter(System.err);
+	private PrintWriter logWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out, UTF_8)));
+	private PrintWriter errorLogWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.err, UTF_8)));
 
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
@@ -92,7 +96,7 @@ public class ScriptRunner {
 	 *            - the source of the script
 	 */
 	public void runScript(URL resource) throws IOException, SQLException {
-		Reader reader = new InputStreamReader(resource.openStream());
+		Reader reader = new InputStreamReader(resource.openStream(), UTF_8);
 		try {
 			boolean originalAutoCommit = connection.getAutoCommit();
 			try {
@@ -127,10 +131,10 @@ public class ScriptRunner {
 	 */
 	private void runScript(Connection conn, Reader reader) throws IOException,
 			SQLException {
-		StringBuffer command = null;
+		@Var StringBuffer command = null;
 		try {
 			LineNumberReader lineReader = new LineNumberReader(reader);
-			String line = null;
+			@Var String line = null;
 			while ((line = lineReader.readLine()) != null) {
 			    if (LOG.isDebugEnabled()) LOG.debug(line);
 				if (command == null) {
@@ -156,7 +160,7 @@ public class ScriptRunner {
 
 					// println(command);
 
-					boolean hasResults = false;
+					@Var boolean hasResults = false;
 					final String sql = command.toString().trim();
 					if (stopOnError) {
                                 try {

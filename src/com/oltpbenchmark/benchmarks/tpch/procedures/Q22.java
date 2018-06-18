@@ -16,9 +16,9 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -81,7 +81,7 @@ public class Q22 extends GenericQuery {
         Set<Integer> seen = new HashSet<>(7);
         int[] codes = new int[7];
         for (int i = 0; i < 7; i++) {
-            int num = rand.number(10, 34);
+            @Var int num = rand.number(10, 34);
 
             while (seen.contains(num)) {
                 num = rand.number(10, 34);

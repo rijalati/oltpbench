@@ -84,7 +84,7 @@ public class Node implements TestEntity {
         return child2;
     }
 
-    public void load() {
+    @Override public void load() {
         if (child1 != null) {
             child1.load();
         }
@@ -93,7 +93,7 @@ public class Node implements TestEntity {
         }
     }
 
-    public void update() {
+    @Override public void update() {
         changeCount++;
         if (child1 != null) {
             child1.update();

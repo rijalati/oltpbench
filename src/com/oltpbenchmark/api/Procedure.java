@@ -16,6 +16,9 @@
 
 package com.oltpbenchmark.api;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.jdbc.AutoIncrementPreparedStatement;
+import com.oltpbenchmark.types.DatabaseType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -26,11 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.jdbc.AutoIncrementPreparedStatement;
-import com.oltpbenchmark.types.DatabaseType;
 
 public abstract class Procedure {
     private static final Logger LOG = Logger.getLogger(Procedure.class);
@@ -121,7 +120,7 @@ public abstract class Procedure {
      */
     public final PreparedStatement getPreparedStatementReturnKeys(Connection conn, SQLStmt stmt, int[] is) throws SQLException {
         assert(this.name_stmt_xref != null) : "The Procedure " + this + " has not been initialized yet!";
-        PreparedStatement pStmt = this.prepardStatements.get(stmt);
+        @Var PreparedStatement pStmt = this.prepardStatements.get(stmt);
         if (pStmt == null) {
             assert(this.stmt_name_xref.containsKey(stmt)) :
                 "Unexpected SQLStmt handle in " + this.getClass().getSimpleName() + "\n" + this.name_stmt_xref;

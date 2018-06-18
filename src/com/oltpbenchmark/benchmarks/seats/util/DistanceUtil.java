@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.seats.util;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.util.Pair;
 
 /**
@@ -35,7 +36,7 @@ public abstract class DistanceUtil {
      */
     public static double distance(double lat0, double lon0, double lat1, double lon1) {
         double theta = lon0 - lon1;
-        double dist = Math.sin(deg2rad(lat0)) * Math.sin(deg2rad(lat1)) + Math.cos(deg2rad(lat0)) * Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(theta));
+        @Var double dist = Math.sin(deg2rad(lat0)) * Math.sin(deg2rad(lat1)) + Math.cos(deg2rad(lat0)) * Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         return (dist * 60 * 1.1515);

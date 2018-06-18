@@ -17,14 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
@@ -32,6 +25,12 @@ import com.oltpbenchmark.benchmarks.auctionmark.exceptions.DuplicateItemIdExcept
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 import com.oltpbenchmark.util.SQLUtil;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import org.apache.log4j.Logger;
 
 /**
  * NewItem
@@ -152,7 +151,7 @@ public class NewItem extends Procedure {
 	 */
     public Object[] run(Connection conn, Timestamp benchmarkTimes[],
                         long item_id, long seller_id, long category_id,
-                        String name, String description, long duration, double initial_price, String attributes,
+                        String name, @Var String description, long duration, double initial_price, String attributes,
                         long gag_ids[], long gav_ids[], String images[]) throws SQLException {
         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
         final boolean debug = LOG.isDebugEnabled();
@@ -172,15 +171,15 @@ public class NewItem extends Procedure {
 
         // Get attribute names and category path and append
         // them to the item description
-        PreparedStatement stmt = null;
-        ResultSet results = null;
-        int updated = -1;
+        @Var PreparedStatement stmt = null;
+        @Var ResultSet results = null;
+        @Var int updated = -1;
         
         // ATTRIBUTES
         description += "\nATTRIBUTES: ";
         stmt = this.getPreparedStatement(conn, getGlobalAttribute);
         for (int i = 0; i < gag_ids.length; i++) {
-            int col = 1;
+            @Var int col = 1;
             stmt.setLong(col++, gav_ids[i]);
             stmt.setLong(col++, gag_ids[i]);
             results = stmt.executeQuery();
@@ -194,7 +193,7 @@ public class NewItem extends Procedure {
         // CATEGORY
         stmt = this.getPreparedStatement(conn, getCategory, category_id);
         results = stmt.executeQuery();
-        boolean adv = results.next();
+        @Var boolean adv = results.next();
         assert(adv);
         String category_name = String.format("%s[%d]", results.getString(2), results.getInt(1));
         results.close();
@@ -202,7 +201,7 @@ public class NewItem extends Procedure {
         // CATEGORY PARENT
         stmt = this.getPreparedStatement(conn, getCategoryParent, category_id);
         results = stmt.executeQuery();
-        String category_parent = null;
+        @Var String category_parent = null;
         if (results.next()) {
             category_parent = String.format("%s[%d]", results.getString(2), results.getInt(1)); 
         } else {
@@ -252,7 +251,7 @@ public class NewItem extends Procedure {
         // Insert ITEM_ATTRIBUTE tuples
         stmt = this.getPreparedStatement(conn, insertItemAttribute);
         for (int i = 0; i < gav_ids.length; i++) {
-            int param = 1;
+            @Var int param = 1;
             stmt.setLong(param++, AuctionMarkUtil.getUniqueElementId(item_id, i));
             stmt.setLong(param++, item_id);
             stmt.setLong(param++, seller_id);
@@ -265,7 +264,7 @@ public class NewItem extends Procedure {
         // Insert ITEM_IMAGE tuples
         stmt = this.getPreparedStatement(conn, insertImage); 
         for (int i = 0; i < images.length; i++) {
-            int param = 1;
+            @Var int param = 1;
             stmt.setLong(param++, AuctionMarkUtil.getUniqueElementId(item_id, i));
             stmt.setLong(param++, item_id);
             stmt.setLong(param++, seller_id);

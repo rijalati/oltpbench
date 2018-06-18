@@ -16,21 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.seats;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
 import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
 import com.oltpbenchmark.benchmarks.seats.util.FlightId;
@@ -43,6 +29,19 @@ import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
 import com.oltpbenchmark.util.RandomGenerator;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.StringUtil;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 
 public class SEATSProfile {
     private static final Logger LOG = Logger.getLogger(SEATSProfile.class);
@@ -210,15 +209,15 @@ public class SEATSProfile {
      * Save the profile information into the database
      */
     protected final void saveProfile(Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        String sql;
+        @Var PreparedStatement stmt = null;
+        @Var String sql;
 
         // CONFIG_PROFILE
-        Table catalog_tbl = this.catalog.getTable(SEATSConstants.TABLENAME_CONFIG_PROFILE);
+        @Var Table catalog_tbl = this.catalog.getTable(SEATSConstants.TABLENAME_CONFIG_PROFILE);
         assert (catalog_tbl != null);
         sql = SQLUtil.getInsertSQL(catalog_tbl, this.benchmark.getWorkloadConfiguration().getDBType());
         stmt = conn.prepareStatement(sql);
-        int param_idx = 1;
+        @Var int param_idx = 1;
         stmt.setObject(param_idx++, this.scale_factor); // CFP_SCALE_FACTOR
         stmt.setObject(param_idx++, this.airport_max_customer_id.toJSONString()); // CFP_AIPORT_MAX_CUSTOMER
         stmt.setObject(param_idx++, this.flight_start_date); // CFP_FLIGHT_START
@@ -229,7 +228,7 @@ public class SEATSProfile {
         stmt.setObject(param_idx++, this.reservation_upcoming_offset); // CFP_RESERVATION_OFFSET
         stmt.setObject(param_idx++, this.num_reservations); // CFP_NUM_RESERVATIONS
         stmt.setObject(param_idx++, JSONUtil.toJSONString(this.code_id_xref)); // CFP_CODE_ID_XREF
-        int result = stmt.executeUpdate();
+        @Var int result = stmt.executeUpdate();
         conn.commit();
         stmt.close();
         assert (result == 1);
@@ -314,7 +313,7 @@ public class SEATSProfile {
             // Otherwise we have to go fetch everything again
             LoadConfig proc = worker.getProcedure(LoadConfig.class);
             ResultSet results[] = proc.run(worker.getConnection());
-            int result_idx = 0;
+            @Var int result_idx = 0;
 
             // CONFIG_PROFILE
             this.loadConfigProfile(results[result_idx++]);
@@ -350,7 +349,7 @@ public class SEATSProfile {
     private final void loadConfigProfile(ResultSet vt) throws SQLException {
         boolean adv = vt.next();
         assert (adv);
-        int col = 1;
+        @Var int col = 1;
         this.scale_factor = vt.getDouble(col++);
         JSONUtil.fromJSONString(this.airport_max_customer_id, vt.getString(col++));
         this.flight_start_date.setTime(vt.getTimestamp(col++).getTime());
@@ -367,7 +366,7 @@ public class SEATSProfile {
 
     private final void loadConfigHistograms(ResultSet vt) throws SQLException {
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             String name = vt.getString(col++);
             Histogram<String> h = JSONUtil.fromJSONString(new Histogram<String>(), vt.getString(col++));
             boolean is_airline = (vt.getLong(col++) == 1);
@@ -392,7 +391,7 @@ public class SEATSProfile {
     private final void loadCodeXref(ResultSet vt, String codeCol, String idCol) throws SQLException {
         Map<String, Long> m = this.code_id_xref.get(idCol);
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             long id = vt.getLong(col++);
             String code = vt.getString(col++);
             m.put(code, id);
@@ -403,9 +402,9 @@ public class SEATSProfile {
     }
 
     private final void loadCachedFlights(ResultSet vt) throws SQLException {
-        int limit = 1;
+        @Var int limit = 1;
         while (vt.next() && limit++ < SEATSConstants.CACHE_LIMIT_FLIGHT_IDS) {
-            int col = 1;
+            @Var int col = 1;
             long f_id = vt.getLong(col++);
             FlightId flight_id = new FlightId(f_id);
             this.cached_flight_ids.add(flight_id);
@@ -459,7 +458,7 @@ public class SEATSProfile {
      * @return True if the FlightId was added to the cache
      */
     public boolean addFlightId(FlightId flight_id) {
-        boolean added = false;
+        @Var boolean added = false;
         synchronized (this.cached_flight_ids) {
             // If we have room, shove it right in
             // We'll throw it in the back because we know it hasn't been used
@@ -531,7 +530,7 @@ public class SEATSProfile {
 
     public long getRandomOtherAirport(long airport_id) {
         String code = this.getAirportCode(airport_id);
-        FlatHistogram<String> f = this.airport_distributions.get(code);
+        @Var FlatHistogram<String> f = this.airport_distributions.get(code);
         if (f == null) {
             synchronized (this.airport_distributions) {
                 f = this.airport_distributions.get(code);
@@ -573,7 +572,7 @@ public class SEATSProfile {
         if (LOG.isTraceEnabled()) {
             LOG.trace(String.format("Selecting a random airport with customers [numAirports=%d]", num_airports));
         }
-        CustomerId c_id = null;
+        @Var CustomerId c_id = null;
         while (c_id == null) {
             Long airport_id = (long) this.rng.number(1, num_airports);
             c_id = this.getRandomCustomerId(airport_id);

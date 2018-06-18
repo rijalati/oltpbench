@@ -17,16 +17,18 @@
 
 package com.oltpbenchmark.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import ch.ethz.ssh2.Connection;
+import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
+import com.google.errorprone.annotations.Var;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.Session;
-import ch.ethz.ssh2.StreamGobbler;
 
 public class SSHGetStats {
 	String hostname;
@@ -128,7 +130,7 @@ public class SSHGetStats {
 
 			InputStream stdout = new StreamGobbler(sess.getStdout());
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(stdout));
+					new InputStreamReader(stdout, UTF_8));
 			String line = br.readLine();
 			sess.close();
 
@@ -202,7 +204,7 @@ public class SSHGetStats {
 
 			InputStream stdout = new StreamGobbler(sess.getStdout());
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(stdout));
+					new InputStreamReader(stdout, UTF_8));
 			String line = br.readLine();
 
 			sess.close();
@@ -227,7 +229,7 @@ public class SSHGetStats {
 
 			InputStream stdout = new StreamGobbler(sess.getStdout());
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(stdout));
+					new InputStreamReader(stdout, UTF_8));
 			String line = br.readLine();
 
 			StringTokenizer st = new StringTokenizer(line);
@@ -268,8 +270,8 @@ public class SSHGetStats {
 		SSHGetStats c = new SSHGetStats("example.com", "root", "mypass");
 
 		Thread.sleep(1000);
-		double v = c.getPercentageDiskIOSinceLastCall();
-		double v2 = c.getPercentageCPUSinceLastCall();
+		@Var double v = c.getPercentageDiskIOSinceLastCall();
+		@Var double v2 = c.getPercentageCPUSinceLastCall();
 
 		System.out.println("Percentage of time spent in disk I/O:" + v
 				+ "%, CPU: " + v2 + "%");

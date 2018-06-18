@@ -31,6 +31,7 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.utils;
 
+import com.google.errorprone.annotations.Var;
 import java.util.Random;
 
 /**
@@ -47,7 +48,7 @@ public class InvertibleShuffler {
   public InvertibleShuffler(long seed, int shuffleGroups, long n) {
     this(new Random(seed), shuffleGroups, n);
   }
-  public InvertibleShuffler(Random rng, int shuffleGroups, long n) {
+  public InvertibleShuffler(Random rng, @Var int shuffleGroups, long n) {
     if (shuffleGroups > n) {
       // Can't have more shuffle groups than items
       shuffleGroups = (int)n;
@@ -85,7 +86,7 @@ public class InvertibleShuffler {
     boolean bigGroup = group < n % shuffleGroups;
 
     // Calculate the (positive) rotation
-    long rotate = params[group];
+    @Var long rotate = params[group];
     if (inverse) {
       // Reverse the rotation
       if (bigGroup) {
@@ -97,7 +98,7 @@ public class InvertibleShuffler {
     }
 
     long j = (i + shuffleGroups * rotate);
-    long result;
+    @Var long result;
     if (j < n) {
       result = j;
     } else {

@@ -32,6 +32,7 @@
  */
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.util.*;
 
 /**
@@ -135,7 +136,7 @@ public class RandomDistribution {
         }
         
         public double calculateMean(int num_samples) {
-            long total = 0l;
+            @Var long total = 0l;
             for (int i = 0; i < num_samples; i++) {
                 total += this.nextLong();
             } // FOR
@@ -172,7 +173,7 @@ public class RandomDistribution {
         
         public static long nextLong(Random rng, long n) {
             // error checking and 2^x checking removed for simplicity.
-            long bits, val;
+            @Var long bits, val;
             do {
                bits = (rng.nextLong() << 1) >>> 1;
                val = bits % n;
@@ -209,7 +210,7 @@ public class RandomDistribution {
         @Override
         protected long nextLongImpl() {
             // error checking and 2^x checking removed for simplicity.
-            long bits, val;
+            @Var long bits, val;
             do {
                 bits = (random.nextLong() << 1) >>> 1;
                 val = bits % (this.range_size - 1);
@@ -240,7 +241,7 @@ public class RandomDistribution {
             this.histogram = histogram;
             this.inner = new Flat(random, 0, (int)histogram.getSampleCount());
             
-            long total = 0;
+            @Var long total = 0;
             for (T k : this.histogram.values()) {
                 long v = this.histogram.get(k);
                 total += v;
@@ -300,7 +301,7 @@ public class RandomDistribution {
     
         @Override
         protected long nextLongImpl() {
-            int value = -1;
+            @Var int value = -1;
             while (value < 0 || value >= this.range_size) {
                 double gaussian = (this.random.nextGaussian() + 2.0) / 4.0;
                 value = (int)Math.round(gaussian * this.range_size);
@@ -360,8 +361,8 @@ public class RandomDistribution {
             k = new ArrayList<Long>();
             v = new ArrayList<Double>();
 
-            double sum = 0;
-            long last = -1;
+            @Var double sum = 0;
+            @Var long last = -1;
             for (long i = min; i < max; ++i) {
                 sum += Math.exp(-sigma * Math.log(i - min + 1));
                 if ((last == -1) || i * (1 - epsilon) > last) {
@@ -390,7 +391,7 @@ public class RandomDistribution {
         @Override
         protected long nextLongImpl() {
             double d = random.nextDouble();
-            int idx = Collections.binarySearch(v, d);
+            @Var int idx = Collections.binarySearch(v, d);
 
             if (idx > 0) {
                 ++idx;
@@ -427,7 +428,7 @@ public class RandomDistribution {
         private final long n;
     
         private static double select(long n, long k) {
-          double ret = 1.0;
+          @Var double ret = 1.0;
           for (long i = k + 1; i <= n; ++i) {
             ret *= (double) i / (i - k);
           }
@@ -457,7 +458,7 @@ public class RandomDistribution {
             this.n = max - min - 1;
             if (n > 0) {
                 v = new double[(int)n + 1];
-                double sum = 0.0;
+                @Var double sum = 0.0;
                 for (int i = 0; i <= n; ++i) {
                     sum += select(n, i) * power(p, i) * power(1 - p, n - i);
                     v[i] = sum;
@@ -480,7 +481,7 @@ public class RandomDistribution {
                 return min;
             }
             double d = random.nextDouble();
-            int idx = Arrays.binarySearch(v, d);
+            @Var int idx = Arrays.binarySearch(v, d);
             if (idx > 0) {
                 ++idx;
             } else {

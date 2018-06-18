@@ -16,12 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia;
 
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.util.Random;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
@@ -37,6 +32,10 @@ import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.RandomDistribution.Flat;
 import com.oltpbenchmark.util.RandomDistribution.Zipf;
 import com.oltpbenchmark.util.TextGenerator;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.Random;
+import org.apache.log4j.Logger;
 
 public class WikipediaWorker extends Worker<WikipediaBenchmark> {
     private static final Logger LOG = Logger.getLogger(WikipediaWorker.class);
@@ -62,7 +61,7 @@ public class WikipediaWorker extends Worker<WikipediaBenchmark> {
         Class<? extends Procedure> procClass = nextTransaction.getProcedureClass();
         boolean needUser = (procClass.equals(AddWatchList.class) || procClass.equals(RemoveWatchList.class) || procClass.equals(GetPageAuthenticated.class));
 
-        int userId;
+        @Var int userId;
 
         do {
             // Check whether this should be an anonymous update

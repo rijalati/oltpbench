@@ -17,6 +17,13 @@
 
 package com.oltpbenchmark.catalog;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.BenchmarkModule;
+import com.oltpbenchmark.types.DatabaseType;
+import com.oltpbenchmark.types.SortDirectionType;
+import com.oltpbenchmark.util.Pair;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.StringUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -33,16 +40,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
 import org.apache.commons.io.IOUtils;
-
-import com.oltpbenchmark.api.BenchmarkModule;
-import com.oltpbenchmark.types.DatabaseType;
-import com.oltpbenchmark.types.SortDirectionType;
-import com.oltpbenchmark.util.Pair;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.StringUtil;
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -192,7 +191,7 @@ public final class Catalog {
                 String col_name = pkey_rs.getString(4);
                 assert(catalog_tbl.getColumnByName(col_name) != null) :
                     String.format("Unexpected primary key column %s.%s", table_name, col_name);
-                int col_idx = pkey_rs.getShort(5);
+                @Var int col_idx = pkey_rs.getShort(5);
                 // HACK: SQLite doesn't return the KEY_SEQ, so if we get back
                 //       a zero for this value, then we'll just length of the pkey_cols map
                 if (col_idx == 0) col_idx = pkey_cols.size();
@@ -222,7 +221,7 @@ public final class Catalog {
                 } else
                     idx_direction = null;
 
-                Index catalog_idx = catalog_tbl.getIndex(idx_name);
+                @Var Index catalog_idx = catalog_tbl.getIndex(idx_name);
                 if (catalog_idx == null) {
                     catalog_idx = new Index(catalog_tbl, idx_name, idx_type, idx_unique);
                     catalog_tbl.addIndex(catalog_idx);

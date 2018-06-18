@@ -17,10 +17,10 @@
 
 package com.oltpbenchmark;
 
+import com.google.errorprone.annotations.Var;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 public class DistributionStatistics {
@@ -74,18 +74,18 @@ public class DistributionStatistics {
 		}
 		Arrays.sort(values);
 
-		double sum = 0;
+		@Var double sum = 0;
 		for (int i = 0; i < values.length; ++i) {
 			sum += values[i];
 		}
 		double average = sum / values.length;
 
-		double sumDiffsSquared = 0;
+		@Var double sumDiffsSquared = 0;
 		for (int i = 0; i < values.length; ++i) {
 			double v = values[i] - average;
 			sumDiffsSquared += v * v;
 		}
-		double standardDeviation = 0;
+		@Var double standardDeviation = 0;
 		if (values.length > 1) {
 			standardDeviation = Math
 					.sqrt(sumDiffsSquared / (values.length - 1));
@@ -96,7 +96,7 @@ public class DistributionStatistics {
 		// http://www.itl.nist.gov/div898/handbook/prc/section2/prc252.htm
 		long[] percentiles = new long[PERCENTILES.length];
 		for (int i = 0; i < percentiles.length; ++i) {
-			int index = (int) (PERCENTILES[i] * values.length);
+			@Var int index = (int) (PERCENTILES[i] * values.length);
 			if (index == values.length)
 				index = values.length - 1;
 			percentiles[i] = values[index];

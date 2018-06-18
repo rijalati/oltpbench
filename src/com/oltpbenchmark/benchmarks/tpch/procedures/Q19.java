@@ -16,9 +16,9 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -76,8 +76,8 @@ public class Q19 extends GenericQuery {
 
         // BRAND1, BRAND2, BRAND3 = 'Brand#MN' where each MN is a two character string representing two numbers
         // randomly and independently selected within [1 .. 5]
-        int M;
-        int N;
+        @Var int M;
+        @Var int N;
         M = rand.number(1, 5);
         N = rand.number(1, 5);
         String brand1 = String.format("BRAND#%d%d", M, N);

@@ -17,19 +17,18 @@
 
 package com.oltpbenchmark.benchmarks.tatp;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.*;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.*;
-import com.oltpbenchmark.util.SQLUtil;
 
 public class TATPLoader extends Loader<TATPBenchmark> {
     private static final Logger LOG = Logger.getLogger(TATPLoader.class);
@@ -107,11 +106,11 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
-        long total = 0;
-        int batch = 0;
+        @Var long total = 0;
+        @Var int batch = 0;
 
         for (long s_id = lo; s_id <= hi; s_id++) {
-            int col = 0;
+            @Var int col = 0;
             
             pstmt.setLong(++col, s_id);
             pstmt.setString(++col, TATPUtil.padWithZero((Long) s_id));
@@ -162,15 +161,15 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement pstmt = conn.prepareStatement(sql);
     	
-        int s_id = 0;
+        @Var int s_id = 0;
         int[] arr = { 1, 2, 3, 4 };
 
         int[] ai_types = TATPUtil.subArr(arr, 1, 4);
-        long total = 0;
-        int batch = 0;
+        @Var long total = 0;
+        @Var int batch = 0;
         while (s_id++ < subscriberSize) {
             for (int ai_type : ai_types) {
-            	int col = 0;
+            	@Var int col = 0;
             	pstmt.setLong(++col, s_id);
                 pstmt.setByte(++col, (byte)ai_type);
                 pstmt.setShort(++col, TATPUtil.number(0, 255).shortValue());
@@ -208,14 +207,14 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         Table catalog_cal = benchmark.getTableCatalog(TATPConstants.TABLENAME_CALL_FORWARDING);
         String spe_sql = SQLUtil.getInsertSQL(catalog_spe, this.getDatabaseType());
         PreparedStatement spe_pstmt = conn.prepareStatement(spe_sql);
-        int spe_batch = 0;
-        long spe_total = 0;
+        @Var int spe_batch = 0;
+        @Var long spe_total = 0;
         
         String cal_sql = SQLUtil.getInsertSQL(catalog_cal, this.getDatabaseType());
         PreparedStatement cal_pstmt = conn.prepareStatement(cal_sql);
-        long cal_total = 0;
+        @Var long cal_total = 0;
         
-        int s_id = 0;
+        @Var int s_id = 0;
         int[] spe_arr = { 1, 2, 3, 4 };
         int[] cal_arr = { 0, 8, 6 };
         if (LOG.isDebugEnabled()) LOG.debug("subscriberSize = " + subscriberSize);
@@ -223,7 +222,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         while (s_id++ < subscriberSize) {
             int[] sf_types = TATPUtil.subArr(spe_arr, 1, 4);
             for (int sf_type : sf_types) {
-            	int spe_col = 0;
+            	@Var int spe_col = 0;
             	spe_pstmt.setLong(++spe_col, s_id);
             	spe_pstmt.setByte(++spe_col, (byte)sf_type);
             	spe_pstmt.setByte(++spe_col, TATPUtil.isActive());
@@ -237,7 +236,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
                 // now call_forwarding
                 int[] start_times = TATPUtil.subArr(cal_arr, 0, 3);
                 for (int start_time : start_times) {
-                	int cal_col = 0;
+                	@Var int cal_col = 0;
                 	cal_pstmt.setLong(++cal_col, s_id);
                 	cal_pstmt.setByte(++cal_col, (byte)sf_type);
                 	cal_pstmt.setByte(++cal_col, (byte)start_time);
@@ -252,7 +251,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
                 if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %d (%s %d / %d)",
 													TATPConstants.TABLENAME_SPECIAL_FACILITY, spe_total,
 													TATPConstants.TABLENAME_SUBSCRIBER, s_id, subscriberSize));
-                int results[] = spe_pstmt.executeBatch();
+                @Var int results[] = spe_pstmt.executeBatch();
                 assert(results != null);
                 
                 
@@ -269,7 +268,7 @@ public class TATPLoader extends Loader<TATPBenchmark> {
         LOG.debug("spe_batch = " + spe_batch);
         if (spe_batch > 0) {
             if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %d", TATPConstants.TABLENAME_SPECIAL_FACILITY, spe_total));
-            int results[] = spe_pstmt.executeBatch();
+            @Var int results[] = spe_pstmt.executeBatch();
             assert(results != null);
             
             if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %d", TATPConstants.TABLENAME_CALL_FORWARDING, cal_total));

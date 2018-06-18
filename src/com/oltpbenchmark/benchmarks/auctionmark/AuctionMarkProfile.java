@@ -17,24 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.auctionmark.procedures.LoadConfig;
 import com.oltpbenchmark.benchmarks.auctionmark.procedures.ResetDatabase;
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
@@ -56,6 +39,22 @@ import com.oltpbenchmark.util.RandomDistribution.Zipf;
 import com.oltpbenchmark.util.RandomGenerator;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.StringUtil;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -277,7 +276,7 @@ public class AuctionMarkProfile {
         assert(catalog_tbl != null);
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.benchmark.getWorkloadConfiguration().getDBType());
         PreparedStatement stmt = conn.prepareStatement(sql);
-        int param_idx = 1;
+        @Var int param_idx = 1;
         stmt.setObject(param_idx++, this.scale_factor); // CFP_SCALE_FACTOR
         stmt.setObject(param_idx++, this.loaderStartTime); // CFP_LOADER_START
         stmt.setObject(param_idx++, this.loaderStopTime); // CFP_LOADER_STOP
@@ -366,7 +365,7 @@ public class AuctionMarkProfile {
                 if (LOG.isDebugEnabled())
                     LOG.debug("Loading AuctionMarkProfile for the first time");
                 ResultSet results[] = worker.getProcedure(LoadConfig.class).run(conn);
-                int result_idx = 0;
+                @Var int result_idx = 0;
                 
                 // CONFIG_PROFILE
                 loadConfigProfile(cachedProfile, results[result_idx++]);
@@ -420,7 +419,7 @@ public class AuctionMarkProfile {
         assert(adv) : 
             String.format("Failed to get data from %s\n%s",
                           AuctionMarkConstants.TABLENAME_CONFIG_PROFILE, vt);
-        int col = 1;
+        @Var int col = 1;
         profile.scale_factor = vt.getDouble(col++);
         profile.loaderStartTime = vt.getTimestamp(col++);
         profile.loaderStopTime = vt.getTimestamp(col++);
@@ -432,7 +431,7 @@ public class AuctionMarkProfile {
     
     private static final void loadItemCategoryCounts(AuctionMarkProfile profile, ResultSet vt) throws SQLException {
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             long i_c_id = vt.getLong(col++);
             int count = vt.getInt(col++);
             profile.items_per_category.put((int)i_c_id, count);
@@ -443,9 +442,9 @@ public class AuctionMarkProfile {
     }
     
     private static final void loadItems(AuctionMarkProfile profile, ResultSet vt) throws SQLException {
-        int ctr = 0;
+        @Var int ctr = 0;
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             ItemId i_id = new ItemId(vt.getLong(col++));
             double i_current_price = vt.getDouble(col++);
             Timestamp i_end_date = vt.getTimestamp(col++);
@@ -465,7 +464,7 @@ public class AuctionMarkProfile {
     
     private static final void loadPendingItemComments(AuctionMarkProfile profile, ResultSet vt) throws SQLException {
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             long ic_id = vt.getLong(col++);
             long ic_i_id = vt.getLong(col++);
             long ic_u_id = vt.getLong(col++);
@@ -479,7 +478,7 @@ public class AuctionMarkProfile {
     
     private static final void loadGlobalAttributeGroups(AuctionMarkProfile profile, ResultSet vt) throws SQLException {
         while (vt.next()) {
-            int col = 1;
+            @Var int col = 1;
             long gag_id = vt.getLong(col++);
             profile.gag_ids.add(new GlobalAttributeGroupId(gag_id));
         } // WHILE
@@ -581,12 +580,12 @@ public class AuctionMarkProfile {
         }
         if (this.userIdGenerator == null) this.initializeUserIdGenerator(clientId);
         
-        UserId user_id = null;
-        int tries = 1000;
+        @Var UserId user_id = null;
+        @Var int tries = 1000;
         final long num_users = this.userIdGenerator.getTotalUsers()-1;
         while (user_id == null && tries-- > 0) {
             // We first need to figure out how many items our seller needs to have
-            long itemCount = -1;
+            @Var long itemCount = -1;
             // assert(min_item_count < this.users_per_item_count.getMaxValue());
             while (itemCount < min_item_count) {
                 itemCount = this.randomItemCount.nextValue();
@@ -692,7 +691,7 @@ public class AuctionMarkProfile {
     
     
     public ItemId getNextItemId(UserId seller_id) {
-        Integer cnt = this.seller_item_cnt.get(seller_id);
+        @Var Integer cnt = this.seller_item_cnt.get(seller_id);
         if (cnt == null || cnt == 0) {
             cnt = seller_id.getItemCount();
             this.seller_item_cnt.put(seller_id, cnt);
@@ -702,7 +701,7 @@ public class AuctionMarkProfile {
     }
     
     private boolean addItem(LinkedList<ItemInfo> items, ItemInfo itemInfo) {
-        boolean added = false;
+        @Var boolean added = false;
         
         int idx = items.indexOf(itemInfo);
         if (idx != -1) {
@@ -775,7 +774,7 @@ public class AuctionMarkProfile {
         }
         
         long remaining = itemInfo.endDate.getTime() - baseTime.getTime();
-        ItemStatus new_status = (itemInfo.status != null ? itemInfo.status : ItemStatus.OPEN); 
+        @Var ItemStatus new_status = (itemInfo.status != null ? itemInfo.status : ItemStatus.OPEN); 
         // Already ended
         if (remaining <= AuctionMarkConstants.ITEM_ALREADY_ENDED) {
             if (itemInfo.numBids > 0 && itemInfo.status != ItemStatus.CLOSED) {
@@ -837,13 +836,13 @@ public class AuctionMarkProfile {
     private ItemInfo getRandomItem(LinkedList<ItemInfo> itemSet, boolean needCurrentPrice, boolean needFutureEndDate) {
         Timestamp currentTime = this.updateAndGetCurrentTime();
         int num_items = itemSet.size();
-        int idx = -1;
-        ItemInfo itemInfo = null;
+        @Var int idx = -1;
+        @Var ItemInfo itemInfo = null;
         
         if (LOG.isTraceEnabled()) 
             LOG.trace(String.format("Getting random ItemInfo [numItems=%d, currentTime=%s, needCurrentPrice=%s]",
                                     num_items, currentTime, needCurrentPrice));
-        long tries = 1000;
+        @Var long tries = 1000;
         tmp_seenItems.clear();
         while (num_items > 0 && tries-- > 0 && tmp_seenItems.size() < num_items) {
             idx = this.rng.nextInt(num_items);
@@ -949,7 +948,7 @@ public class AuctionMarkProfile {
     }
     public ItemInfo getRandomItem() {
         assert(this.getAllItemsCount() > 0);
-        int idx = -1;
+        @Var int idx = -1;
         while (idx == -1 || allItemSets[idx].isEmpty()) {
             idx = rng.nextInt(allItemSets.length);
         } // WHILE
@@ -994,7 +993,7 @@ public class AuctionMarkProfile {
         // Item Queues
         Histogram<ItemStatus> itemCounts = new Histogram<ItemStatus>(true);
         for (ItemStatus status : ItemStatus.values()) {
-            int cnt = 0;
+            @Var int cnt = 0;
             switch (status) {
                 case OPEN:
                     cnt = this.items_available.size();

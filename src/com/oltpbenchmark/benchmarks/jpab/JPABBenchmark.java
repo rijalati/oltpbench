@@ -16,21 +16,20 @@
 
 package com.oltpbenchmark.benchmarks.jpab;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.jpab.procedures.Persist;
 import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class JPABBenchmark extends BenchmarkModule {
 
@@ -47,7 +46,7 @@ public class JPABBenchmark extends BenchmarkModule {
     protected List<Worker<? extends BenchmarkModule>> makeWorkersImpl(boolean verbose) throws IOException {
         List<Worker<? extends BenchmarkModule>> workers = new ArrayList<Worker<? extends BenchmarkModule>>();
         emf = Persistence.createEntityManagerFactory(jpabConf.getPersistanceUnit());
-        Test test = null;
+        @Var Test test = null;
         try {
             test = (Test)Class.forName("com.oltpbenchmark.benchmarks.jpab.tests."+this.jpabConf.getTestName()).newInstance();
             int totalObjectCount= (int) this.workConf.getScaleFactor();

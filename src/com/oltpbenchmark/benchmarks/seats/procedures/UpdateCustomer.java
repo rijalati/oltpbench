@@ -17,17 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.api.Procedure;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
-import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 
 public class UpdateCustomer extends Procedure {
     private static final Logger LOG = Logger.getLogger(UpdateCustomer.class);
@@ -71,7 +69,7 @@ public class UpdateCustomer extends Procedure {
         "   AND FF_AL_ID = ? "
     );
     
-    public void run(Connection conn, Long c_id, String c_id_str, Long update_ff, long attr0, long attr1) throws SQLException {
+    public void run(Connection conn, @Var Long c_id, String c_id_str, Long update_ff, long attr0, long attr1) throws SQLException {
         final boolean debug = LOG.isDebugEnabled();
         
         // Use C_ID_STR to get C_ID

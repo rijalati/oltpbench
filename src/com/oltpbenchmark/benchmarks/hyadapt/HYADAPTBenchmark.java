@@ -16,16 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.hyadapt;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -33,6 +24,14 @@ import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.hyadapt.procedures.ReadRecord1;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 public class HYADAPTBenchmark extends BenchmarkModule {
     private static final Logger LOG = Logger.getLogger(HYADAPTBenchmark.class);
@@ -55,7 +54,7 @@ public class HYADAPTBenchmark extends BenchmarkModule {
             String userCount = SQLUtil.getCountSQL(this.workConf.getDBType(), t);
             Statement stmt = metaConn.createStatement();
             ResultSet res = stmt.executeQuery(userCount);
-            int init_record_count = 0;
+            @Var int init_record_count = 0;
             while (res.next()) {
                 init_record_count = res.getInt(1);
             }

@@ -45,13 +45,13 @@
 
 package com.oltpbenchmark.benchmarks.voter.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class Vote extends Procedure {
 	
@@ -83,9 +83,9 @@ public class Vote extends Procedure {
 	
     public long run(Connection conn, long voteId, long phoneNumber, int contestantNumber, long maxVotesPerPhoneNumber) throws SQLException {
 		
-        PreparedStatement ps = getPreparedStatement(conn, checkContestantStmt);
+        @Var PreparedStatement ps = getPreparedStatement(conn, checkContestantStmt);
         ps.setInt(1, contestantNumber);
-        ResultSet rs = ps.executeQuery();
+        @Var ResultSet rs = ps.executeQuery();
         try {
             if (!rs.next()) {
                 return ERR_INVALID_CONTESTANT;    

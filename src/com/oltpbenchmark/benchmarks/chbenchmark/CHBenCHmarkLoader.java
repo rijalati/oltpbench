@@ -17,25 +17,27 @@
 package com.oltpbenchmark.benchmarks.chbenchmark;
 
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Nation;
+import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Region;
+import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Supplier;
+import com.oltpbenchmark.util.RandomGenerator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Nation;
-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Region;
-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Supplier;
-import com.oltpbenchmark.util.RandomGenerator;
 
 public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	private static final Logger LOG = Logger.getLogger(CHBenCHmarkLoader.class);
@@ -117,9 +119,9 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	
 	static int loadRegions() throws SQLException {
 		
-		int k = 0;
+		@Var int k = 0;
 		int t = 0;
-		BufferedReader br = null;
+		@Var BufferedReader br = null;
 		
 		try {
 		    
@@ -134,8 +136,8 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 			Region region = new Region();
 			
 			File file = new File("src", "com/oltpbenchmark/benchmarks/chbenchmark/region_gen.tbl");
-			br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
+			br = Files.newBufferedReader(file.toPath(), UTF_8);
+			@Var String line = br.readLine();
 			while (line != null) {
 				StringTokenizer st = new StringTokenizer(line, "|");
 				if (!st.hasMoreTokens()) { LOG.error("invalid input file: " + file.getAbsolutePath()); }
@@ -205,9 +207,9 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	
 	static int loadNations() throws SQLException {
 		
-		int k = 0;
+		@Var int k = 0;
 		int t = 0;
-		BufferedReader br = null;
+		@Var BufferedReader br = null;
 		
 		try {
 
@@ -218,8 +220,8 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 			Nation nation = new Nation();
 			
 			File file = new File("src", "com/oltpbenchmark/benchmarks/chbenchmark/nation_gen.tbl");
-			br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
+			br = Files.newBufferedReader(file.toPath(), UTF_8);
+			@Var String line = br.readLine();
 			while (line != null) {
 				StringTokenizer st = new StringTokenizer(line, "|");
 				if (!st.hasMoreTokens()) { LOG.error("invalid input file: " + file.getAbsolutePath()); }
@@ -289,7 +291,7 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	
 	static int loadSuppliers() throws SQLException {
 		
-		int k = 0;
+		@Var int k = 0;
 		int t = 0;
 		
 		try {
@@ -361,7 +363,7 @@ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
 	} // end loadSuppliers()
 
 	protected long loadHelper() {
-		long totalRows = 0;
+		@Var long totalRows = 0;
 		try {
 			totalRows += loadRegions();
 			totalRows += loadNations();

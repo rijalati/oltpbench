@@ -17,16 +17,16 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
+import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
-import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 
 /**
  * UpdateItem
@@ -82,8 +82,8 @@ public class UpdateItem extends Procedure {
                        boolean delete_attribute, long add_attribute[]) throws SQLException {
         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
         
-        PreparedStatement stmt = this.getPreparedStatement(conn, updateItem, description, currentTime, item_id, seller_id);
-        int updated = stmt.executeUpdate();
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, updateItem, description, currentTime, item_id, seller_id);
+        @Var int updated = stmt.executeUpdate();
         if (updated == 0) {
             throw new UserAbortException("Unable to update closed auction");
         }
@@ -100,7 +100,7 @@ public class UpdateItem extends Procedure {
             assert(add_attribute.length == 2);
             long gag_id = add_attribute[0];
             long gav_id = add_attribute[1];
-            long ia_id = -1;
+            @Var long ia_id = -1;
             
             stmt = this.getPreparedStatement(conn, getMaxItemAttributeId, item_id, seller_id);
             ResultSet results = stmt.executeQuery();

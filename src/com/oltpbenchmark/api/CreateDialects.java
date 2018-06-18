@@ -16,17 +16,16 @@
 
 package com.oltpbenchmark.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.catalog.Catalog;
 import com.oltpbenchmark.catalog.Column;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.types.DatabaseType;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.StringUtil;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -74,7 +73,7 @@ public class CreateDialects {
         
         // INNER
         List<String> inner_rows = new ArrayList<String>();
-        StringBuilder inner;
+        @Var StringBuilder inner;
         
         // INNER -------------------------------------------------
         
@@ -120,7 +119,7 @@ public class CreateDialects {
         
         // INNER -------------------------------------------------
         
-        String prefix = SPACER;
+        @Var String prefix = SPACER;
         for (String s : inner_rows) {
             sb.append(prefix).append(s.trim());
             prefix = ",\n" + SPACER;

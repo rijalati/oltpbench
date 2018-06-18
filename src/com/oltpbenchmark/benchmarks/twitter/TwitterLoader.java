@@ -16,15 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.twitter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.benchmarks.twitter.util.NameHistogram;
 import com.oltpbenchmark.benchmarks.twitter.util.TweetHistogram;
@@ -34,6 +26,13 @@ import com.oltpbenchmark.distributions.ZipfianGenerator;
 import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
 import com.oltpbenchmark.util.SQLUtil;
 import com.oltpbenchmark.util.TextGenerator;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import org.apache.log4j.Logger;
 
 public class TwitterLoader extends Loader<TwitterBenchmark> {
     private static final Logger LOG = Logger.getLogger(TwitterLoader.class);
@@ -141,8 +140,8 @@ public class TwitterLoader extends Loader<TwitterBenchmark> {
         NameHistogram name_h = new NameHistogram();
         FlatHistogram<Integer> name_len_rng = new FlatHistogram<Integer>(this.rng(), name_h);
 
-        int total = 0;
-        int batchSize = 0;
+        @Var int total = 0;
+        @Var int batchSize = 0;
 
         for (int i = lo; i <= hi; i++) {
             // Generate a random username for this user
@@ -193,8 +192,8 @@ public class TwitterLoader extends Loader<TwitterBenchmark> {
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement tweetInsert = conn.prepareStatement(sql);
 
-        int total = 0;
-        int batchSize = 0;
+        @Var int total = 0;
+        @Var int batchSize = 0;
         ScrambledZipfianGenerator zy = new ScrambledZipfianGenerator(1, this.num_users);
 
         TweetHistogram tweet_h = new TweetHistogram();
@@ -240,8 +239,8 @@ public class TwitterLoader extends Loader<TwitterBenchmark> {
      * @throws SQLException
      */
     protected void loadFollowData(Connection conn, int lo, int hi) throws SQLException {
-        String sql;
-        Table catalog_tbl = this.benchmark.getTableCatalog(TwitterConstants.TABLENAME_FOLLOWS);
+        @Var String sql;
+        @Var Table catalog_tbl = this.benchmark.getTableCatalog(TwitterConstants.TABLENAME_FOLLOWS);
         assert (catalog_tbl != null);
         sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         final PreparedStatement followsInsert = conn.prepareStatement(sql);
@@ -251,15 +250,15 @@ public class TwitterLoader extends Loader<TwitterBenchmark> {
         sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         final PreparedStatement followersInsert = conn.prepareStatement(sql);
 
-        int total = 1;
-        int batchSize = 0;
+        @Var int total = 1;
+        @Var int batchSize = 0;
 
         ZipfianGenerator zipfFollowee = new ZipfianGenerator(1, this.num_users, 1.75);
         ZipfianGenerator zipfFollows = new ZipfianGenerator(this.num_follows, 1.75);
         List<Integer> followees = new ArrayList<Integer>();
         for (int follower = lo; follower <= hi; follower++) {
             followees.clear();
-            int time = zipfFollows.nextInt();
+            @Var int time = zipfFollows.nextInt();
             if (time == 0) {
                 time = 1; // At least this follower will follow 1 user
             }

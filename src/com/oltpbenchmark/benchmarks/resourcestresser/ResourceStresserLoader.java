@@ -1,17 +1,16 @@
 package com.oltpbenchmark.benchmarks.resourcestresser;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.TextGenerator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.TextGenerator;
 
 public class ResourceStresserLoader extends Loader<ResourceStresserBenchmark> {
 	
@@ -63,8 +62,8 @@ public class ResourceStresserLoader extends Loader<ResourceStresserBenchmark> {
 		if (LOG.isDebugEnabled()) LOG.debug("Start loading " + tableName);
 		String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement stmt = conn.prepareStatement(sql);
-        int batch = 0;
-        int i;
+        @Var int batch = 0;
+        @Var int i;
         for (i = 0; i < this.numEmployees; ++i) {
         	stmt.setInt(1, i);
         	if (tableName.equals(ResourceStresserConstants.TABLENAME_CPUTABLE)) {

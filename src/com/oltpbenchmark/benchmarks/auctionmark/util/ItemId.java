@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.util;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.util.CompositeId;
 
 /**
@@ -109,7 +110,7 @@ public class ItemId extends CompositeId {
     @Override
     public int hashCode() {
         int prime = 11;
-        int result = 1;
+        @Var int result = 1;
         result = prime * result + item_ctr;
         result = prime * result + seller_id.hashCode();
         return result;

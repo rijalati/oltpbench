@@ -16,21 +16,21 @@
 
 package com.oltpbenchmark.benchmarks.resourcestresser.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserConstants;
+import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserWorker;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserConstants;
-import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserWorker;
-
 public class CPU2 extends Procedure {
 
     public final SQLStmt cpuSelect;
     { 
-        String complexClause = "passwd";
+        @Var String complexClause = "passwd";
         for (int i = 1; i <= ResourceStresserWorker.CPU2_nestedLevel; ++i) {
             complexClause = "md5(concat(" + complexClause +",?))";
         } // FOR

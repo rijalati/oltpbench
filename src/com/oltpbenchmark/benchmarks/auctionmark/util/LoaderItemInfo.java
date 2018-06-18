@@ -17,19 +17,18 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.util;
 
-import java.lang.reflect.Field;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemInfo;
 import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
 import com.oltpbenchmark.util.CollectionUtil;
 import com.oltpbenchmark.util.Histogram;
 import com.oltpbenchmark.util.StringUtil;
+import java.lang.reflect.Field;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections15.map.ListOrderedMap;
 
 public class LoaderItemInfo extends ItemInfo {
     private final List<Bid> bids = new ArrayList<Bid>();
@@ -83,7 +82,7 @@ public class LoaderItemInfo extends ItemInfo {
         ListOrderedMap<String, Object> m = new ListOrderedMap<String, Object>();
         for (Field f : hints_class.getDeclaredFields()) {
             String key = f.getName().toUpperCase();
-            Object val = null;
+            @Var Object val = null;
             try {
                 val = f.get(this);
             } catch (IllegalAccessException ex) {
@@ -120,7 +119,7 @@ public class LoaderItemInfo extends ItemInfo {
             ListOrderedMap<String, Object> m = new ListOrderedMap<String, Object>();
             for (Field f : hints_class.getFields()) {
                 String key = f.getName().toUpperCase();
-                Object val = null;
+                @Var Object val = null;
                 try {
                     val = f.get(this);
                 } catch (IllegalAccessException ex) {

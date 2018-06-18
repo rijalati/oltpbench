@@ -1,5 +1,6 @@
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.util.regex.Pattern;
 
 /**
@@ -29,7 +30,7 @@ public abstract class StringBoxUtil {
      * @param corners
      * @return
      */
-    public static String box(String str, String horzMark, String vertMark, Integer max_len, String corners[]) {
+    public static String box(String str, String horzMark, String vertMark, @Var Integer max_len, @Var String corners[]) {
         String lines[] = LINE_SPLIT.split(str);
         if (lines.length == 0)
             return ("");

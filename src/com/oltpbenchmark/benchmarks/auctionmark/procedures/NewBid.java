@@ -17,14 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
@@ -32,6 +25,12 @@ import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import org.apache.log4j.Logger;
 
 /**
  * NewBid
@@ -142,8 +141,8 @@ public class NewBid extends Procedure {
         if (debug) LOG.debug(String.format("Attempting to place new bid on Item %d [buyer=%d, bid=%.2f]",
                                            item_id, buyer_id, newBid));
 
-        PreparedStatement stmt = null;
-        ResultSet results = null;
+        @Var PreparedStatement stmt = null;
+        @Var ResultSet results = null;
         
         // Check to make sure that we can even add a new bid to this item
         // If we fail to get back an item, then we know that the auction is closed
@@ -153,15 +152,15 @@ public class NewBid extends Procedure {
             results.close();
             throw new UserAbortException("Invalid item " + item_id);
         }
-        int col = 1;
+        @Var int col = 1;
         double i_initial_price = results.getDouble(col++);
-        double i_current_price = results.getDouble(col++);
+        @Var double i_current_price = results.getDouble(col++);
         long i_num_bids = results.getLong(col++);
         Timestamp i_end_date = results.getTimestamp(col++);
         ItemStatus i_status = ItemStatus.get(results.getLong(col++));
         results.close();
-        long newBidId = 0;
-        long newBidMaxBuyerId = buyer_id;
+        @Var long newBidId = 0;
+        @Var long newBidMaxBuyerId = buyer_id;
         
 //        if (i_end_date.compareTo(currentTime) < 0 || i_status != ItemStatus.OPEN) {
 //            if (debug)
@@ -177,7 +176,7 @@ public class NewBid extends Procedure {
             if (debug) LOG.debug("Retrieving ITEM_MAX_BID information for " + ItemId.toString(item_id));
             stmt = this.getPreparedStatement(conn, getMaxBidId, item_id, seller_id);
             results = stmt.executeQuery();
-            boolean advanceRow = results.next();
+            @Var boolean advanceRow = results.next();
             assert (advanceRow);
             newBidId = results.getLong(1) + 1;
             results.close();
@@ -194,7 +193,7 @@ public class NewBid extends Procedure {
             long currentBuyerId = results.getLong(col++);
             results.close();
             
-            boolean updateMaxBid = false;
+            @Var boolean updateMaxBid = false;
             assert((int)currentBidAmount == (int)i_current_price) :
                 String.format("%.2f == %.2f", currentBidAmount, i_current_price);
             

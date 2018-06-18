@@ -17,14 +17,13 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.util.json.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.util.json.*;
 
 /**
  * A very nice and simple generic Histogram
@@ -139,7 +138,7 @@ public class Histogram<X> implements JSONSerializable {
         if (!flag && this.keep_zero_entries) {
             synchronized (this) {
                 Iterator<X> it = this.histogram.keySet().iterator();
-                int ctr = 0;
+                @Var int ctr = 0;
                 while (it.hasNext()) {
                     X key = it.next();
                     if (this.histogram.get(key) == 0) {
@@ -166,7 +165,7 @@ public class Histogram<X> implements JSONSerializable {
      * @param value
      * @param count
      */
-    private void _put(X value, int count) {
+    private void _put(X value, @Var int count) {
         if (value == null) return;
         this.num_samples += count;
         
@@ -314,7 +313,7 @@ public class Histogram<X> implements JSONSerializable {
      */
     public SortedSet<X> sortedValues() {
         SortedSet<X> sorted = new TreeSet<X>(new Comparator<X>() {
-            public int compare(final X item0, final X item1) {
+            @Override public int compare(final X item0, final X item1) {
                 final Integer v0 = Histogram.this.get(item0);
                 final Integer v1 = Histogram.this.get(item1);
                 if (v0.equals(v1)) return (-1);
@@ -399,7 +398,7 @@ public class Histogram<X> implements JSONSerializable {
      * @param value the value to be added to the histogram
      * 
      */
-    public synchronized void set(X value, int i) {
+    public synchronized void set(X value, @Var int i) {
         Integer orig = this.get(value);
         if (orig != null && orig != i) {
             i = (orig > i ? -1*(orig - i) : i - orig);
@@ -553,7 +552,7 @@ public class Histogram<X> implements JSONSerializable {
     /**
      * Histogram Pretty Print
      */
-    public String toString() {
+    @Override public String toString() {
         return (this.toString(MAX_CHARS, MAX_VALUE_LENGTH));
     }
     
@@ -572,25 +571,25 @@ public class Histogram<X> implements JSONSerializable {
      * @param max_length
      * @return
      */
-    public synchronized String toString(Integer max_chars, Integer max_length) {
+    public synchronized String toString(Integer max_chars, @Var Integer max_length) {
         StringBuilder s = new StringBuilder();
         if (max_length == null) max_length = MAX_VALUE_LENGTH;
         
         this.calculateInternalValues();
         
         // Figure out the max size of the counts
-        int max_ctr_length = 4;
+        @Var int max_ctr_length = 4;
         for (Integer ctr : this.histogram.values()) {
             max_ctr_length = Math.max(max_ctr_length, ctr.toString().length());
         } // FOR
         
         // Don't let anything go longer than MAX_VALUE_LENGTH chars
         String f = "%-" + max_length + "s [%" + max_ctr_length + "d] ";
-        boolean first = true;
+        @Var boolean first = true;
         boolean has_labels = this.hasDebugLabels();
         for (Object value : this.histogram.keySet()) {
             if (!first) s.append("\n");
-            String str = null;
+            @Var String str = null;
             if (has_labels) str = this.debug_names.get(value);
             if (str == null) str = (value != null ? value.toString() : "null");
             int value_str_len = str.length();
@@ -627,7 +626,7 @@ public class Histogram<X> implements JSONSerializable {
     
     @Override
     public void toJSON(JSONStringer stringer) throws JSONException {
-        Class<?> value_type = null;
+        @Var Class<?> value_type = null;
         for (Members element : Histogram.Members.values()) {
             if (element == Histogram.Members.VALUE_TYPE) continue;
             try {
@@ -659,7 +658,7 @@ public class Histogram<X> implements JSONSerializable {
         if (object.has(Members.KEEP_ZERO_ENTRIES.name())) {
             this.setKeepZeroEntries(object.getBoolean(Members.KEEP_ZERO_ENTRIES.name()));
         }
-        Class<?> value_type = null;
+        @Var Class<?> value_type = null;
         if (object.has(Members.VALUE_TYPE.name())) {
             String className = object.getString(Members.VALUE_TYPE.name());
             value_type = ClassUtil.getClass(className);

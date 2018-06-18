@@ -17,6 +17,9 @@
 
 package com.oltpbenchmark.benchmarks.twitter.util;
 
+import ch.ethz.ssh2.util.Tokenizer;
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.TransactionTypes;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -25,10 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.oltpbenchmark.api.TransactionTypes;
-
-import ch.ethz.ssh2.util.Tokenizer;
 
 public class TransactionSelector {
 
@@ -53,8 +52,8 @@ public class TransactionSelector {
 
 		
 		File file = new File(filename);
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
+		@Var FileInputStream fis = null;
+		@Var BufferedInputStream bis = null;
 		fis = new FileInputStream(file);
 
 		// Here BufferedInputStream is added for fast reading.
@@ -63,8 +62,8 @@ public class TransactionSelector {
 		dis.mark(1024 * 1024 * 1024);
 
 		File file2 = new File(filename2);
-		FileInputStream fis2 = null;
-		BufferedInputStream bis2 = null;
+		@Var FileInputStream fis2 = null;
+		@Var BufferedInputStream bis2 = null;
 		fis2 = new FileInputStream(file2);
 
 		// Here BufferedInputStream is added for fast reading.

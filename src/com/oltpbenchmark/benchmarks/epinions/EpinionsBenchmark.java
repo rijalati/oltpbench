@@ -17,16 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.epinions;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -34,6 +25,14 @@ import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.epinions.procedures.GetAverageRatingByTrustedUser;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 public class EpinionsBenchmark extends BenchmarkModule {
     
@@ -58,12 +57,12 @@ public class EpinionsBenchmark extends BenchmarkModule {
             // LOADING FROM THE DATABASE IMPORTANT INFORMATION
             // LIST OF USERS
 
-            Table t = this.catalog.getTable("USERACCT");
+            @Var Table t = this.catalog.getTable("USERACCT");
             assert (t != null) : "Invalid table name '" + t + "' " + this.catalog.getTables();
 
             String userCount = SQLUtil.selectColValues(this.workConf.getDBType(), t, "u_id");
             Statement stmt = metaConn.createStatement();
-            ResultSet res = stmt.executeQuery(userCount);
+            @Var ResultSet res = stmt.executeQuery(userCount);
             ArrayList<String> user_ids = new ArrayList<String>();
             while (res.next()) {
                 user_ids.add(res.getString(1));

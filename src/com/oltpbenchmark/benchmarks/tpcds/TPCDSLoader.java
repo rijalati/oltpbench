@@ -16,11 +16,19 @@
 
 package com.oltpbenchmark.benchmarks.tpcds;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,13 +39,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
 
 public class TPCDSLoader extends Loader<TPCDSBenchmark> {
     private static final Logger LOG = Logger.getLogger(TPCDSLoader.class);
@@ -477,19 +479,19 @@ public class TPCDSLoader extends Loader<TPCDSBenchmark> {
     }
 
     private void loadData(Connection conn, String table, PreparedStatement ps, TPCDSConstants.CastTypes[] types) {
-        BufferedReader br = null;
-        int batchSize = 0;
-        String line = "";
-        String field = "";
+        @Var BufferedReader br = null;
+        @Var int batchSize = 0;
+        @Var String line = "";
+        @Var String field = "";
         try {
             String format = getFileFormat();
             File file = new File(workConf.getDataDir()
                     , table + "."
                     + format);
-            br = new BufferedReader(new FileReader(file));
+            br = Files.newBufferedReader(file.toPath(), UTF_8);
             Pattern pattern = getFormatPattern(format);
             int group = getFormatGroup(format);
-            Matcher matcher;
+            @Var Matcher matcher;
             while ((line = br.readLine()) != null) {
                 matcher = pattern.matcher(line);
                 try {
@@ -537,7 +539,7 @@ public class TPCDSLoader extends Loader<TPCDSBenchmark> {
                                 Pattern eurFmt = Pattern.compile("^\\s*(\\d{2})\\.(\\d{2})\\.(\\d{4})\\s*$");
                                 Matcher eurMatcher = eurFmt.matcher(field);
 
-                                String isoFmtDate = "";
+                                @Var String isoFmtDate = "";
                                 java.sql.Date fieldAsDate;
                                 if (isoMatcher.find()) {
                                     isoFmtDate = field;
@@ -597,7 +599,7 @@ public class TPCDSLoader extends Loader<TPCDSBenchmark> {
                 LOG.debug(table + " loaded");
             }
 
-        } catch (SQLException se) {
+        } catch (@Var SQLException se) {
             LOG.error("Failed to load data for TPC-DS: " + field + ", LINE " + line, se);
             se = se.getNextException();
             if (se != null) LOG.error(se.getClass().getSimpleName() + " Cause => " + se.getMessage());

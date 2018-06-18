@@ -16,6 +16,13 @@
 
 package com.oltpbenchmark.benchmarks.epinions;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.distributions.ScrambledZipfianGenerator;
+import com.oltpbenchmark.distributions.ZipfianGenerator;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.TextGenerator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -23,15 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.distributions.ScrambledZipfianGenerator;
-import com.oltpbenchmark.distributions.ZipfianGenerator;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.TextGenerator;
 
 public class EpinionsLoader extends Loader<EpinionsBenchmark> {
 
@@ -141,8 +140,8 @@ public class EpinionsLoader extends Loader<EpinionsBenchmark> {
         PreparedStatement userInsert = conn.prepareStatement(sql);
 
         //
-        int total = 0;
-        int batch = 0;
+        @Var int total = 0;
+        @Var int batch = 0;
         for (int i = lo; i < hi; i++) {
             String name = TextGenerator.randomStr(rng(), EpinionsConstants.NAME_LENGTH);
             userInsert.setInt(1, i);
@@ -179,8 +178,8 @@ public class EpinionsLoader extends Loader<EpinionsBenchmark> {
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement itemInsert = conn.prepareStatement(sql);
 
-        int total = 0;
-        int batch = 0;
+        @Var int total = 0;
+        @Var int batch = 0;
         for (int i = lo; i < hi; i++) {
             String title = TextGenerator.randomStr(rng(), EpinionsConstants.TITLE_LENGTH);
             itemInsert.setInt(1, i);
@@ -224,11 +223,11 @@ public class EpinionsLoader extends Loader<EpinionsBenchmark> {
         //
         ZipfianGenerator numReviews = new ZipfianGenerator(num_reviews, 1.8);
         ZipfianGenerator reviewer = new ZipfianGenerator(num_users);
-        int total = 0;
-        int batch = 0;
+        @Var int total = 0;
+        @Var int batch = 0;
         for (int i = 0; i < num_items; i++) {
             List<Integer> reviewers = new ArrayList<Integer>();
-            int review_count = numReviews.nextInt();
+            @Var int review_count = numReviews.nextInt();
             if (review_count == 0)
                 review_count = 1; // make sure at least each item has a review
             for (int rc = 0; rc < review_count;) {
@@ -282,8 +281,8 @@ public class EpinionsLoader extends Loader<EpinionsBenchmark> {
         PreparedStatement trustInsert = conn.prepareStatement(sql);
         
         //
-        int total = 0;
-        int batch = 0;
+        @Var int total = 0;
+        @Var int batch = 0;
         ZipfianGenerator numTrust = new ZipfianGenerator(num_trust, 1.95);
         ScrambledZipfianGenerator reviewed = new ScrambledZipfianGenerator(num_users);
         Random isTrusted = new Random(System.currentTimeMillis());

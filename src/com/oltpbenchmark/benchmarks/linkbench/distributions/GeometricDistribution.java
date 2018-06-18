@@ -15,13 +15,12 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.distributions;
 
-import java.util.Properties;
-import java.util.Random;
-
-import org.apache.commons.math3.util.FastMath;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
 import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
+import java.util.Properties;
+import java.util.Random;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * Geometric distribution
@@ -46,7 +45,7 @@ public class GeometricDistribution implements ProbabilityDistribution {
   public void init(long min, long max, Properties props, String keyPrefix) {
     double parsedP = ConfigUtil.getDouble(props, keyPrefix + PROB_PARAM_KEY);
 
-    double scaleVal = 1.0;;
+    @Var double scaleVal = 1.0;;
     if (props.containsKey(LinkBenchConstants.PROB_MEAN)) {
       scaleVal = (max - min) * ConfigUtil.getDouble(props,
                             keyPrefix + LinkBenchConstants.PROB_MEAN);

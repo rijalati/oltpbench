@@ -16,25 +16,24 @@
 
 package com.oltpbenchmark.benchmarks.linkbench;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Random;
-
-import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.distributions.*;
-import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
-import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.*;
-import com.oltpbenchmark.benchmarks.linkbench.generators.*;
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.*;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.*;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.*;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+import com.oltpbenchmark.benchmarks.linkbench.generators.*;
 import com.oltpbenchmark.benchmarks.linkbench.pojo.*;
 import com.oltpbenchmark.benchmarks.linkbench.procedures.*;
 import com.oltpbenchmark.benchmarks.linkbench.utils.*;
 import com.oltpbenchmark.types.*;
 import com.oltpbenchmark.util.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.Random;
+import org.apache.log4j.Logger;
 
 public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
 
@@ -111,7 +110,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
         @Override
         public int hashCode() {
             final int prime = 31;
-            int result = 1;
+            @Var int result = 1;
             result = prime * result + (int) (id1 ^ (id1 >>> 32));
             result = prime * result + (int) (link_type ^ (link_type >>> 32));
             return result;
@@ -251,7 +250,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
         Link link = new Link();
         long id1 = chooseRequestID(DistributionType.LINK_READS, link.id1);
         long link_type = id2chooser.chooseRandomLinkType(rng);
-        int nid2s = 1;
+        @Var int nid2s = 1;
         if (multigetDist != null) {
             nid2s = (int)multigetDist.choose(rng);
         }
@@ -448,7 +447,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
             nodeDataSize.init(0, LinkBenchConstants.MAX_NODE_DATA, medNodeDataSize,
                     LinkBenchConstants.NODE_DATASIZE_SIGMA);
 
-            String dataGenClass = ConfigUtil.getPropertyRequired(props,
+            @Var String dataGenClass = ConfigUtil.getPropertyRequired(props,
                     LinkBenchConstants.NODE_ADD_DATAGEN);
             nodeAddDataGen = ClassUtil.newInstance(dataGenClass,
                     DataGenerator.class);
@@ -546,7 +545,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
             default:
                 throw new RuntimeException("Unknown value for type: " + type);
         }
-        long newid1 = dist.nextID(rng, previousId1);
+        @Var long newid1 = dist.nextID(rng, previousId1);
         // Distribution responsible for generating number in range
         assert((newid1 >= startid1) && (newid1 < maxid1));
         if (LOG.isDebugEnabled()) {
@@ -676,7 +675,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
      * @param pos index of entry in listTailHistory
      * @param repl replace with this if not null
      */
-    private void removeTailCacheEntry(int pos, Link repl) {
+    private void removeTailCacheEntry(int pos, @Var Link repl) {
         Link entry = listTailHistory.get(pos);
         if (pos == listTailHistory.size() - 1) {
             // removing from last position, don't need to fill gap

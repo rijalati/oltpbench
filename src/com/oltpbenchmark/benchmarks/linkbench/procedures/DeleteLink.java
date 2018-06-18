@@ -16,17 +16,16 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
 
 public class DeleteLink extends Procedure{
     
@@ -99,8 +98,8 @@ public class DeleteLink extends Procedure{
 
           ResultSet result = stmt1.executeQuery();
 
-          int visibility = -1;
-          boolean found = false;
+          @Var int visibility = -1;
+          @Var boolean found = false;
           while (result.next()) {
             visibility = result.getInt("visibility");
             found = true;

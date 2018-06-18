@@ -17,13 +17,12 @@
 
 package com.oltpbenchmark.util;
 
-import java.io.File;
-import java.util.Iterator;
-
 import au.com.bytecode.opencsv.CSVReader;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.catalog.Column;
 import com.oltpbenchmark.catalog.Table;
+import java.io.File;
+import java.util.Iterator;
 
 /**
  * @author pavlo
@@ -71,7 +70,7 @@ public class TableDataIterable implements Iterable<Object[]> {
     }
     
     
-    public Iterator<Object[]> iterator() {
+    @Override public Iterator<Object[]> iterator() {
         return (new TableIterator());
     }
     
@@ -98,14 +97,14 @@ public class TableDataIterable implements Iterable<Object[]> {
         public Object[] next() {
             this.getNext();
             if (next == null) return (next);
-            String row[] = null;
+            @Var String row[] = null;
             synchronized (this) {
                 row = this.next;
                 this.next = null;
             } // SYNCH
             
             Object tuple[] = new Object[types.length];
-            int row_idx = 0;
+            @Var int row_idx = 0;
             for (int col_idx = 0; col_idx < types.length; col_idx++) {
                 // Auto-generate first column
                 if (col_idx == 0 && auto_generate_first_column) {

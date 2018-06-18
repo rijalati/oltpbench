@@ -17,14 +17,17 @@
 
 package com.oltpbenchmark.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.errorprone.annotations.Var;
 import java.io.*;
-
-import org.apache.log4j.Logger;
-
+import java.io.Writer;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
+import org.apache.log4j.Logger;
 
 /**
  * @author pavlo
@@ -42,7 +45,7 @@ public abstract class FileUtil {
      */
     public static String joinPath(String... args) {
         StringBuilder result = new StringBuilder();
-        boolean first = true;
+        @Var boolean first = true;
         for (String a : args) {
             if (a != null && a.length() > 0) {
                 if (!first) {
@@ -73,8 +76,8 @@ public abstract class FileUtil {
             String parts[] = EXT_SPLIT.split(basename);
             
             // Check how many files already exist
-            int counter = 1;
-            String nextName = parts[0] + "." + counter + "." + parts[1];
+            @Var int counter = 1;
+            @Var String nextName = parts[0] + "." + counter + "." + parts[1];
             while(exists(nextName)) {
                 ++counter;
                 nextName = parts[0] + "." + counter + "." + parts[1];
@@ -93,7 +96,7 @@ public abstract class FileUtil {
 
     public static String realpath(String path) {
         File f = new File(path);
-        String ret = null;
+        @Var String ret = null;
         try {
             ret = f.getCanonicalPath();
         } catch (Exception ex) {
@@ -150,7 +153,7 @@ public abstract class FileUtil {
         return (FileUtil.getTempFile(null, ext, false));
     }
 
-    public static File getTempFile(String prefix, String suffix, boolean deleteOnExit) {
+    public static File getTempFile(@Var String prefix, @Var String suffix, boolean deleteOnExit) {
         File tempFile;
         if (suffix != null && suffix.startsWith(".") == false)
             suffix = "." + suffix;
@@ -188,7 +191,7 @@ public abstract class FileUtil {
     }
 
     public static File writeStringToFile(File file, String content) throws IOException {
-        FileWriter writer = new FileWriter(file);
+        Writer writer = Files.newBufferedWriter(file.toPath(), UTF_8);
         writer.write(content);
         writer.flush();
         writer.close();
@@ -282,14 +285,14 @@ public abstract class FileUtil {
             throw new IOException("The file '" + file + "' does not exist");
         }
 
-        BufferedReader in = null;
+        @Var BufferedReader in = null;
         if (file.getPath().endsWith(".gz")) {
             FileInputStream fin = new FileInputStream(file);
             GZIPInputStream gzis = new GZIPInputStream(fin);
-            in = new BufferedReader(new InputStreamReader(gzis));
+            in = new BufferedReader(new InputStreamReader(gzis, UTF_8));
             LOG.debug("Reading in the zipped contents of '" + file.getName() + "'");
         } else {
-            in = new BufferedReader(new FileReader(file));
+            in = Files.newBufferedReader(file.toPath(), UTF_8);
             LOG.debug("Reading in the contents of '" + file.getName() + "'");
         }
         return (in);
@@ -306,8 +309,8 @@ public abstract class FileUtil {
         LOG.debug("Reading in the contents of '" + file.getAbsolutePath() + "'");
 
         // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
+        @Var int offset = 0;
+        @Var int numRead = 0;
         while ((offset < bytes.length) && ((numRead = in.read(bytes, offset, bytes.length - offset)) >= 0)) {
             offset += numRead;
         } // WHILE
@@ -344,7 +347,7 @@ public abstract class FileUtil {
 
     private static final File find(String name, File current, boolean isdir) throws IOException {
         LOG.debug("Find Current Location = " + current);
-        boolean has_svn = false;
+        @Var boolean has_svn = false;
         for (File file : current.listFiles()) {
             if (file.getCanonicalPath().endsWith(File.separator + name) && file.isDirectory() == isdir) {
                 return (file);

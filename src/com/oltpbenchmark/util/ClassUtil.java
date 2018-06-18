@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
@@ -120,8 +120,8 @@ public abstract class ClassUtil {
      * @param element_class
      * @return
      */
-    public static List<Class<?>> getSuperClasses(Class<?> element_class) {
-        List<Class<?>> ret = ClassUtil.CACHE_getSuperClasses.get(element_class);
+    public static List<Class<?>> getSuperClasses(@Var Class<?> element_class) {
+        @Var List<Class<?>> ret = ClassUtil.CACHE_getSuperClasses.get(element_class);
         if (ret == null) {
             ret = new ArrayList<Class<?>>();
             while (element_class != null) {
@@ -141,7 +141,7 @@ public abstract class ClassUtil {
      */
     @SuppressWarnings("unchecked")
     public static Collection<Class<?>> getInterfaces(Class<?> element_class) {
-        Set<Class<?>> ret = ClassUtil.CACHE_getInterfaceClasses.get(element_class);
+        @Var Set<Class<?>> ret = ClassUtil.CACHE_getInterfaceClasses.get(element_class);
         if (ret == null) {
 //            ret = new HashSet<Class<?>>();
 //            Queue<Class<?>> queue = new LinkedList<Class<?>>();
@@ -175,7 +175,7 @@ public abstract class ClassUtil {
 //        } // FOR
         
         Constructor<T> constructor = ClassUtil.getConstructor(target_class, classes);
-        T ret = null;
+        @Var T ret = null;
         try {
             ret = constructor.newInstance(params);
         } catch (Exception ex) {
@@ -193,7 +193,7 @@ public abstract class ClassUtil {
      */
     @SuppressWarnings("unchecked")
     public static <T> Constructor<T> getConstructor(Class<T> target_class, Class<?>...params) {
-        NoSuchMethodException error = null;
+        @Var NoSuchMethodException error = null;
         try {
             return (target_class.getConstructor(params));
         } catch (NoSuchMethodException ex) {
@@ -267,7 +267,7 @@ public abstract class ClassUtil {
      * @return
      */
     public static Class<?> getClass(String class_name) {
-        Class<?> target_class = null;
+        @Var Class<?> target_class = null;
         try {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
             target_class = (Class<?>)loader.loadClass(class_name);
@@ -283,7 +283,7 @@ public abstract class ClassUtil {
      * we're always using the default system ClassLoader
      */
     public static boolean isAssertsEnabled() {
-        boolean ret = false;
+        @Var boolean ret = false;
         try {
             assert(false);
         } catch (AssertionError ex) {

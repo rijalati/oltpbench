@@ -15,6 +15,7 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.distributions;
 
+import com.google.errorprone.annotations.Var;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -62,12 +63,12 @@ public abstract class PiecewiseLinearDistribution implements ProbabilityDistribu
       this.probability = input_probability;
     }
 
-    public int compareTo(Point obj) {
+    @Override public int compareTo(Point obj) {
       Point p = (Point)obj;
       return this.value - p.value;
     }
 
-    public String toString() {
+    @Override public String toString() {
       return "(" + value + ", " + probability + ")";
     }
   }
@@ -164,7 +165,7 @@ public abstract class PiecewiseLinearDistribution implements ProbabilityDistribu
     double max_probability = cs[cs.length - 1];
     double p = max_probability * rng.nextDouble();
 
-    int idx = binarySearch(cs, p);
+    @Var int idx = binarySearch(cs, p);
     if (idx == 0) idx = 1;
 
     /*
@@ -193,7 +194,7 @@ public abstract class PiecewiseLinearDistribution implements ProbabilityDistribu
 
     if (cdf.size() == 0) return 0;
     // Assume CDF is piecewise linear
-    double sum = 0;
+    @Var double sum = 0;
     sum = cdf.get(0).probability * cdf.get(0).value;
     for (int i = 1; i < cdf.size(); i++) {
       Point prev = cdf.get(i-1);
@@ -205,7 +206,7 @@ public abstract class PiecewiseLinearDistribution implements ProbabilityDistribu
   }
 
   public static int binarySearch(ArrayList<Point> points, double p) {
-    int left = 0, right = points.size() - 1;
+    @Var int left = 0, right = points.size() - 1;
     while (left < right) {
       int mid = (left + right)/2;
       if (points.get(mid).probability >= p) {

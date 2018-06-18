@@ -26,7 +26,7 @@ public class SimpleSystemPrinter implements SimplePrinter {
 		this.out = out;
 	}
 
-	public void println(String msg) {
+	@Override public void println(String msg) {
 		if (out != null)
 			out.println(msg);
 	}

@@ -14,7 +14,7 @@ public class TPCDSWorker extends Worker<TPCDSBenchmark>{
         super(benchmarkModule, id);
     }
 
-    protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
+    @Override protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
         return null;
     }
 }

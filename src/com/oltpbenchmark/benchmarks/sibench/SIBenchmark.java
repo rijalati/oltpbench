@@ -16,14 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.sibench;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -31,6 +24,13 @@ import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.sibench.procedures.UpdateRecord;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SIBenchmark extends BenchmarkModule {
 
@@ -52,7 +52,7 @@ public class SIBenchmark extends BenchmarkModule {
             String recordCount = SQLUtil.getMaxColSQL(this.workConf.getDBType(), t, "id");
             Statement stmt = metaConn.createStatement();
             ResultSet res = stmt.executeQuery(recordCount);
-            int init_record_count = 0;
+            @Var int init_record_count = 0;
             while (res.next()) {
                 init_record_count = res.getInt(1);
             }

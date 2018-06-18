@@ -17,6 +17,7 @@
 package com.oltpbenchmark.distributions;
 
 
+import com.google.errorprone.annotations.Var;
 import java.util.Random;
 
 public class ZipFianDistribution {
@@ -37,9 +38,9 @@ public class ZipFianDistribution {
     // the next() method returns an rank id. The frequency of returned rank ids
     // are follows Zipf distribution.
     public int next() {
-        int rank;
-        double frequency = 0;
-        double dice;
+        @Var int rank;
+        @Var double frequency = 0;
+        @Var double dice;
 
         rank = rnd.nextInt(size);
         frequency = (1.0d / Math.pow(rank, this.skew)) / this.bottom;

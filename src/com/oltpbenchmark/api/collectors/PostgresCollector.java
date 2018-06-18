@@ -16,6 +16,9 @@
 
 package com.oltpbenchmark.api.collectors;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.catalog.Catalog;
+import com.oltpbenchmark.util.JSONUtil;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,11 +27,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.catalog.Catalog;
-import com.oltpbenchmark.util.JSONUtil;
 
 public class PostgresCollector extends DBCollector {
     private static final Logger LOG = Logger.getLogger(PostgresCollector.class);
@@ -53,7 +52,7 @@ public class PostgresCollector extends DBCollector {
             Statement s = conn.createStatement();
 
             // Collect DBMS version
-            ResultSet out = s.executeQuery(VERSION_SQL);
+            @Var ResultSet out = s.executeQuery(VERSION_SQL);
             if (out.next()) {
             	this.version.append(out.getString(1));
             }

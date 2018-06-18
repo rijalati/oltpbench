@@ -16,11 +16,11 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHConstants;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHUtil;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -76,7 +76,7 @@ public class Q7 extends GenericQuery {
 
         // NATION2 is randomly selected within the list of values defined for N_NAME in Clause 4.2.3
         // and must be different from the value selected for NATION1 in item 1 above
-        String nation2 = nation1;
+        @Var String nation2 = nation1;
         while (nation2.equals(nation1)) {
             nation2 = TPCHUtil.choice(TPCHConstants.N_NAME, rand);
         }

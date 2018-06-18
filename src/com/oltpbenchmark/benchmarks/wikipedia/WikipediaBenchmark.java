@@ -16,14 +16,7 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -32,6 +25,12 @@ import com.oltpbenchmark.benchmarks.wikipedia.data.RevisionHistograms;
 import com.oltpbenchmark.benchmarks.wikipedia.procedures.AddWatchList;
 import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
 import com.oltpbenchmark.util.TextGenerator;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 public class WikipediaBenchmark extends BenchmarkModule {
     private static final Logger LOG = Logger.getLogger(WikipediaBenchmark.class);
@@ -61,14 +60,14 @@ public class WikipediaBenchmark extends BenchmarkModule {
      * @param orig_text
      * @return
      */
-    protected char[] generateRevisionText(char orig_text[]) {
+    protected char[] generateRevisionText(@Var char orig_text[]) {
         // Figure out how much we are going to change
         // If the delta is greater than the length of the original
         // text, then we will just cut our length in half.
         // Where is your god now?
         // There is probably some sort of minimal size that we should adhere to,
         // but it's 12:30am and I simply don't feel like dealing with that now
-        FlatHistogram<Integer> h = null;
+        @Var FlatHistogram<Integer> h = null;
         for (int i = 0; i < this.revisionDeltas.length - 1; i++) {
             if (orig_text.length <= RevisionHistograms.REVISION_DELTA_SIZES[i]) {
                 h = this.revisionDeltas[i];
@@ -79,7 +78,7 @@ public class WikipediaBenchmark extends BenchmarkModule {
         }
         assert (h != null);
 
-        int delta = h.nextValue().intValue();
+        @Var int delta = h.nextValue().intValue();
         if (orig_text.length + delta <= 0) {
             delta = -1 * (int) Math.round(orig_text.length / 1.5);
             if (Math.abs(delta) == orig_text.length && delta < 0) {

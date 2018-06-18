@@ -16,6 +16,7 @@
 
 package com.oltpbenchmark.util.json;
 
+import com.google.errorprone.annotations.Var;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -195,7 +196,7 @@ public class JSONTokener {
          }
 
          char[] buffer = new char[n];
-         int pos = 0;
+         @Var int pos = 0;
 
          if (this.useLastChar) {
              this.useLastChar = false;
@@ -204,7 +205,7 @@ public class JSONTokener {
          }
 
          try {
-             int len;
+             @Var int len;
              while ((pos < n) && ((len = reader.read(buffer, pos, n - pos)) != -1)) {
                  pos += len;
              }
@@ -249,7 +250,7 @@ public class JSONTokener {
      * @throws JSONException Unterminated string.
      */
     public String nextString(char quote) throws JSONException {
-        char c;
+        @Var char c;
         StringBuffer sb = new StringBuffer();
         for (;;) {
             c = next();
@@ -324,7 +325,7 @@ public class JSONTokener {
      * @return A string, trimmed.
      */
     public String nextTo(String delimiters) throws JSONException {
-        char c;
+        @Var char c;
         StringBuffer sb = new StringBuffer();
         for (;;) {
             c = next();
@@ -348,7 +349,7 @@ public class JSONTokener {
      * @return An object.
      */
     public Object nextValue() throws JSONException {
-        char c = nextClean();
+        @Var char c = nextClean();
         String s;
 
         switch (c) {
@@ -396,7 +397,7 @@ public class JSONTokener {
      * is not found.
      */
     public char skipTo(char to) throws JSONException {
-        char c;
+        @Var char c;
         try {
             int startIndex = this.index;
             reader.mark(Integer.MAX_VALUE);
@@ -432,7 +433,7 @@ public class JSONTokener {
      *
      * @return " at character [this.index]"
      */
-    public String toString() {
+    @Override public String toString() {
         return " at character " + index;
     }
 }

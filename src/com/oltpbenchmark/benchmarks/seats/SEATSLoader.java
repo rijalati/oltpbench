@@ -16,6 +16,28 @@
 
 package com.oltpbenchmark.benchmarks.seats;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
+import com.oltpbenchmark.benchmarks.seats.util.CustomerIdIterable;
+import com.oltpbenchmark.benchmarks.seats.util.DistanceUtil;
+import com.oltpbenchmark.benchmarks.seats.util.FlightId;
+import com.oltpbenchmark.benchmarks.seats.util.ReturnFlight;
+import com.oltpbenchmark.benchmarks.seats.util.SEATSHistogramUtil;
+import com.oltpbenchmark.catalog.Column;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.CollectionUtil;
+import com.oltpbenchmark.util.Histogram;
+import com.oltpbenchmark.util.Pair;
+import com.oltpbenchmark.util.RandomDistribution;
+import com.oltpbenchmark.util.RandomDistribution.Flat;
+import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
+import com.oltpbenchmark.util.RandomDistribution.Gaussian;
+import com.oltpbenchmark.util.RandomDistribution.Zipf;
+import com.oltpbenchmark.util.RandomGenerator;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.StringUtil;
+import com.oltpbenchmark.util.TableDataIterable;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,32 +60,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
-
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.commons.collections15.set.ListOrderedSet;
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
-import com.oltpbenchmark.benchmarks.seats.util.CustomerIdIterable;
-import com.oltpbenchmark.benchmarks.seats.util.DistanceUtil;
-import com.oltpbenchmark.benchmarks.seats.util.FlightId;
-import com.oltpbenchmark.benchmarks.seats.util.ReturnFlight;
-import com.oltpbenchmark.benchmarks.seats.util.SEATSHistogramUtil;
-import com.oltpbenchmark.catalog.Column;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.CollectionUtil;
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.Pair;
-import com.oltpbenchmark.util.RandomDistribution;
-import com.oltpbenchmark.util.RandomDistribution.Flat;
-import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
-import com.oltpbenchmark.util.RandomDistribution.Gaussian;
-import com.oltpbenchmark.util.RandomDistribution.Zipf;
-import com.oltpbenchmark.util.RandomGenerator;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.StringUtil;
-import com.oltpbenchmark.util.TableDataIterable;
 
 public class SEATSLoader extends Loader<SEATSBenchmark> {
     private static final Logger LOG = Logger.getLogger(SEATSLoader.class);
@@ -368,7 +367,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loading in histogram data file for '" + histogramName + "'");
             }
-            Histogram<String> hist = null;
+            @Var Histogram<String> hist = null;
 
             try {
                 // The Flights_Per_Airport histogram is actually a serialized
@@ -488,8 +487,8 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             }
         } // FOR
 
-        int row_idx = 0;
-        int row_batch = 0;
+        @Var int row_idx = 0;
+        @Var int row_batch = 0;
 
         try {
             String insert_sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
@@ -689,7 +688,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
      */
     protected Iterable<Object[]> getScalingIterable(Table catalog_tbl) {
         String name = catalog_tbl.getName().toUpperCase();
-        ScalingDataIterable it = null;
+        @Var ScalingDataIterable it = null;
         double scaleFactor = this.workConf.getScaleFactor();
         long num_customers = Math.round(SEATSConstants.CUSTOMERS_COUNT * scaleFactor);
 
@@ -872,14 +871,14 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
 
         @Override
         protected Object specialValue(long id, int columnIdx) {
-            Object value = null;
+            @Var Object value = null;
             switch (columnIdx) {
                 // CUSTOMER ID
                 case (0): {
                     // HACK: The flights_per_airport histogram may not match up
                     // exactly with the airport
                     // data files, so we'll just spin until we get a good one
-                    Long airport_id = null;
+                    @Var Long airport_id = null;
                     while (airport_id == null) {
                         this.airport_code = this.rand.nextValue();
                         airport_id = SEATSLoader.this.profile.getAirportId(this.airport_code);
@@ -968,7 +967,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             long max_per_customer = Math.min(Math.round(SEATSConstants.CUSTOMER_NUM_FREQUENTFLYERS_MAX * Math.max(1, SEATSLoader.this.scaleFactor)),
                     SEATSLoader.this.flights_per_airline.getValueCount());
             Zipf ff_zipf = new Zipf(SEATSLoader.this.rng, SEATSConstants.CUSTOMER_NUM_FREQUENTFLYERS_MIN, max_per_customer, SEATSConstants.CUSTOMER_NUM_FREQUENTFLYERS_SIGMA);
-            long new_total = 0;
+            @Var long new_total = 0;
             long total = SEATSLoader.this.profile.getCustomerIdCount();
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Num of Customers: " + total);
@@ -989,7 +988,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
 
         @Override
         protected Object specialValue(long id, int columnIdx) {
-            Object value = null;
+            @Var Object value = null;
             switch (columnIdx) {
                 // CUSTOMER ID
                 case (0): {
@@ -1083,7 +1082,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
                     continue;
                 }
 
-                int inner_ctr = (this.last_inner_ctr != null ? this.last_inner_ctr : this.outer_ctr + 1);
+                @Var int inner_ctr = (this.last_inner_ctr != null ? this.last_inner_ctr : this.outer_ctr + 1);
                 this.last_inner_ctr = null;
                 for (; inner_ctr < this.num_airports; inner_ctr++) {
                     assert (this.outer_ctr != inner_ctr);
@@ -1115,7 +1114,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
 
         @Override
         protected Object specialValue(long id, int columnIdx) {
-            Object value = null;
+            @Var Object value = null;
             switch (columnIdx) {
                 // OUTER AIRPORT
                 case (0):
@@ -1172,7 +1171,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
 
             // Flights per Airline
             Collection<String> all_airlines = SEATSLoader.this.profile.getAirlineCodes();
-            Histogram<String> histogram = new Histogram<String>();
+            @Var Histogram<String> histogram = new Histogram<String>();
             histogram.putAll(all_airlines);
 
             // Embed a Gaussian distribution
@@ -1200,7 +1199,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             Gaussian gaussian = new Gaussian(SEATSLoader.this.rng, SEATSConstants.FLIGHTS_PER_DAY_MIN, SEATSConstants.FLIGHTS_PER_DAY_MAX);
 
             this.total = 0;
-            boolean first = true;
+            @Var boolean first = true;
             for (long t = this.today.getTime() - (days_past * SEATSConstants.MILLISECONDS_PER_DAY); t < this.today.getTime(); t += SEATSConstants.MILLISECONDS_PER_DAY) {
                 Timestamp timestamp = new Timestamp(t);
                 if (first) {
@@ -1242,7 +1241,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             boolean result = m.find();
             assert (result) : "Invalid time code '" + code + "'";
 
-            int hour = -1;
+            @Var int hour = -1;
             try {
                 hour = Integer.valueOf(m.group(1));
             } catch (Throwable ex) {
@@ -1250,7 +1249,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
             }
             assert (hour != -1);
 
-            int minute = -1;
+            @Var int minute = -1;
             try {
                 minute = Integer.valueOf(m.group(2));
             } catch (Throwable ex) {
@@ -1297,13 +1296,13 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
 
         @Override
         protected Object specialValue(long id, int columnIdx) {
-            Object value = null;
+            @Var Object value = null;
             switch (columnIdx) {
                 // FLIGHT ID
                 case (0): {
                     // Figure out what date we are currently on
-                    Integer remaining = null;
-                    Timestamp date;
+                    @Var Integer remaining = null;
+                    @Var Timestamp date;
                     do {
                         // Move to the next day.
                         // Make sure that we reset the set of FlightIds that
@@ -1508,11 +1507,11 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
                 }
 
                 for (int seatnum = 0; seatnum < booked_seats; seatnum++) {
-                    CustomerId customer_id = null;
+                    @Var CustomerId customer_id = null;
                     Integer airport_customer_cnt = SEATSLoader.this.profile.getCustomerIdCount(depart_airport_id);
                     boolean local_customer = airport_customer_cnt != null && (flight_customer_ids.size() < airport_customer_cnt.intValue());
-                    int tries = 2000;
-                    ReturnFlight return_flight = null;
+                    @Var int tries = 2000;
+                    @Var ReturnFlight return_flight = null;
                     while (tries > 0) {
                         return_flight = null;
 
@@ -1631,7 +1630,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
         @Override
         protected Object specialValue(long id, int columnIdx) {
             assert (this.current != null);
-            Object value = null;
+            @Var Object value = null;
             switch (columnIdx) {
                 // CUSTOMER ID
                 case (1): {

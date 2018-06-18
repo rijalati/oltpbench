@@ -31,6 +31,7 @@ package com.oltpbenchmark.distributions;
  * permissions and limitations under the License. See accompanying                                                                                                                 
  * LICENSE file.                                                                                                                                                                   
  */
+import com.google.errorprone.annotations.Var;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
@@ -218,7 +219,7 @@ public class ZipfianGenerator extends IntegerGenerator
 	 */
 	static double zetastatic(long st, long n, double theta, double initialsum)
 	{
-		double sum=initialsum;
+		@Var double sum=initialsum;
 		for (long i=st; i<n; i++)
 		{
 

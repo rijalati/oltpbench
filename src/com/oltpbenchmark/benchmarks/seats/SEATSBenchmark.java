@@ -16,6 +16,14 @@
 
 package com.oltpbenchmark.benchmarks.seats;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.WorkloadConfiguration;
+import com.oltpbenchmark.api.BenchmarkModule;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Worker;
+import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.RandomGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,14 +32,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.oltpbenchmark.WorkloadConfiguration;
-import com.oltpbenchmark.api.BenchmarkModule;
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Worker;
-import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.RandomGenerator;
 
 public class SEATSBenchmark extends BenchmarkModule {
 
@@ -86,7 +86,7 @@ public class SEATSBenchmark extends BenchmarkModule {
      * @return
      */
     public static final File getTableDataFile(File data_dir, Table catalog_tbl) {
-        File f = new File(String.format("%s%stable.%s.csv", data_dir.getAbsolutePath(), File.separator, catalog_tbl.getName().toLowerCase()));
+        @Var File f = new File(String.format("%s%stable.%s.csv", data_dir.getAbsolutePath(), File.separator, catalog_tbl.getName().toLowerCase()));
         if (f.exists() == false) {
             f = new File(f.getAbsolutePath() + ".gz");
         }

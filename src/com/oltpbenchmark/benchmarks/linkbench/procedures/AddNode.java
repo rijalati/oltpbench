@@ -16,17 +16,16 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+import com.oltpbenchmark.util.StringUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
-import com.oltpbenchmark.util.StringUtil;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class AddNode extends Procedure{
     
@@ -62,7 +61,7 @@ public class AddNode extends Procedure{
 
         long newIds[] = new long[1];
         // Find the generated id
-        int i = 0;
+        @Var int i = 0;
         while (rs.next() && i < 1) {
           newIds[i++] = rs.getLong(1);
         }

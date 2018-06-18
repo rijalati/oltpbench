@@ -17,14 +17,14 @@
 
 package com.oltpbenchmark.benchmarks.tatp.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tatp.TATPConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tatp.TATPConstants;
 
 public class UpdateLocation extends Procedure {
 
@@ -37,7 +37,7 @@ public class UpdateLocation extends Procedure {
     );
     
     public long run(Connection conn, int location, String sub_nbr) throws SQLException {
-    	PreparedStatement stmt = this.getPreparedStatement(conn, getSubscriber);
+    	@Var PreparedStatement stmt = this.getPreparedStatement(conn, getSubscriber);
     	stmt.setString(1, sub_nbr);
     	ResultSet results = stmt.executeQuery();
     	assert(results != null);

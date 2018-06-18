@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.hyadapt.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.mysql.jdbc.log.Log;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.apache.log4j.Logger;
 
 public class MaxRecord1 extends Procedure{
     private static final Logger LOG = Logger.getLogger(MaxRecord1.class);
@@ -39,7 +38,7 @@ public class MaxRecord1 extends Procedure{
     public void run(Connection conn, int keyname) throws SQLException {
         PreparedStatement stmt = this.getPreparedStatement(conn, maxStmt);
         stmt.setInt(1, keyname);          
-        int max = -1;
+        @Var int max = -1;
         ResultSet r = stmt.executeQuery();
         if(r.next()){
             max = r.getInt(1);        

@@ -16,16 +16,16 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class GetLink extends Procedure{
 
@@ -45,8 +45,8 @@ public class GetLink extends Procedure{
         if (LOG.isDebugEnabled()) {
             LOG.debug("getLink : " + id1 + " " + link_type + " " + Arrays.toString(id2s));
         }
-        boolean first = true;
-        String ids = "";
+        @Var boolean first = true;
+        @Var String ids = "";
         for (long id2: id2s) {
             if (first) {
               first = false;
@@ -68,7 +68,7 @@ public class GetLink extends Procedure{
         rs.beforeFirst();
 
         Link results[] = new Link[count];
-        int i = 0;
+        @Var int i = 0;
         while (rs.next()) {
           Link l = createLinkFromRow(rs);
           if (LOG.isDebugEnabled()) {

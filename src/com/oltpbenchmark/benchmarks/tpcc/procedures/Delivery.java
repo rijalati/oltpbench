@@ -16,20 +16,19 @@
 
 package com.oltpbenchmark.benchmarks.tpcc.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
 
 public class Delivery extends TPCCProcedure {
 
@@ -111,8 +110,8 @@ public class Delivery extends TPCCProcedure {
 		delivSumOrderAmount = this.getPreparedStatement(conn, delivSumOrderAmountSQL);
 		delivUpdateCustBalDelivCnt = this.getPreparedStatement(conn, delivUpdateCustBalDelivCntSQL);
 
-		int d_id, c_id;
-        float ol_total = 0;
+		@Var int d_id, c_id;
+        @Var float ol_total = 0;
         int[] orderIDs;
 
         orderIDs = new int[10];
@@ -120,7 +119,7 @@ public class Delivery extends TPCCProcedure {
             delivGetOrderId.setInt(1, d_id);
             delivGetOrderId.setInt(2, w_id);
             if (trace) LOG.trace("delivGetOrderId START");
-            ResultSet rs = delivGetOrderId.executeQuery();
+            @Var ResultSet rs = delivGetOrderId.executeQuery();
             if (trace) LOG.trace("delivGetOrderId END");
             if (!rs.next()) {
                 // This district has no new orders
@@ -138,7 +137,7 @@ public class Delivery extends TPCCProcedure {
             delivDeleteNewOrder.setInt(2, d_id);
             delivDeleteNewOrder.setInt(3, w_id);
             if (trace) LOG.trace("delivDeleteNewOrder START");
-            int result = delivDeleteNewOrder.executeUpdate();
+            @Var int result = delivDeleteNewOrder.executeUpdate();
             if (trace) LOG.trace("delivDeleteNewOrder END");
             if (result != 1) {
                 // This code used to run in a loop in an attempt to make this work
@@ -215,7 +214,7 @@ public class Delivery extends TPCCProcedure {
             ol_total = rs.getFloat("OL_TOTAL");
             rs.close();
 
-            int idx = 1; // HACK: So that we can debug this query
+            @Var int idx = 1; // HACK: So that we can debug this query
             delivUpdateCustBalDelivCnt.setDouble(idx++, ol_total);
             delivUpdateCustBalDelivCnt.setInt(idx++, w_id);
             delivUpdateCustBalDelivCnt.setInt(idx++, d_id);

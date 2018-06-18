@@ -27,6 +27,7 @@
  ***************************************************************************/
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -38,7 +39,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
-
 import org.apache.log4j.Logger;
 
 public abstract class ThreadUtil {
@@ -106,7 +106,7 @@ public abstract class ThreadUtil {
      */
     public static Pair<Integer, Process> exec(String command[]) {
         ProcessBuilder pb = new ProcessBuilder(command);
-        Process p = null;
+        @Var Process p = null;
         try {
             p = pb.start();
         } catch (IOException e) {
@@ -116,7 +116,7 @@ public abstract class ThreadUtil {
         Class<? extends Process> p_class = p.getClass();
         assert (p_class.getName().endsWith("UNIXProcess")) : "Unexpected Process class: " + p_class;
 
-        Integer pid = null;
+        @Var Integer pid = null;
         try {
             Field pid_field = p_class.getDeclaredField("pid");
             pid_field.setAccessible(true);
@@ -153,7 +153,7 @@ public abstract class ThreadUtil {
         // Copied from ShellTools
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.redirectErrorStream(true);
-        Process temp = null;
+        @Var Process temp = null;
         try {
             temp = pb.start();
         } catch (IOException e) {
@@ -182,8 +182,8 @@ public abstract class ThreadUtil {
 
         if (print_output) {
             BufferedInputStream in = new BufferedInputStream(p.getInputStream());
-            StringBuilder buffer = new StringBuilder();
-            int c;
+            @Var StringBuilder buffer = new StringBuilder();
+            @Var int c;
             try {
                 while ((c = in.read()) != -1) {
                     buffer.append((char) c);
@@ -217,7 +217,7 @@ public abstract class ThreadUtil {
         if (OVERRIDE_NUM_THREADS != null) {
             return (OVERRIDE_NUM_THREADS);
         }
-        int max_threads = DEFAULT_NUM_THREADS;
+        @Var int max_threads = DEFAULT_NUM_THREADS;
         String prop = System.getProperty("hstore.max_threads");
         if (prop != null && prop.startsWith("${") == false)
             max_threads = Integer.parseInt(prop);

@@ -16,18 +16,7 @@
 
 package com.oltpbenchmark.api;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.LatencyRecord;
 import com.oltpbenchmark.Phase;
 import com.oltpbenchmark.SubmittedProcedure;
@@ -40,6 +29,16 @@ import com.oltpbenchmark.types.State;
 import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.Histogram;
 import com.oltpbenchmark.util.StringUtil;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.log4j.Logger;
 
 public abstract class Worker<T extends BenchmarkModule> implements Runnable {
     private static final Logger LOG = Logger.getLogger(Worker.class);
@@ -211,7 +210,7 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
     @Override
     public final void run() {
         Thread t = Thread.currentThread();
-        SubmittedProcedure pieceOfWork;
+        @Var SubmittedProcedure pieceOfWork;
         t.setName(this.toString());
 
         // In case of reuse reset the measurements
@@ -226,8 +225,8 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
 
         // wait for start
         wrkldState.blockForStart();
-        State preState, postState;
-        Phase phase;
+        @Var State preState, postState;
+        @Var Phase phase;
 
         TransactionType invalidTT = TransactionType.INVALID;
         assert (invalidTT != null);
@@ -291,7 +290,7 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
 
             long start = pieceOfWork.getStartTime();
 
-            TransactionType type = invalidTT;
+            @Var TransactionType type = invalidTT;
             try {
                 type = doWork(preState == State.MEASURE, pieceOfWork);
             } catch (IndexOutOfBoundsException e) {
@@ -360,8 +359,8 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
      * @param llr
      */
     protected final TransactionType doWork(boolean measure, SubmittedProcedure pieceOfWork) {
-        TransactionType next = null;
-        TransactionStatus status = TransactionStatus.RETRY;
+        @Var TransactionType next = null;
+        @Var TransactionStatus status = TransactionStatus.RETRY;
         Savepoint savepoint = null;
         final DatabaseType dbType = wrkld.getDBType();
         final boolean recordAbortMessages = wrkld.getRecordAbortMessages();
@@ -393,7 +392,7 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
 
                     /* PAVLO */
                     if (recordAbortMessages) {
-                        Histogram<String> error_h = this.txnAbortMessages.get(next);
+                        @Var Histogram<String> error_h = this.txnAbortMessages.get(next);
                         if (error_h == null) {
                             error_h = new Histogram<String>();
                             this.txnAbortMessages.put(next, error_h);
@@ -526,7 +525,7 @@ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
 
             } // WHILE
         } catch (SQLException ex) {
-            String msg = String.format("Unexpected fatal, error in '%s' when executing '%s' [%s]",
+            @Var String msg = String.format("Unexpected fatal, error in '%s' when executing '%s' [%s]",
                                        this, next, dbType);
             // FIXME: PAVLO 2016-12-29
             // Right now our DBMS throws an exception when the txn gets aborted

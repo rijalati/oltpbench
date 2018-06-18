@@ -17,15 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 
 /**
  * Get Item Information
@@ -71,7 +71,7 @@ public class GetItem extends Procedure {
         
         PreparedStatement user_stmt = this.getPreparedStatement(conn, getUser, seller_id);
         ResultSet user_results = user_stmt.executeQuery();
-        Object user_row[] = null;
+        @Var Object user_row[] = null;
         try {
             if (user_results.next() == false) {
                 throw new UserAbortException("Invalid user id " + seller_id);

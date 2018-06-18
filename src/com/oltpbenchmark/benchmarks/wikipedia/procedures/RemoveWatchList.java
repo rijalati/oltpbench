@@ -17,14 +17,14 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
 import com.oltpbenchmark.util.TimeUtil;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class RemoveWatchList extends Procedure {
 	
@@ -41,7 +41,7 @@ public class RemoveWatchList extends Procedure {
     public void run(Connection conn, int userId, int nameSpace, String pageTitle) throws SQLException {
 
         if (userId > 0) {
-            PreparedStatement ps = this.getPreparedStatement(conn, removeWatchList);
+            @Var PreparedStatement ps = this.getPreparedStatement(conn, removeWatchList);
             ps.setInt(1, userId);
             ps.setInt(2, nameSpace);
             ps.setString(3, pageTitle);

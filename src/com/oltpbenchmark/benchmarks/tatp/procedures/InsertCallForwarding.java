@@ -17,14 +17,14 @@
 
 package com.oltpbenchmark.benchmarks.tatp.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tatp.TATPConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tatp.TATPConstants;
 
 public class InsertCallForwarding extends Procedure {
 
@@ -41,11 +41,11 @@ public class InsertCallForwarding extends Procedure {
     );
      
     public long run(Connection conn, String sub_nbr, byte sf_type, byte start_time, byte end_time, String numberx) throws SQLException {
-        PreparedStatement stmt = this.getPreparedStatement(conn, getSubscriber);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, getSubscriber);
         stmt.setString(1, sub_nbr);
         ResultSet results = stmt.executeQuery();
         assert(results != null);
-        long s_id=-1;
+        @Var long s_id=-1;
         if(results.next())
         {
             s_id = results.getLong(1);
@@ -65,7 +65,7 @@ public class InsertCallForwarding extends Procedure {
         stmt.setByte(3, start_time);
         stmt.setByte(4, end_time);
         stmt.setString(5, numberx);
-        int rows_updated = -1;
+        @Var int rows_updated = -1;
         
         try {
             rows_updated = stmt.executeUpdate();

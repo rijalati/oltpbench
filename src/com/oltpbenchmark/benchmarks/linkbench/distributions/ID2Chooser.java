@@ -15,15 +15,14 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.distributions;
 
-import java.util.Properties;
-import java.util.Random;
-
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
 import com.oltpbenchmark.benchmarks.linkbench.distributions.LinkDistributions.LinkDistribution;
 import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
 import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
 import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
+import java.util.Properties;
+import java.util.Random;
 
 
 /**
@@ -127,7 +126,7 @@ public class ID2Chooser {
     if (range <= nid2s && randomid2max == 0) {
       // Range is smaller than required # of ids, fill in all from range
       for (int i = 0; i < nid2s; i++) {
-        long id2 = id1 + i;
+        @Var long id2 = id1 + i;
         if (id2gen_config == 1) {
           id2 = fixId2(id2, nrequesters, requesterID, randomid2max);
         }
@@ -135,8 +134,8 @@ public class ID2Chooser {
       }
     } else {
       for (int i = 0; i < nid2s; i++) {
-        long id2;
-        int iters = 0; // avoid long or infinite loop
+        @Var long id2;
+        @Var int iters = 0; // avoid long or infinite loop
         do {
           // Find a unique id2
           id2 = chooseForOpInternal(rng, id1, range);
@@ -167,7 +166,7 @@ public class ID2Chooser {
 
 
   private long calcID2Range(double pExisting, long nlinks) {
-    long range = (long) Math.ceil((1/pExisting) * nlinks);
+    @Var long range = (long) Math.ceil((1/pExisting) * nlinks);
     range = Math.max(1, range);// Ensure non-empty range
     return range;
   }
@@ -230,7 +229,7 @@ public class ID2Chooser {
   private static long fixId2(long id2, long nrequesters,
                              long requesterID, long randomid2max) {
 
-    long newid2 = id2 - (id2 % nrequesters) + requesterID;
+    @Var long newid2 = id2 - (id2 % nrequesters) + requesterID;
     if ((newid2 > randomid2max) && (randomid2max > 0)) newid2 -= nrequesters;
     return newid2;
   }

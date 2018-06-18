@@ -16,6 +16,26 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
+import com.oltpbenchmark.benchmarks.auctionmark.util.CategoryParser;
+import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeGroupId;
+import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeValueId;
+import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
+import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
+import com.oltpbenchmark.benchmarks.auctionmark.util.LoaderItemInfo;
+import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
+import com.oltpbenchmark.benchmarks.auctionmark.util.UserIdGenerator;
+import com.oltpbenchmark.catalog.Column;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.CollectionUtil;
+import com.oltpbenchmark.util.CompositeId;
+import com.oltpbenchmark.util.Histogram;
+import com.oltpbenchmark.util.Pair;
+import com.oltpbenchmark.util.RandomDistribution.Flat;
+import com.oltpbenchmark.util.RandomDistribution.Zipf;
+import com.oltpbenchmark.util.SQLUtil;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -36,30 +56,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
-import com.oltpbenchmark.benchmarks.auctionmark.util.CategoryParser;
-import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeGroupId;
-import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeValueId;
-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
-import com.oltpbenchmark.benchmarks.auctionmark.util.LoaderItemInfo;
-import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
-import com.oltpbenchmark.benchmarks.auctionmark.util.UserIdGenerator;
-import com.oltpbenchmark.catalog.Column;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.CollectionUtil;
-import com.oltpbenchmark.util.CompositeId;
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.Pair;
-import com.oltpbenchmark.util.RandomDistribution.Flat;
-import com.oltpbenchmark.util.RandomDistribution.Zipf;
-import com.oltpbenchmark.util.SQLUtil;
 
 /**
  * @author pavlo
@@ -258,7 +257,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
                 stmt.executeBatch();
                 conn.commit();
                 stmt.clearBatch();
-            } catch (SQLException ex) {
+            } catch (@Var SQLException ex) {
                 if (ex.getNextException() != null) ex = ex.getNextException();
                 LOG.warn(tableName + " - " + ex.getMessage());
                 throw ex;
@@ -336,7 +335,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
             // Add the dependencies so that we know what we need to block on
             CollectionUtil.addAll(this.dependencyTables, dependencies);
             
-            String field_name = "BATCHSIZE_" + catalog_tbl.getName();
+            @Var String field_name = "BATCHSIZE_" + catalog_tbl.getName();
             try {
                 Field field_handle = AuctionMarkConstants.class.getField(field_name);
                 assert (field_handle != null);
@@ -463,7 +462,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         
         protected int populateRandomColumns(Object row[]) {
-            int cols = 0;
+            @Var int cols = 0;
             
             // STRINGS
             for (Column catalog_col : this.random_str_cols) {
@@ -538,7 +537,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
             Object row[] = new Object[this.catalog_tbl.getColumnCount()];
             
             // Main Columns
-            int cols = this.populateRow(row);
+            @Var int cols = this.populateRow(row);
             
             // RANDOM COLS
             cols += this.populateRandomColumns(row);
@@ -562,7 +561,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
          */
         public void generateBatch() {
             if (LOG.isTraceEnabled()) LOG.trace(String.format("%s: Generating new batch", this.getTableName()));
-            long batch_count = 0;
+            @Var long batch_count = 0;
             this.table.clear();
             while (this.hasMore() && this.table.size() < this.batchSize) {
                 this.addRow();
@@ -696,7 +695,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(Object[] row) {
-            int col = 0;
+            @Var int col = 0;
 
             // R_ID
             row[col++] = Integer.valueOf((int) this.count);
@@ -740,7 +739,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(Object[] row) {
-            int col = 0;
+            @Var int col = 0;
 
             Category category = this.categories.poll();
             assert(category != null);
@@ -791,7 +790,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(Object[] row) {
-            int col = 0;
+            @Var int col = 0;
 
             GlobalAttributeGroupId gag_id = this.group_ids.poll();
             assert(gag_id != null);
@@ -837,7 +836,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(Object[] row) {
-            int col = 0;
+            @Var int col = 0;
             
             if (this.gav_counter == -1 || ++this.gav_counter == this.gag_current.getCount()) {
                 this.gag_current = this.gag_iterator.next();
@@ -909,7 +908,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(Object[] row) {
-            int col = 0;
+            @Var int col = 0;
 
             UserId u_id = this.idGenerator.next();
             
@@ -953,7 +952,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(UserId user_id, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             
             // UA_ID
             row[col++] = this.count;
@@ -1003,7 +1002,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(UserId seller_id, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             
             ItemId itemId = new ItemId(seller_id, remaining);
             Timestamp endDate = this.getRandomEndTimestamp();
@@ -1012,7 +1011,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
                 LOG.trace("endDate = " + endDate + " : startDate = " + startDate);
             
             long bidDurationDay = ((endDate.getTime() - startDate.getTime()) / AuctionMarkConstants.MILLISECONDS_IN_A_DAY);
-            Pair<Zipf, Zipf> p = this.item_bid_watch_zipfs.get(bidDurationDay);
+            @Var Pair<Zipf, Zipf> p = this.item_bid_watch_zipfs.get(bidDurationDay);
             if (p == null) {
                 Zipf randomNumBids = new Zipf(profile.rng,
                         AuctionMarkConstants.ITEM_BIDS_PER_DAY_MIN * (int)bidDurationDay,
@@ -1142,7 +1141,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
 
             // II_ID
             row[col++] = this.count;
@@ -1171,7 +1170,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             GlobalAttributeValueId gav_id = profile.getRandomGlobalAttributeValue();
             assert(gav_id != null);
             
@@ -1205,7 +1204,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
 
             // IC_ID
             row[col++] = Integer.valueOf((int) this.count);
@@ -1256,10 +1255,10 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             assert(itemInfo.numBids > 0);
             
-            UserId bidderId = null;
+            @Var UserId bidderId = null;
             
             // Figure out the UserId for the person bidding on this item now
             if (this.new_item) {
@@ -1358,7 +1357,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             LoaderItemInfo.Bid bid = itemInfo.getLastBid();
             assert(bid != null) : "No bids?\n" + itemInfo;
 
@@ -1396,7 +1395,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             LoaderItemInfo.Bid bid = itemInfo.getLastBid();
             assert(bid != null) : itemInfo;
             
@@ -1439,9 +1438,9 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo.Bid bid, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
 
-            boolean is_buyer = false;
+            @Var boolean is_buyer = false;
             if (remaining == 1 || (bid.buyer_feedback && bid.seller_feedback == false)) {
                 is_buyer = true;
             } else {
@@ -1482,7 +1481,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             LoaderItemInfo.Bid bid = itemInfo.getLastBid();
             assert(bid != null) : itemInfo;
             
@@ -1524,19 +1523,19 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
         }
         @Override
         protected int populateRow(LoaderItemInfo itemInfo, Object[] row, short remaining) {
-            int col = 0;
+            @Var int col = 0;
             
             // Make it more likely that a user that has bid on an item is watching it
             Histogram<UserId> bidderHistogram = itemInfo.getBidderHistogram();
-            UserId buyerId = null;
+            @Var UserId buyerId = null;
             int num_watchers = this.watchers.size();
-            boolean use_random = (num_watchers == bidderHistogram.getValueCount());
+            @Var boolean use_random = (num_watchers == bidderHistogram.getValueCount());
             long num_users = tableSizes.get(AuctionMarkConstants.TABLENAME_USERACCT);
             
             if (LOG.isTraceEnabled())
                 LOG.trace(String.format("Selecting USER_WATCH buyerId [useRandom=%s, watchers=%d]",
                                         use_random, this.watchers.size()));
-            int tries = 1000;
+            @Var int tries = 1000;
             while (buyerId == null && num_watchers < num_users && tries-- > 0) {
                 try {
                     if (use_random) {

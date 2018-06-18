@@ -16,6 +16,13 @@
 
 package com.oltpbenchmark.api;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.dialects.DialectType;
+import com.oltpbenchmark.api.dialects.DialectsType;
+import com.oltpbenchmark.api.dialects.ObjectFactory;
+import com.oltpbenchmark.api.dialects.ProcedureType;
+import com.oltpbenchmark.api.dialects.StatementType;
+import com.oltpbenchmark.types.DatabaseType;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.URL;
@@ -27,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -35,16 +41,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-
-import com.oltpbenchmark.api.dialects.DialectType;
-import com.oltpbenchmark.api.dialects.DialectsType;
-import com.oltpbenchmark.api.dialects.ObjectFactory;
-import com.oltpbenchmark.api.dialects.ProcedureType;
-import com.oltpbenchmark.api.dialects.StatementType;
-import com.oltpbenchmark.types.DatabaseType;
 
 /**
  *
@@ -102,7 +100,7 @@ public class StatementDialects {
         }
 
         // COPIED FROM VoltDB's VoltCompiler.java
-        DialectsType dialects = null;
+        @Var DialectsType dialects = null;
         try {
             JAXBContext jc = JAXBContext.newInstance(this.xmlContext);
             // This schema shot the sheriff.
@@ -142,7 +140,7 @@ public class StatementDialects {
                 String procName = procedure.getName();
 
                 // Loop through all of the Statements listed for this Procedure
-                Map<String, String> procDialects = this.dialectsMap.get(procName);
+                @Var Map<String, String> procDialects = this.dialectsMap.get(procName);
                 for (StatementType statement : procedure.getStatement()) {
                     String stmtName = statement.getName();
                     assert(stmtName.isEmpty() == false) :
@@ -178,8 +176,8 @@ public class StatementDialects {
      */
     public String export(DatabaseType dbType, Collection<Procedure> procedures) {
         assert(procedures.isEmpty() == false) : "No procedures passed";
-        Marshaller marshaller = null;
-        JAXBContext jc = null;
+        @Var Marshaller marshaller = null;
+        @Var JAXBContext jc = null;
 
         try {
             jc = JAXBContext.newInstance(this.xmlContext);

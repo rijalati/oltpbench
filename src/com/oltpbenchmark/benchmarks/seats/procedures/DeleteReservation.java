@@ -17,16 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 
 public class DeleteReservation extends Procedure {
     private static final Logger LOG = Logger.getLogger(DeleteReservation.class);
@@ -77,13 +76,13 @@ public class DeleteReservation extends Procedure {
             " WHERE FF_C_ID = ? " +
             "   AND FF_AL_ID = ?");
     
-    public void run(Connection conn, long f_id, Long c_id, String c_id_str, String ff_c_id_str, Long ff_al_id) throws SQLException {
+    public void run(Connection conn, long f_id, @Var Long c_id, String c_id_str, String ff_c_id_str, @Var Long ff_al_id) throws SQLException {
         final boolean debug = LOG.isDebugEnabled();
-        PreparedStatement stmt = null; 
+        @Var PreparedStatement stmt = null; 
         
         // If we weren't given the customer id, then look it up
         if (c_id == null) {
-            boolean has_al_id = false;
+            @Var boolean has_al_id = false;
             
             // Use the customer's id as a string
             if (c_id_str != null && c_id_str.length() > 0) {
@@ -124,7 +123,7 @@ public class DeleteReservation extends Procedure {
         long r_id = results.getLong(9);
         double r_price = results.getDouble(11);
         results.close();
-        int updated = 0;
+        @Var int updated = 0;
         
         // Now delete all of the flights that they have on this flight
         stmt = this.getPreparedStatement(conn, DeleteReservation, r_id, c_id, f_id);

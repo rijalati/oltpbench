@@ -16,19 +16,18 @@
 
 package com.oltpbenchmark.benchmarks.tpcc.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
 
 public class NewOrder extends TPCCProcedure {
 
@@ -107,7 +106,7 @@ public class NewOrder extends TPCCProcedure {
 	private PreparedStatement stmtInsertOrderLine = null;
 
 
-    public ResultSet run(Connection conn, Random gen,
+    @Override public ResultSet run(Connection conn, Random gen,
 			int terminalWarehouseID, int numWarehouses,
 			int terminalDistrictLowerID, int terminalDistrictUpperID,
 			TPCCWorker w) throws SQLException {
@@ -134,7 +133,7 @@ public class NewOrder extends TPCCProcedure {
 		int[] itemIDs = new int[numItems];
 		int[] supplierWarehouseIDs = new int[numItems];
 		int[] orderQuantities = new int[numItems];
-		int allLocal = 1;
+		@Var int allLocal = 1;
 		for (int i = 0; i < numItems; i++) {
 			itemIDs[i] = TPCCUtil.getItemID(gen);
 			if (TPCCUtil.randomNumber(1, 100, gen) > 1) {
@@ -169,25 +168,25 @@ public class NewOrder extends TPCCProcedure {
 			int o_ol_cnt, int o_all_local, int[] itemIDs,
 			int[] supplierWarehouseIDs, int[] orderQuantities, Connection conn, TPCCWorker w)
 			throws SQLException {
-		float c_discount, w_tax, d_tax = 0, i_price;
-		int d_next_o_id, o_id = -1, s_quantity;
-		String c_last = null, c_credit = null, i_name, i_data, s_data;
-		String s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05;
-		String s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10, ol_dist_info = null;
+		@Var float c_discount, w_tax, d_tax = 0, i_price;
+		@Var int d_next_o_id, o_id = -1, s_quantity;
+		@Var String c_last = null, c_credit = null, i_name, i_data, s_data;
+		@Var String s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05;
+		@Var String s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10, ol_dist_info = null;
 		float[] itemPrices = new float[o_ol_cnt];
 		float[] orderLineAmounts = new float[o_ol_cnt];
 		String[] itemNames = new String[o_ol_cnt];
 		int[] stockQuantities = new int[o_ol_cnt];
 		char[] brandGeneric = new char[o_ol_cnt];
-		int ol_supply_w_id, ol_i_id, ol_quantity;
-		int s_remote_cnt_increment;
-		float ol_amount, total_amount = 0;
+		@Var int ol_supply_w_id, ol_i_id, ol_quantity;
+		@Var int s_remote_cnt_increment;
+		@Var float ol_amount, total_amount = 0;
 		
 		try {
 			stmtGetCust.setInt(1, w_id);
 			stmtGetCust.setInt(2, d_id);
 			stmtGetCust.setInt(3, c_id);
-			ResultSet rs = stmtGetCust.executeQuery();
+			@Var ResultSet rs = stmtGetCust.executeQuery();
 			if (!rs.next())
 				throw new RuntimeException("C_D_ID=" + d_id
 						+ " C_ID=" + c_id + " not found!");

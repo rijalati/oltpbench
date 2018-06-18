@@ -16,6 +16,12 @@
 
 package com.oltpbenchmark.benchmarks.tpcc.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,14 +29,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
 
 public class OrderStatus extends TPCCProcedure {
 
@@ -76,7 +75,7 @@ public class OrderStatus extends TPCCProcedure {
 	private PreparedStatement customerByName = null;
 
 
-    public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+    @Override public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
         boolean trace = LOG.isTraceEnabled();
         
         // initializing all prepared statements
@@ -86,10 +85,10 @@ public class OrderStatus extends TPCCProcedure {
         ordStatGetOrderLines = this.getPreparedStatement(conn, ordStatGetOrderLinesSQL);
 
         int d_id = TPCCUtil.randomNumber(terminalDistrictLowerID, terminalDistrictUpperID, gen);
-        boolean c_by_name = false;
+        @Var boolean c_by_name = false;
         int y = TPCCUtil.randomNumber(1, 100, gen);
-        String c_last = null;
-        int c_id = -1;
+        @Var String c_last = null;
+        @Var int c_id = -1;
         if (y <= 60) {
             c_by_name = true;
             c_last = TPCCUtil.getNonUniformRandomLastNameForRun(gen);
@@ -98,7 +97,7 @@ public class OrderStatus extends TPCCProcedure {
             c_id = TPCCUtil.getCustomerID(gen);
         }
 
-        int o_id = -1, o_carrier_id = -1;
+        @Var int o_id = -1, o_carrier_id = -1;
         Timestamp o_entry_d;
         ArrayList<String> orderLines = new ArrayList<String>();
 
@@ -120,7 +119,7 @@ public class OrderStatus extends TPCCProcedure {
         ordStatGetNewestOrd.setInt(2, d_id);
         ordStatGetNewestOrd.setInt(3, c.c_id);
         if (trace) LOG.trace("ordStatGetNewestOrd START");
-        ResultSet rs = ordStatGetNewestOrd.executeQuery();
+        @Var ResultSet rs = ordStatGetNewestOrd.executeQuery();
         if (trace) LOG.trace("ordStatGetNewestOrd END");
 
         if (!rs.next()) {
@@ -277,7 +276,7 @@ public class OrderStatus extends TPCCProcedure {
 
         // TPC-C 2.5.2.2: Position n / 2 rounded up to the next integer, but
         // that counts starting from 1.
-        int index = customers.size() / 2;
+        @Var int index = customers.size() / 2;
         if (customers.size() % 2 == 0) {
             index -= 1;
         }

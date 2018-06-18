@@ -16,13 +16,13 @@
 
 package com.oltpbenchmark.benchmarks.epinions.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class GetItemReviewsByTrustedUser extends Procedure {
 
@@ -36,9 +36,9 @@ public class GetItemReviewsByTrustedUser extends Procedure {
     );
     
     public void run(Connection conn, long iid, long uid) throws SQLException {
-        PreparedStatement stmt = this.getPreparedStatement(conn, getReview);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, getReview);
         stmt.setLong(1, iid);
-        ResultSet r= stmt.executeQuery();
+        @Var ResultSet r= stmt.executeQuery();
         while (r.next()) {
             continue;
         }

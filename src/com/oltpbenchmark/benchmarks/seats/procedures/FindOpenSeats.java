@@ -40,15 +40,14 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.*;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-import com.oltpbenchmark.api.*;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 
 public class FindOpenSeats extends Procedure {
     private static final Logger LOG = Logger.getLogger(FindOpenSeats.class);
@@ -127,7 +126,7 @@ public class FindOpenSeats extends Procedure {
         } // WHILE
         s_results.close();
 
-        int ctr = 0;
+        @Var int ctr = 0;
         Object[][] returnResults = new Object[SEATSConstants.FLIGHTS_NUM_SEATS][];
         for (int i = 0; i < seatmap.length; ++i) {
             if (seatmap[i] == -1) {

@@ -16,6 +16,11 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.util.json.JSONArray;
+import com.oltpbenchmark.util.json.JSONException;
+import com.oltpbenchmark.util.json.JSONObject;
+import com.oltpbenchmark.util.json.JSONStringer;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -31,13 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.util.json.JSONArray;
-import com.oltpbenchmark.util.json.JSONException;
-import com.oltpbenchmark.util.json.JSONObject;
-import com.oltpbenchmark.util.json.JSONStringer;
 
 /**
  * @author pavlo
@@ -54,7 +53,7 @@ public abstract class JSONUtil {
      * @return
      */
     public static Field[] getSerializableFields(Class<?> clazz, String...fieldsToExclude) {
-        Field ret[] = SERIALIZABLE_FIELDS.get(clazz);
+        @Var Field ret[] = SERIALIZABLE_FIELDS.get(clazz);
         if (ret == null) {
             Collection<String> exclude = CollectionUtil.addAll(new HashSet<String>(), fieldsToExclude);
             synchronized (SERIALIZABLE_FIELDS) {
@@ -285,7 +284,7 @@ public abstract class JSONUtil {
             stringer.object();
             for (Entry<?, ?> e : ((Map<?, ?>)field_value).entrySet()) {
                 // We can handle null keys
-                String key_value = null;
+                @Var String key_value = null;
                 if (e.getKey() != null) {
                     // deserialize it on the other side
                     Class<?> key_class = e.getKey().getClass();
@@ -334,7 +333,7 @@ public abstract class JSONUtil {
             Object key = JSONUtil.getPrimitiveValue(json_key, key_class);
             
             // VALUE
-            Object object = null;
+            @Var Object object = null;
             if (json_object.isNull(json_key)) {
                 // Nothing...
             } else if (val_interfaces.contains(List.class)) {
@@ -380,7 +379,7 @@ public abstract class JSONUtil {
             final Stack<Class> next_inner_classes = new Stack<Class>();
             next_inner_classes.addAll(inner_classes);
             assert(next_inner_classes.equals(inner_classes));
-            Object value = null;
+            @Var Object value = null;
             
             // Null
             if (json_array.isNull(i)) {
@@ -419,7 +418,7 @@ public abstract class JSONUtil {
     @SuppressWarnings("unchecked")
     public static void readFieldValue(final JSONObject json_object, final String json_key, Field field_handle, Object object) throws Exception {
         assert(json_object.has(json_key)) : "No entry exists for '" + json_key + "'";
-        Class<?> field_class = field_handle.getType();
+        @Var Class<?> field_class = field_handle.getType();
         Object field_object = field_handle.get(object);
         // String field_name = field_handle.getName();
         
@@ -547,7 +546,7 @@ public abstract class JSONUtil {
      * @throws JSONException
      */
     private static Class<?> getClassForField(JSONObject json_object, String json_key) throws JSONException {
-        Class<?> field_class = null;
+        @Var Class<?> field_class = null;
         // Check whether we also stored the class
         if (json_object.has(json_key + JSON_CLASS_SUFFIX)) {
             try {
@@ -569,7 +568,7 @@ public abstract class JSONUtil {
      * @return
      */
     private static Object makePrimitiveValue(Class<?> field_class, Object field_value) {
-        Object value = null;
+        @Var Object value = null;
         
         // Class
         if (field_class.equals(Class.class)) {
@@ -596,7 +595,7 @@ public abstract class JSONUtil {
      * @throws Exception
      */
     public static Object getPrimitiveValue(String json_value, Class<?> field_class) throws Exception {
-        Object value = null;
+        @Var Object value = null;
 
         // Class
         if (field_class.equals(Class.class)) {
@@ -640,7 +639,7 @@ public abstract class JSONUtil {
     }
     
     public static Class<?> getPrimitiveType(String json_value) {
-        Object value = null;
+        @Var Object value = null;
         
         // Class
         try {

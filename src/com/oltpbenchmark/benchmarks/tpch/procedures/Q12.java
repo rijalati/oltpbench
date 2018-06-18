@@ -16,11 +16,11 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHConstants;
 import com.oltpbenchmark.benchmarks.tpch.util.TPCHUtil;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -65,7 +65,7 @@ public class Q12 extends GenericQuery {
 
         // SHIPMODE2 is randomly selected within the list of values defined for Modes in Clause 4.2.2.13 and must be
         // different from the value selected for SHIPMODE1 in item 1
-        String shipMode2 = shipMode1;
+        @Var String shipMode2 = shipMode1;
         while (shipMode1.equals(shipMode2)) {
             shipMode2 = TPCHUtil.choice(TPCHConstants.MODES, rand);
         }

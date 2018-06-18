@@ -16,6 +16,7 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -78,7 +79,7 @@ public abstract class TextGenerator {
         // and then taking different bitmasks
         
         int num_rounds = chars.length / FAST_MASKS.length;
-        int i = 0;
+        @Var int i = 0;
         for (int ctr = 0; ctr < num_rounds; ctr++) {
             int rand = rng.nextInt(10000); // CHAR_SYMBOLS.length);
             for (int mask : FAST_MASKS) {
@@ -145,13 +146,13 @@ public abstract class TextGenerator {
      */
     public static char[] permuteText(Random rng, char chars[]) {
         // We will try to be fast about this and permute the text by blocks
-        int idx = 0;
+        @Var int idx = 0;
         int blockSize = chars.length / 32;
         
         // We'll generate one random number and check whether its bit is set to zero
         // Hopefully this is faster than having to generate a bunch of random
         // integers
-        int rand = rng.nextInt();
+        @Var int rand = rng.nextInt();
         // If the number is zero, then flip one bit so that we make sure that 
         // we change at least one block
         if (rand == 0) rand = 1;

@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.ycsb;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
+import com.oltpbenchmark.util.TextGenerator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.TextGenerator;
 
 public class YCSBLoader extends Loader<YCSBBenchmark> {
     private static final Logger LOG = Logger.getLogger(YCSBLoader.class);
@@ -44,7 +43,7 @@ public class YCSBLoader extends Loader<YCSBBenchmark> {
     @Override
     public List<LoaderThread> createLoaderThreads() throws SQLException {
         List<LoaderThread> threads = new ArrayList<LoaderThread>();
-        int count = 0;
+        @Var int count = 0;
         while (count < this.num_record) {
             final int start = count;
             final int stop = Math.min(start+YCSBConstants.THREAD_BATCH_SIZE, this.num_record);
@@ -67,8 +66,8 @@ public class YCSBLoader extends Loader<YCSBBenchmark> {
         
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement stmt = conn.prepareStatement(sql);
-        long total = 0;
-        int batch = 0;
+        @Var long total = 0;
+        @Var int batch = 0;
         for (int i = start; i < stop; i++) {
             stmt.setInt(1, i);
             for (int j = 0; j < YCSBConstants.NUM_FIELDS; j++) {

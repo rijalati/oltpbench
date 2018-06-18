@@ -17,21 +17,20 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Timestamp;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkProfile;
 import com.oltpbenchmark.util.FileUtil;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import org.apache.log4j.Logger;
 
 public abstract class AuctionMarkUtil {
     private static final Logger LOG = Logger.getLogger(AuctionMarkUtil.class);
     
     public static File getDataDirectory() {
-        File dataDir = null;
+        @Var File dataDir = null;
         
         // If we weren't given a path, then we need to look for the tests directory and
         // then walk our way up the tree to get to our benchmark's directory

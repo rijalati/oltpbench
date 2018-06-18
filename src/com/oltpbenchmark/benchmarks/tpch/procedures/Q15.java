@@ -16,9 +16,9 @@
 
 package com.oltpbenchmark.benchmarks.tpch.procedures;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.util.RandomGenerator;
-
 import java.sql.*;
 
 public class Q15 extends GenericQuery {
@@ -68,8 +68,8 @@ public class Q15 extends GenericQuery {
         // With this query, we have to set up a view before we execute the
         // query, then drop it once we're done.
         Statement stmt = conn.createStatement();
-        String sql;
-        ResultSet ret = null;
+        @Var String sql;
+        @Var ResultSet ret = null;
         try {
             // DATE is the first day of a randomly selected month between
             // the first month of 1993 and the 10th month of 1997

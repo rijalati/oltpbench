@@ -17,9 +17,9 @@
 
 package com.oltpbenchmark.api;
 
+import com.google.errorprone.annotations.Var;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -58,7 +58,7 @@ public final class SQLStmt {
      * @param sql
      * @param substitutions
      */
-    public final void setSQL(String sql) {
+    public final void setSQL(@Var String sql) {
         this.orig_sql = sql;
         for (int ctr : this.substitutions) {
             assert(ctr > 0);

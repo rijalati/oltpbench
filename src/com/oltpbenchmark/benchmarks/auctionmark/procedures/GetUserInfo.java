@@ -17,20 +17,19 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * GetUserInfo
@@ -121,11 +120,11 @@ public class GetUserInfo extends Procedure {
         final boolean debug = LOG.isDebugEnabled();
         
         ResultSet results[] = new ResultSet[6];
-        int result_idx = 0;
+        @Var int result_idx = 0;
         
         // The first VoltTable in the output will always be the user's information
         if (debug) LOG.debug("Grabbing USER record: " + user_id);
-        PreparedStatement stmt = this.getPreparedStatement(conn, getUser, user_id);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, getUser, user_id);
         results[result_idx++] = stmt.executeQuery();
 
         // They can also get their USER_FEEDBACK records if they want as well
@@ -175,7 +174,7 @@ public class GetUserInfo extends Procedure {
         @SuppressWarnings("unchecked")
         List<Object[]> final_results[] = new List[results.length];
         for (result_idx = 0; result_idx < results.length; result_idx++) {
-            List<Object[]> inner = null; 
+            @Var List<Object[]> inner = null; 
             if (results[result_idx] != null) {
                 inner = new ArrayList<Object[]>();
                 int num_cols = results[result_idx].getMetaData().getColumnCount();

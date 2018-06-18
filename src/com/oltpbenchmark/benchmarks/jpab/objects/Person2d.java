@@ -84,7 +84,7 @@ public class Person2d extends Person1st implements TestEntity {
 			lastLoginDate != null && loginCount > 0;
     }
 
-    public void update() {
+    @Override public void update() {
     	lastLoginDate = new Date();
     	loginCount++;
     }

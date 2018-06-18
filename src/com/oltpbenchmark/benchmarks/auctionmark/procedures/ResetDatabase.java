@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
+import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 
 /**
  * Remove ITEM entries created after the loader started
@@ -57,8 +56,8 @@ public class ResetDatabase extends Procedure {
     );
 
     public void run(Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        int updated;
+        @Var PreparedStatement stmt = null;
+        @Var int updated;
         
         // We have to get the loaderStopTimestamp from the CONFIG_PROFILE
         // We will then reset any changes that were made after this timestamp

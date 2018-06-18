@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark.api;
 
+import com.google.errorprone.annotations.Var;
 import java.util.Random;
 
 public class LoaderUtil {
@@ -35,7 +36,7 @@ public class LoaderUtil {
 	@Deprecated
 	public static String randomStr(long strLen) {
 
-		char freshChar;		
+		@Var char freshChar;		
 		StringBuilder sb = new StringBuilder();
 		
 		while (sb.length() < (strLen - 1)) {

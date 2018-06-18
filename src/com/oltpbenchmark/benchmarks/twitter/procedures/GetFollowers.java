@@ -16,14 +16,14 @@
 
 package com.oltpbenchmark.benchmarks.twitter.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.twitter.TwitterConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.twitter.TwitterConstants;
 
 public class GetFollowers extends Procedure {
 	
@@ -39,13 +39,13 @@ public class GetFollowers extends Procedure {
     );
     
     public void run(Connection conn, long uid) throws SQLException {
-        PreparedStatement stmt = this.getPreparedStatement(conn, getFollowers);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, getFollowers);
         stmt.setLong(1, uid);
-        ResultSet rs = stmt.executeQuery();
+        @Var ResultSet rs = stmt.executeQuery();
         
         stmt = this.getPreparedStatement(conn, getFollowerNames);
-        int ctr = 0;
-        long last = -1;
+        @Var int ctr = 0;
+        @Var long last = -1;
         while (rs.next() && ctr++ < TwitterConstants.LIMIT_FOLLOWERS) {
             last = rs.getLong(1);
             stmt.setLong(ctr, last);

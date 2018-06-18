@@ -39,7 +39,7 @@ public class CHBenCHmark extends BenchmarkModule {
 		super("chbenchmark", workConf, true);
 	}
 	
-	protected Package getProcedurePackageImpl() {
+	@Override protected Package getProcedurePackageImpl() {
 		return (Q1.class.getPackage());
 	}
 	
@@ -59,7 +59,7 @@ public class CHBenCHmark extends BenchmarkModule {
 		return workers;
 	}
 	
-	protected Loader<CHBenCHmark> makeLoaderImpl(Connection conn) throws SQLException {
+	@Override protected Loader<CHBenCHmark> makeLoaderImpl(Connection conn) throws SQLException {
 		return new CHBenCHmarkLoader(this, conn);
 	}
 	

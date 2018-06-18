@@ -16,20 +16,24 @@
 
 package com.oltpbenchmark.benchmarks.chbenchmark.queries;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.DBWorkload;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.api.Worker;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.apache.log4j.Logger;
 
 public abstract class GenericQuery extends Procedure {
     
@@ -47,9 +51,9 @@ public abstract class GenericQuery extends Procedure {
 		
 		try{
 			
-			FileReader input = new FileReader("src/com/oltpbenchmark/benchmarks/chbenchmark/queries/" + queryFile);
+			Reader input = Files.newBufferedReader(Paths.get("src/com/oltpbenchmark/benchmarks/chbenchmark/queries/" + queryFile), UTF_8);
 			BufferedReader reader = new BufferedReader(input);
-			String line = reader.readLine();
+			@Var String line = reader.readLine();
 			while (line != null) {
 				query.append(line);
 				query.append(" ");
@@ -72,7 +76,7 @@ public abstract class GenericQuery extends Procedure {
             owner.setCurrStatement(stmt);
 
     	LOG.debug(this.getClass());
-        ResultSet rs = null;
+        @Var ResultSet rs = null;
         try {
             rs = stmt.executeQuery();
         } catch(SQLException ex) {

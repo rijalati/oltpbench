@@ -33,7 +33,7 @@ public class Q17 extends GenericQuery {
             +   "AND ol_quantity < t.a"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

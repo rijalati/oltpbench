@@ -17,15 +17,15 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
 import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class GetPageAuthenticated extends Procedure {
 	
@@ -78,11 +78,11 @@ public class GetPageAuthenticated extends Procedure {
         // Retrieve the user data, if the user is logged in
 
         // FIXME TOO FREQUENTLY SELECTING BY USER_ID
-        String userText = userIp;
-        PreparedStatement st = this.getPreparedStatement(conn, selectUser);
+        @Var String userText = userIp;
+        @Var PreparedStatement st = this.getPreparedStatement(conn, selectUser);
         if (userId > 0) {
             st.setInt(1, userId);
-            ResultSet rs = st.executeQuery();
+            @Var ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 userText = rs.getString("user_name");
             } else {
@@ -105,7 +105,7 @@ public class GetPageAuthenticated extends Procedure {
         st = this.getPreparedStatement(conn, selectPage);
         st.setInt(1, nameSpace);
         st.setString(2, pageTitle);
-        ResultSet rs = st.executeQuery();
+        @Var ResultSet rs = st.executeQuery();
 
         if (!rs.next()) {
             rs.close();
@@ -161,7 +161,7 @@ public class GetPageAuthenticated extends Procedure {
             rs.close();
             throw new UserAbortException("no such text: " + textId + " for page_id:" + pageId + " page_namespace: " + nameSpace + " page_title:" + pageTitle);
         }
-        Article a = null;
+        @Var Article a = null;
         if (!forSelect)
             a = new Article(userText, pageId, rs.getString("old_text"), textId, revisionId);
         assert !rs.next();

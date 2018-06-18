@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.sibench;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
 
 public class SILoader extends Loader<SIBenchmark> {
     private static final Logger LOG = Logger.getLogger(SILoader.class);
@@ -71,7 +70,7 @@ public class SILoader extends Loader<SIBenchmark> {
 
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement stmt = conn.prepareStatement(sql);
-        int batch = 0;
+        @Var int batch = 0;
         for (int i = lo; i <= hi; i++) {
             stmt.setInt(1, i);
             stmt.setInt(2, rand.nextInt(Integer.MAX_VALUE));

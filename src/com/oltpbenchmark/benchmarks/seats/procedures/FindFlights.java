@@ -17,18 +17,17 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.*;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-import com.oltpbenchmark.api.*;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 
 public class FindFlights extends Procedure {
     private static final Logger LOG = Logger.getLogger(FindFlights.class);
@@ -110,7 +109,7 @@ public class FindFlights extends Procedure {
         // H-Store doesn't support IN clauses, so we'll only get nearby flights to nearby arrival cities
         int num_nearby = arrive_aids.size();
         if (num_nearby > 0) {
-            PreparedStatement f_stmt = null;
+            @Var PreparedStatement f_stmt = null;
             if (num_nearby == 1) {
                 f_stmt = this.getPreparedStatement(conn, GetFlights1);
             } else if (num_nearby == 2) {
@@ -137,13 +136,13 @@ public class FindFlights extends Procedure {
 
 
             PreparedStatement ai_stmt = this.getPreparedStatement(conn, GetAirportInfo);
-            ResultSet ai_results = null;
+            @Var ResultSet ai_results = null;
             while (flightResults.next()) {
                 long f_depart_airport = flightResults.getLong(4);
                 long f_arrive_airport = flightResults.getLong(6);
 
                 Object row[] = new Object[13];
-                int r = 0;
+                @Var int r = 0;
 
                 row[r++] = flightResults.getLong(1);    // [00] F_ID
                 row[r++] = flightResults.getLong(3);    // [01] SEATS_LEFT
@@ -152,7 +151,7 @@ public class FindFlights extends Procedure {
                 // DEPARTURE AIRPORT
                 ai_stmt.setLong(1, f_depart_airport);
                 ai_results = ai_stmt.executeQuery();
-                boolean adv = ai_results.next();
+                @Var boolean adv = ai_results.next();
                 assert(adv);
                 row[r++] = flightResults.getDate(5);    // [03] DEPART_TIME
                 row[r++] = ai_results.getString(1);     // [04] DEPART_AP_CODE

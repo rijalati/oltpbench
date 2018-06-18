@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
-
 import org.apache.commons.collections15.set.ListOrderedSet;
 import org.apache.commons.lang.NotImplementedException;
 
@@ -73,7 +73,7 @@ public abstract class CollectionUtil {
     
     public static int[] toIntArray(Collection<Integer> items) {
         int ret[] = new int[items.size()];
-        int idx = 0;
+        @Var int idx = 0;
         for (Integer i : items) {
             assert(i != null);
             ret[idx++] = i.intValue();
@@ -274,8 +274,8 @@ public abstract class CollectionUtil {
      * @return
      */
     public static <T, U extends Comparable<U>> T getGreatest(Map<T, U> map) {
-        T max_key = null;
-        U max_value = null;
+        @Var T max_key = null;
+        @Var U max_value = null;
         for (Entry<T, U> e:map.entrySet()) {
             T key = e.getKey();
             U value = e.getValue();
@@ -330,7 +330,7 @@ public abstract class CollectionUtil {
         } else if (items instanceof ListOrderedSet<?>) {
             return ((ListOrderedSet<T>)items).get(idx);
         }
-        int ctr = 0;
+        @Var int ctr = 0;
         for (T t : items) {
             if (ctr++ == idx) return (t);
         }
@@ -344,7 +344,7 @@ public abstract class CollectionUtil {
      * @return
      */
     public static <T> T last(Iterable<T> items) {
-        T last = null;
+        @Var T last = null;
         if (items instanceof AbstractList<?>) {
             AbstractList<T> list = (AbstractList<T>)items;
             last = (list.isEmpty() ? null : list.get(list.size() - 1));

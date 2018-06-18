@@ -16,19 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.hyadapt;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.api.Loader.LoaderThread;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
+import org.apache.log4j.Logger;
 
 public class HYADAPTLoader extends Loader<HYADAPTBenchmark> {
     private static final Logger LOG = Logger.getLogger(HYADAPTLoader.class);
@@ -74,8 +72,8 @@ public class HYADAPTLoader extends Loader<HYADAPTBenchmark> {
         
         String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
         PreparedStatement stmt = this.conn.prepareStatement(sql);
-        long total = 0;
-        int batch = 0;
+        @Var long total = 0;
+        @Var int batch = 0;
         for (int i = 0; i < this.num_record; i++) {
             stmt.setInt(1, i);
             for (int j = 2; j <= HYADAPTConstants.FIELD_COUNT + 1; j++) {

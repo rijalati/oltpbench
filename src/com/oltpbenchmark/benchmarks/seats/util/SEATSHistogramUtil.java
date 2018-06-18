@@ -17,6 +17,9 @@
 
 package com.oltpbenchmark.benchmarks.seats.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+import com.oltpbenchmark.util.Histogram;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,11 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
-import com.oltpbenchmark.util.Histogram;
 
 public abstract class SEATSHistogramUtil {
     private static final Logger LOG = Logger.getLogger(SEATSHistogramUtil.class);
@@ -40,7 +39,7 @@ public abstract class SEATSHistogramUtil {
     private static Map<String, Histogram<String>> cached_AirportFlights; 
 
     private static File getHistogramFile(File data_dir, String name) {
-        File file = new File(data_dir.getAbsolutePath() + File.separator + "histogram." + name.toLowerCase());
+        @Var File file = new File(data_dir.getAbsolutePath() + File.separator + "histogram." + name.toLowerCase());
         if (file.exists() == false) file = new File(file.getAbsolutePath() + ".gz");
         return (file);
     }
@@ -76,7 +75,7 @@ public abstract class SEATSHistogramUtil {
         Collection<String> values = h.values();
         for (String value : values) {
             String split[] = pattern.split(value);
-            Histogram<String> src_h = m.get(split[0]);
+            @Var Histogram<String> src_h = m.get(split[0]);
             if (src_h == null) {
                 src_h = new Histogram<String>();
                 m.put(split[0], src_h);
@@ -98,7 +97,7 @@ public abstract class SEATSHistogramUtil {
      */
     public static synchronized Histogram<String> loadHistogram(String name, File data_path, boolean has_header) throws Exception {
         File file = getHistogramFile(data_path, name);
-        Histogram<String> histogram = cached_Histograms.get(file);
+        @Var Histogram<String> histogram = cached_Histograms.get(file);
         if (histogram == null) {
             histogram = new Histogram<String>();
             histogram.load(file.getAbsolutePath());

@@ -26,11 +26,17 @@
 
 package com.oltpbenchmark.benchmarks.tpch;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -39,11 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
 
 public class TPCHLoader extends Loader<TPCHBenchmark> {
     private static final Logger LOG = Logger.getLogger(TPCHLoader.class);
@@ -352,9 +354,9 @@ public class TPCHLoader extends Loader<TPCHBenchmark> {
 
         @Override
         public void run() {
-            BufferedReader br = null;
-            int recordsRead = 0;
-            long lastTimeMS = new java.util.Date().getTime();
+            @Var BufferedReader br = null;
+            @Var int recordsRead = 0;
+            @Var long lastTimeMS = new java.util.Date().getTime();
 
             try {
                 truncateTable(this.tableName.toLowerCase());
@@ -377,20 +379,20 @@ public class TPCHLoader extends Loader<TPCHBenchmark> {
                     File file = new File(workConf.getDataDir()
                                          , tableName.toLowerCase() + "." 
                                                  + format);
-                    br = new BufferedReader(new FileReader(file));
-                    String line;
+                    br = Files.newBufferedReader(file.toPath(), UTF_8);
+                    @Var String line;
                     // The following pattern parses the lines by commas, except for
                     // ones surrounded by double-quotes. Further, strings that are
                     // double-quoted have the quotes dropped (we don't need them).
                     Pattern pattern = getFormatPattern(format);
                     int group = getFormatGroup(format);
-                    Matcher matcher;
+                    @Var Matcher matcher;
                     while ((line = br.readLine()) != null) {
                         matcher = pattern.matcher(line);
                         try {
                             for (int i = 0; i < types.length; ++i) {
                                 matcher.find();
-                                String field = matcher.group(group);
+                                @Var String field = matcher.group(group);
 
                                 // Remove quotes that may surround a field.
                                 if (field.charAt(0) == '\"') {
@@ -426,7 +428,7 @@ public class TPCHLoader extends Loader<TPCHBenchmark> {
                                         Pattern eurFmt = Pattern.compile("^\\s*(\\d{2})\\.(\\d{2})\\.(\\d{4})\\s*$");
                                         Matcher eurMatcher = eurFmt.matcher(field);
 
-                                        java.sql.Date fieldAsDate = null;
+                                        @Var java.sql.Date fieldAsDate = null;
                                         if (isoMatcher.find()) {
                                             fieldAsDate = new java.sql.Date(
                                                     Integer.parseInt(isoMatcher.group(1)) - 1900,
@@ -496,7 +498,7 @@ public class TPCHLoader extends Loader<TPCHBenchmark> {
                     now = new java.util.Date();
                     LOG.debug("End " + tableName + " Load @ " + now);
 
-                } catch (SQLException se) {
+                } catch (@Var SQLException se) {
                     LOG.debug(se.getMessage());
                     se = se.getNextException();
                     LOG.debug(se.getMessage());

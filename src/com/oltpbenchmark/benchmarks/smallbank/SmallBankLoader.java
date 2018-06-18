@@ -1,18 +1,17 @@
 package com.oltpbenchmark.benchmarks.smallbank;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.RandomDistribution.*;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
-import com.oltpbenchmark.util.RandomDistribution.*;
 
 /**
  * SmallBankBenchmark Loader
@@ -54,7 +53,7 @@ public class SmallBankLoader extends Loader<SmallBankBenchmark> {
     public List<LoaderThread> createLoaderThreads() throws SQLException {
         List<LoaderThread> threads = new ArrayList<LoaderThread>();
         int batchSize = 100000;
-        long start = 0;
+        @Var long start = 0;
         while (start < this.numAccounts) {
             long stop = Math.min(start + batchSize, this.numAccounts);
             threads.add(new Generator(start, stop));
@@ -92,7 +91,7 @@ public class SmallBankLoader extends Loader<SmallBankBenchmark> {
                 this.stmtChecking = conn.prepareStatement(SmallBankLoader.this.sqlChecking);
                 
                 final String acctNameFormat = "%0"+custNameLength+"d";
-                int batchSize = 0;
+                @Var int batchSize = 0;
                 for (long acctId = this.start; acctId < this.stop; acctId++) {
                     // ACCOUNT
                     String acctName = String.format(acctNameFormat, acctId);

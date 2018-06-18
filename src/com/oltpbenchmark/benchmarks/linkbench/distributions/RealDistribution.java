@@ -15,6 +15,12 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.distributions;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
+import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -26,13 +32,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.TreeMap;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
-import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
-import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
 
 
 /*
@@ -298,7 +298,7 @@ public class RealDistribution extends PiecewiseLinearDistribution {
 
     logger.info("Loading real distribution data from " + filename);
 
-    Scanner scanner = new Scanner(new File(filename));
+    Scanner scanner = new Scanner(new File(filename), UTF_8.name());
     scanner.useLocale(INPUT_FILE_LOCALE);
     while (scanner.hasNext()) {
       String type = scanner.next();

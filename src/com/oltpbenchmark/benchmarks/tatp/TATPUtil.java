@@ -16,8 +16,8 @@
 
 
 package com.oltpbenchmark.benchmarks.tatp;
+import com.google.errorprone.annotations.Var;
 import java.nio.charset.StandardCharsets;
-
 import java.util.Random;
 
 public abstract class TATPUtil {
@@ -82,7 +82,7 @@ public abstract class TATPUtil {
     public static int[] subArr(int arr[], int min_len, int max_len) {
         assert min_len <= max_len && min_len >= 0;
         int sub_len = number(min_len, max_len).intValue();
-        int arr_len = arr.length;
+        @Var int arr_len = arr.length;
 
         assert sub_len <= arr_len;
 

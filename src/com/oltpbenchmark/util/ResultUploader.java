@@ -16,10 +16,18 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.Results;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.collectors.DBParameterCollector;
 import com.oltpbenchmark.api.collectors.DBParameterCollectorGen;
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.TreeMap;
+import java.util.zip.GZIPOutputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -34,14 +42,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
-import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.zip.GZIPOutputStream;
 
 public class ResultUploader {
     private static final Logger LOG = Logger.getLogger(ResultUploader.class);
@@ -142,7 +142,7 @@ public class ResultUploader {
             File metricsFile = File.createTempFile("metrics", ".tmp");
             File csvDataFile = File.createTempFile("csv", ".gz");
 
-            PrintStream confOut = new PrintStream(new FileOutputStream(expConfigFile));
+            @Var PrintStream confOut = new PrintStream(new FileOutputStream(expConfigFile));
             writeBenchmarkConf(confOut);
             confOut.close();
 

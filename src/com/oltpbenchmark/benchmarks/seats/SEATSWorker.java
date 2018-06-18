@@ -40,13 +40,7 @@
 
 package com.oltpbenchmark.benchmarks.seats;
 
-import java.sql.Timestamp;
-import java.sql.SQLException;
-import java.util.*;
-
-import org.apache.commons.collections15.map.ListOrderedMap;
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
@@ -62,6 +56,11 @@ import com.oltpbenchmark.benchmarks.seats.util.FlightId;
 import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.RandomGenerator;
 import com.oltpbenchmark.util.StringUtil;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
+import org.apache.commons.collections15.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 
 public class SEATSWorker extends Worker<SEATSBenchmark> {
     private static final Logger LOG = Logger.getLogger(SEATSWorker.class);
@@ -146,7 +145,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
     } // STATIC
     
     protected BitSet getSeatsBitSet(FlightId flight_id) {
-        BitSet seats = CACHE_BOOKED_SEATS.get(flight_id);
+        @Var BitSet seats = CACHE_BOOKED_SEATS.get(flight_id);
         if (seats == null) {
 //            synchronized (CACHE_BOOKED_SEATS) {
                 seats = CACHE_BOOKED_SEATS.get(flight_id);
@@ -181,7 +180,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
     }
     
     protected Set<FlightId> getCustomerBookedFlights(CustomerId customer_id) {
-        Set<FlightId> f_ids = CACHE_CUSTOMER_BOOKED_FLIGHTS.get(customer_id);
+        @Var Set<FlightId> f_ids = CACHE_CUSTOMER_BOOKED_FLIGHTS.get(customer_id);
         if (f_ids == null) {
             f_ids = CACHE_CUSTOMER_BOOKED_FLIGHTS.get(customer_id);
             if (f_ids == null) {
@@ -236,7 +235,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         @Override
         public int hashCode() {
             int prime = 7;
-            int result = 1;
+            @Var int result = 1;
             result = prime * result + seatnum;
             result = prime * result + flight_id.hashCode();
             result = prime * result + customer_id.hashCode();
@@ -277,7 +276,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         this.profile = new SEATSProfile(benchmark, rng); 
     }
     
-    protected void initialize() {
+    @Override protected void initialize() {
         try {
             this.profile.loadProfile(this);
         } catch (SQLException ex) {
@@ -287,7 +286,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
             LOG.trace("Airport Max Customer Id:\n" + this.profile.airport_max_customer_id);
         
         // Make sure we have the information we need in the BenchmarkProfile
-        String error_msg = null;
+        @Var String error_msg = null;
         if (this.profile.getFlightIdCount() == 0) {
             error_msg = "The benchmark profile does not have any flight ids.";
         } else if (this.profile.getCustomerIdCount() == 0) {
@@ -321,7 +320,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
                                              this.getBenchmarkModule().getBenchmarkName(), txnType);
         if (LOG.isDebugEnabled())
             LOG.debug("Attempting to execute " + proc);
-        boolean ret = false;
+        @Var boolean ret = false;
         try {
         switch (txn) {
             case DeleteReservation: {
@@ -374,7 +373,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
      * @param r
      */
     protected void requeueReservation(Reservation r) {
-        CacheType ctype = null;
+        @Var CacheType ctype = null;
         
         // Queue this motha trucka up for a deletin'
         if (rng.nextBoolean()) {
@@ -409,10 +408,10 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         
         // Parameters
         long f_id = r.flight_id.encode();
-        Long c_id = null;
-        String c_id_str = null;
-        String ff_c_id_str = null;
-        Long ff_al_id = null;
+        @Var Long c_id = null;
+        @Var String c_id_str = null;
+        @Var String ff_c_id_str = null;
+        @Var Long ff_al_id = null;
         
         // Delete with the Customer's id as a string 
         if (rand <= SEATSConstants.PROB_DELETE_WITH_CUSTOMER_ID_STR) {
@@ -430,7 +429,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         
         if (LOG.isTraceEnabled()) LOG.trace("Calling " + proc);
         
-        boolean successful = false;
+        @Var boolean successful = false;
         while(!successful){
         	try{
         		proc.run(conn, f_id, c_id, c_id_str, ff_c_id_str, ff_al_id);
@@ -503,7 +502,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         }
         
         // If distance is greater than zero, then we will also get flights from nearby airports
-        long distance = -1;
+        @Var long distance = -1;
         if (rng.nextInt(100) < SEATSConstants.PROB_FIND_FLIGHTS_NEARBY_AIRPORT) {
             distance = SEATSConstants.DISTANCES[rng.nextInt(SEATSConstants.DISTANCES.length)];
         }
@@ -519,7 +518,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         
         if (results.size() > 1) {
             // Convert the data into a FlightIds that other transactions can use
-            int ctr = 0;
+            @Var int ctr = 0;
             for (Object row[] : results) {
                 FlightId flight_id = new FlightId((Long)row[0]);
                 assert(flight_id != null);
@@ -571,12 +570,12 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
             // We first try to get a CustomerId based at this departure airport
             if (LOG.isTraceEnabled())
                 LOG.trace("Looking for a random customer to fly on " + search_flight);
-            CustomerId customer_id = profile.getRandomCustomerId(airport_depart_id);
+            @Var CustomerId customer_id = profile.getRandomCustomerId(airport_depart_id);
           
             // We will go for a random one if:
             //  (1) The Customer is already booked on this Flight
             //  (2) We already made a new Reservation just now for this Customer
-            int tries = SEATSConstants.FLIGHTS_NUM_SEATS;
+            @Var int tries = SEATSConstants.FLIGHTS_NUM_SEATS;
             while (tries-- > 0 && (customer_id == null)) { //  || isCustomerBookedOnFlight(customer_id, flight_id))) {
                 customer_id = profile.getRandomCustomerId();
                 if (LOG.isTraceEnabled())
@@ -613,8 +612,8 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
     // ----------------------------------------------------------------
     
     private boolean executeNewReservation(NewReservation proc) throws SQLException {
-        Reservation reservation = null;
-        BitSet seats = null;
+        @Var Reservation reservation = null;
+        @Var BitSet seats = null;
         LinkedList<Reservation> cache = CACHE_RESERVATIONS.get(CacheType.PENDING_INSERTS);
         assert(cache != null) : "Unexpected " + CacheType.PENDING_INSERTS;
         
@@ -667,7 +666,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         
         if (LOG.isTraceEnabled()) LOG.trace("Calling " + proc);
         
-        boolean successful = false;
+        @Var boolean successful = false;
   //      int count = 0;
         while(successful==false){
         	try{
@@ -714,8 +713,8 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         // Pick a random customer and then have at it!
         CustomerId customer_id = this.profile.getRandomCustomerId();
         
-        Long c_id = null;
-        String c_id_str = null;
+        @Var Long c_id = null;
+        @Var String c_id_str = null;
         long attr0 = this.rng.nextLong();
         long attr1 = this.rng.nextLong();
         long update_ff = (rng.number(1, 100) <= SEATSConstants.PROB_UPDATE_FREQUENT_FLYER ? 1 : 0);
@@ -732,7 +731,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
         if (LOG.isTraceEnabled()) LOG.trace("Calling " + proc);
         
         
-        boolean successful = false;
+        @Var boolean successful = false;
         while(!successful){
         	try{
         	    proc.run(conn, c_id, c_id_str, update_ff, attr0, attr1);
@@ -767,7 +766,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
             LOG.trace("Let's look for a Reservation that we can update");
         
         // Pull off the first pending seat change and throw that ma at the server
-        Reservation r = null;
+        @Var Reservation r = null;
         try {
             r = cache.poll();
         } catch (Throwable ex) {
@@ -787,7 +786,7 @@ public class SEATSWorker extends Worker<SEATSBenchmark> {
 
         if (LOG.isTraceEnabled()) LOG.trace("Calling " + proc);
       
-        boolean successful = false;
+        @Var boolean successful = false;
         while(!successful){
         	try{
         		proc.run( conn, r.id,

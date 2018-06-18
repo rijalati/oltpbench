@@ -16,12 +16,12 @@
 
 package com.oltpbenchmark;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import com.oltpbenchmark.util.StringUtil;
 
 public class Phase {
     public enum Arrival {
@@ -113,7 +113,7 @@ public class Phase {
      * @return The total weight
      */
     public double totalWeight() {
-        double total = 0.0;
+        @Var double total = 0.0;
         for (Double d : weights)
             total += d;
         return total;
@@ -133,7 +133,7 @@ public class Phase {
             return -1;
 
         if (isSerial()) {
-            int ret;
+            @Var int ret;
             synchronized(this) {
                 ret = this.nextSerial;
 
@@ -161,7 +161,7 @@ public class Phase {
         }
         else {
             int randomPercentage = gen.nextInt((int)totalWeight()) + 1;
-        double weight = 0.0;
+        @Var double weight = 0.0;
         for (int i = 0; i < this.num_weights; i++) {
             weight += weights.get(i).doubleValue();
             if (randomPercentage <= weight) {

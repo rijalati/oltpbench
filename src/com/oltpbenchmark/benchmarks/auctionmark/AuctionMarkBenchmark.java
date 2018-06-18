@@ -17,15 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -36,6 +28,14 @@ import com.oltpbenchmark.benchmarks.auctionmark.procedures.LoadConfig;
 import com.oltpbenchmark.benchmarks.auctionmark.procedures.ResetDatabase;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.RandomGenerator;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuctionMarkBenchmark extends BenchmarkModule {
 
@@ -91,7 +91,7 @@ public class AuctionMarkBenchmark extends BenchmarkModule {
 	 * @return
 	 */
 	public static final File getTableDataFile(File data_dir, Table catalog_tbl) {
-	    File f = new File(String.format("%s%stable.%s.csv", data_dir.getAbsolutePath(),
+	    @Var File f = new File(String.format("%s%stable.%s.csv", data_dir.getAbsolutePath(),
 	                                                        File.separator,
 	                                                        catalog_tbl.getName().toLowerCase()));
 	    if (f.exists() == false) f = new File(f.getAbsolutePath() + ".gz");

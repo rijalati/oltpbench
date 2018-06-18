@@ -17,14 +17,13 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.util.FileUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.util.FileUtil;
 
 
 public class CategoryParser {
@@ -42,7 +41,7 @@ public class CategoryParser {
 		
 		try {
 			BufferedReader br = FileUtil.getReader(file);
-			String strLine;
+			@Var String strLine;
 			while ((strLine = br.readLine()) != null) {		
 				extractCategory(strLine);
 				//System.out.println(strLine);
@@ -65,7 +64,7 @@ public class CategoryParser {
 				break;
 			}
 		}
-		String categoryName = sb.toString();
+		@Var String categoryName = sb.toString();
 		if(categoryName.length() > 0){
 			categoryName = categoryName.substring(0, categoryName.length() - 1);
 		}
@@ -74,12 +73,12 @@ public class CategoryParser {
 	}
 	
 	public Category addNewCategory(String fullCategoryName, int itemCount, boolean isLeaf){
-		Category category = null;
-		Category parentCategory = null;
+		@Var Category category = null;
+		@Var Category parentCategory = null;
 		
-		String categoryName = fullCategoryName;
-		String parentCategoryName = "";
-		Integer parentCategoryID = null;
+		@Var String categoryName = fullCategoryName;
+		@Var String parentCategoryName = "";
+		@Var Integer parentCategoryID = null;
 		
 		if(categoryName.indexOf('/') != -1){
 			int separatorIndex = fullCategoryName.lastIndexOf('/');

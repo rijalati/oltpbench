@@ -17,11 +17,7 @@
 
 package com.oltpbenchmark.benchmarks.epinions;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Random;
-
-import org.apache.log4j.Logger;
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
@@ -36,6 +32,10 @@ import com.oltpbenchmark.benchmarks.epinions.procedures.UpdateTrustRating;
 import com.oltpbenchmark.benchmarks.epinions.procedures.UpdateUserName;
 import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.TextGenerator;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
+import org.apache.log4j.Logger;
 
 public class EpinionsWorker extends Worker<EpinionsBenchmark> {
 	
@@ -54,7 +54,7 @@ public class EpinionsWorker extends Worker<EpinionsBenchmark> {
     @Override
     protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
         
-    	boolean successful = false;
+    	@Var boolean successful = false;
 		while (!successful) {
 			try {
 				if (nextTrans.getProcedureClass().equals(GetReviewItemById.class)) {

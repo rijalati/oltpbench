@@ -16,16 +16,15 @@
 
 package com.oltpbenchmark.benchmarks.resourcestresser.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserConstants;
 import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserWorker;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import org.apache.log4j.Logger;
 
 /**
  * Uses random keys and OR on primary key
@@ -55,7 +54,7 @@ public class Contention1 extends Procedure {
         PreparedStatement stmtUpdate = this.getPreparedStatement(conn, lockUpdate);
         PreparedStatement stmtSleep = this.getPreparedStatement(conn, lockSleep);
         for (int sel = 0; sel < howManyUpdates; ++sel) {
-            int nextKey = -1;
+            @Var int nextKey = -1;
             for (int key = 1; key <= howManyKeys; ++key) {
                 nextKey = ResourceStresserWorker.gen.nextInt(numKeys);
                 stmtUpdate.setInt(key + 1, nextKey);

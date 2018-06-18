@@ -16,15 +16,14 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class CountLink extends Procedure{
     
@@ -37,7 +36,7 @@ public class CountLink extends Procedure{
     private PreparedStatement stmt = null;
     
     public long run(Connection conn, long id1, long link_type) throws SQLException {
-        long count = 0;
+        @Var long count = 0;
         
         if(stmt == null)
             stmt = this.getPreparedStatement(conn, countStmt);
@@ -45,7 +44,7 @@ public class CountLink extends Procedure{
         stmt.setLong(1, id1);                  
         stmt.setLong(2, link_type);   
         ResultSet rs = stmt.executeQuery();
-        boolean found = false;
+        @Var boolean found = false;
 
         while (rs.next()) {
           // found

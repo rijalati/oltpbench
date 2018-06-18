@@ -17,22 +17,20 @@
 
 package com.oltpbenchmark.benchmarks.tpcc;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.tpcc.procedures.NewOrder;
 import com.oltpbenchmark.types.DatabaseType;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
 
 public class TPCCBenchmark extends BenchmarkModule {
     private static final Logger LOG = Logger.getLogger(TPCCBenchmark.class);
@@ -72,7 +70,7 @@ public class TPCCBenchmark extends BenchmarkModule {
 
 		TPCCWorker[] terminals = new TPCCWorker[workConf.getTerminals()];
 
-		int numWarehouses = (int) workConf.getScaleFactor();//tpccConf.getNumWarehouses();
+		@Var int numWarehouses = (int) workConf.getScaleFactor();//tpccConf.getNumWarehouses();
 		if (numWarehouses <= 0) {
 			numWarehouses = 1;
 		}
@@ -91,12 +89,12 @@ public class TPCCBenchmark extends BenchmarkModule {
 		// 1, 1, 2, 1, 2, 1, 2
 		final double terminalsPerWarehouse = (double) numTerminals
 				/ numWarehouses;
-		int workerId = 0;
+		@Var int workerId = 0;
 		assert terminalsPerWarehouse >= 1;
 		for (int w = 0; w < numWarehouses; w++) {
 			// Compute the number of terminals in *this* warehouse
 			int lowerTerminalId = (int) (w * terminalsPerWarehouse);
-			int upperTerminalId = (int) ((w + 1) * terminalsPerWarehouse);
+			@Var int upperTerminalId = (int) ((w + 1) * terminalsPerWarehouse);
 			// protect against double rounding errors
 			int w_id = w + 1;
 			if (w_id == numWarehouses)
@@ -113,8 +111,8 @@ public class TPCCBenchmark extends BenchmarkModule {
 			    String.format("Too many terminals [districtsPerTerminal=%.2f, numWarehouseTerminals=%d]",
 			                  districtsPerTerminal, numWarehouseTerminals);
 			for (int terminalId = 0; terminalId < numWarehouseTerminals; terminalId++) {
-				int lowerDistrictId = (int) (terminalId * districtsPerTerminal);
-				int upperDistrictId = (int) ((terminalId + 1) * districtsPerTerminal);
+				@Var int lowerDistrictId = (int) (terminalId * districtsPerTerminal);
+				@Var int upperDistrictId = (int) ((terminalId + 1) * districtsPerTerminal);
 				if (terminalId + 1 == numWarehouseTerminals) {
 					upperDistrictId = TPCCConfig.configDistPerWhse;
 				}

@@ -17,12 +17,12 @@
 
 package com.oltpbenchmark.util;
 
-import java.io.IOException;
-import java.util.Arrays;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.util.json.JSONException;
 import com.oltpbenchmark.util.json.JSONObject;
 import com.oltpbenchmark.util.json.JSONStringer;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Pack multiple values into a single long using bit-shifting
@@ -43,8 +43,8 @@ public abstract class CompositeId implements Comparable<CompositeId>, JSONSerial
     protected final long encode(int offset_bits[], long offset_pows[]) {
         long values[] = this.toArray();
         assert(values.length == offset_bits.length);
-        long id = 0;
-        int offset = 0;
+        @Var long id = 0;
+        @Var int offset = 0;
         for (int i = 0; i < values.length; i++) {
             long max_value = offset_pows[i];
 
@@ -64,7 +64,7 @@ public abstract class CompositeId implements Comparable<CompositeId>, JSONSerial
     
     protected final long[] decode(long composite_id, int offset_bits[], long offset_pows[]) {
         long values[] = new long[offset_bits.length];
-        int offset = 0;
+        @Var int offset = 0;
         for (int i = 0; i < values.length; i++) {
             values[i] = (composite_id>>offset & offset_pows[i]);
             offset += offset_bits[i];

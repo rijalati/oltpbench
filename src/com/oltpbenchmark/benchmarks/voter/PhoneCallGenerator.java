@@ -18,6 +18,7 @@
 
 package com.oltpbenchmark.benchmarks.voter;
 
+import com.google.errorprone.annotations.Var;
 import java.util.Random;
 
 public class PhoneCallGenerator {
@@ -93,7 +94,7 @@ public class PhoneCallGenerator {
         int areaCodeIndex = rand.nextInt(AREA_CODES.length);
 		
         // Pick a contestant number
-        int contestantNumber = votingMap[areaCodeIndex];
+        @Var int contestantNumber = votingMap[areaCodeIndex];
         if (rand.nextBoolean()) {
             contestantNumber = rand.nextInt(contestantCount) + 1;
         }

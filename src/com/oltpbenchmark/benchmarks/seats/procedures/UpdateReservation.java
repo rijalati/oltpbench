@@ -39,17 +39,16 @@
  */
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.api.Procedure;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
-import com.oltpbenchmark.benchmarks.seats.util.ErrorType;
 
 public class UpdateReservation extends Procedure {
     private static final Logger LOG = Logger.getLogger(UpdateReservation.class);
@@ -85,10 +84,10 @@ public class UpdateReservation extends Procedure {
         final boolean debug = LOG.isDebugEnabled();
         assert(attr_idx >= 0);
         assert(attr_idx < ReserveSeats.length);
-        boolean found;
+        @Var boolean found;
         
-        PreparedStatement stmt = null;
-        ResultSet results = null;
+        @Var PreparedStatement stmt = null;
+        @Var ResultSet results = null;
         
         // Check if Seat is Available
         stmt = this.getPreparedStatement(conn, CheckSeat, f_id, seatnum);

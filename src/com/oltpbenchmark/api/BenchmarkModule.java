@@ -17,6 +17,15 @@
 
 package com.oltpbenchmark.api;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.WorkloadConfiguration;
+import com.oltpbenchmark.api.Loader.LoaderThread;
+import com.oltpbenchmark.catalog.Catalog;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.types.DatabaseType;
+import com.oltpbenchmark.util.ClassUtil;
+import com.oltpbenchmark.util.ScriptRunner;
+import com.oltpbenchmark.util.ThreadUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,17 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.WorkloadConfiguration;
-import com.oltpbenchmark.api.Loader.LoaderThread;
-import com.oltpbenchmark.catalog.Catalog;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.types.DatabaseType;
-import com.oltpbenchmark.util.ClassUtil;
-import com.oltpbenchmark.util.ScriptRunner;
-import com.oltpbenchmark.util.ThreadUtil;
 
 /**
  * Base class for all benchmark implementations
@@ -451,7 +450,7 @@ public abstract class BenchmarkModule {
 
         if (txns != null) {
             for (Class<? extends Procedure> procClass : this.supplementalProcedures) {
-                TransactionType txn = txns.getType(procClass);
+                @Var TransactionType txn = txns.getType(procClass);
                 if (txn == null) {
                     txn = new TransactionType(procClass, procClass.hashCode(), true);
                     txns.add(txn);

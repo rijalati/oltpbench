@@ -1,11 +1,6 @@
 package com.oltpbenchmark.benchmarks.smallbank;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.WorkloadConfiguration;
 import com.oltpbenchmark.api.BenchmarkModule;
 import com.oltpbenchmark.api.Loader;
@@ -14,6 +9,11 @@ import com.oltpbenchmark.benchmarks.smallbank.procedures.Amalgamate;
 import com.oltpbenchmark.catalog.Column;
 import com.oltpbenchmark.catalog.Table;
 import com.oltpbenchmark.util.SQLUtil;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmallBankBenchmark extends BenchmarkModule {
 
@@ -50,7 +50,7 @@ public class SmallBankBenchmark extends BenchmarkModule {
      * @return
      */
     public static int getCustomerNameLength(Table acctsTbl) {
-        int acctNameLength = -1;
+        @Var int acctNameLength = -1;
         for (Column col : acctsTbl.getColumns()) {
             if (SQLUtil.isStringType(col.getType())) {
                 acctNameLength = col.getSize();

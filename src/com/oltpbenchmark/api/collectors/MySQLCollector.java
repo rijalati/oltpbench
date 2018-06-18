@@ -16,15 +16,14 @@
 
 package com.oltpbenchmark.api.collectors;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.catalog.Catalog;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.catalog.Catalog;
 
 public class MySQLCollector extends DBCollector {
     private static final Logger LOG = Logger.getLogger(MySQLCollector.class);
@@ -42,7 +41,7 @@ public class MySQLCollector extends DBCollector {
             Statement s = conn.createStatement();
 
             // Collect DBMS version
-            ResultSet out = s.executeQuery(VERSION_SQL);
+            @Var ResultSet out = s.executeQuery(VERSION_SQL);
             if (out.next()) {
             	this.version.append(out.getString(1));
             }

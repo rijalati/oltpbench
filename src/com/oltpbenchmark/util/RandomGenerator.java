@@ -16,6 +16,7 @@
 
 
 package com.oltpbenchmark.util;
+import com.google.errorprone.annotations.Var;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class RandomGenerator extends Random {
     public int number(int minimum, int maximum) {
         assert minimum <= maximum : String.format("%d <= %d", minimum, maximum);
         int range_size = maximum - minimum + 1;
-        int value = this.nextInt(range_size);
+        @Var int value = this.nextInt(range_size);
         value += minimum;
         assert minimum <= value && value <= maximum;
         return value;
@@ -65,7 +66,7 @@ public class RandomGenerator extends Random {
         long range_size = (maximum - minimum) + 1;
         
         // error checking and 2^x checking removed for simplicity.
-        long bits, val;
+        @Var long bits, val;
         do {
             bits = (this.nextLong() << 1) >>> 1;
             val = bits % range_size;
@@ -88,7 +89,7 @@ public class RandomGenerator extends Random {
         assert minimum <= excluding && excluding <= maximum;
 
         // Generate 1 less number than the range
-        int num = number(minimum, maximum-1);
+        @Var int num = number(minimum, maximum-1);
 
         // Adjust the numbers to remove excluding
         if (num >= excluding) {
@@ -118,7 +119,7 @@ public class RandomGenerator extends Random {
         int range_size = maximum - minimum + 1;
         int mean = range_size / 2;
         double stddev = range_size - ((range_size / 1.1) * skewFactor);
-        int value = -1;
+        @Var int value = -1;
         while (value < 0 || value >= range_size) {
             value = (int) Math.round(this.nextGaussian() * stddev) + mean;
         }
@@ -138,7 +139,7 @@ public class RandomGenerator extends Random {
         assert decimal_places > 0;
         assert minimum < maximum : String.format("%f < %f", minimum, maximum);
 
-        int multiplier = 1;
+        @Var int multiplier = 1;
         for (int i = 0; i < decimal_places; ++i) {
             multiplier *= 10;
         }

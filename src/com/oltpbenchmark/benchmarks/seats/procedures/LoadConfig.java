@@ -16,14 +16,13 @@
 
 package com.oltpbenchmark.benchmarks.seats.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.api.Procedure;
-
-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
 
 public class LoadConfig extends Procedure {
 
@@ -60,7 +59,7 @@ public class LoadConfig extends Procedure {
     
     public ResultSet[] run(Connection conn) throws SQLException {
         ResultSet results[] = new ResultSet[6];
-        int result_idx = 0;
+        @Var int result_idx = 0;
         
         results[result_idx++] = this.getPreparedStatement(conn, getConfigProfile).executeQuery();
         results[result_idx++] = this.getPreparedStatement(conn, getConfigHistogram).executeQuery();

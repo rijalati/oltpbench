@@ -25,14 +25,14 @@
  ***************************************************************************/
 package com.oltpbenchmark.benchmarks.smallbank.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 
 /**
  * Amalgamate Procedure
@@ -118,7 +118,7 @@ public class Amalgamate extends Procedure {
 
         // Update Balance Information
         PreparedStatement updateStmt0 = this.getPreparedStatement(conn, ZeroCheckingBalance, custId0);
-        int status = updateStmt0.executeUpdate();
+        @Var int status = updateStmt0.executeUpdate();
         assert(status == 1);
         
         PreparedStatement updateStmt1 = this.getPreparedStatement(conn, UpdateSavingsBalance, total, custId1);

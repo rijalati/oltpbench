@@ -15,6 +15,8 @@
  ******************************************************************************/
 
 package com.oltpbenchmark.distributions;
+import com.google.errorprone.annotations.Var;
+
 /**                                                                                                                                                                                
  * Copyright (c) 2010 Yahoo! Inc. All rights reserved.                                                                                                                             
  *                                                                                                                                                                                 
@@ -120,7 +122,7 @@ public class ScrambledZipfianGenerator extends IntegerGenerator
 	 */
 	public long nextLong()
 	{
-		long ret=gen.nextLong();
+		@Var long ret=gen.nextLong();
 		ret=_min+Utils.FNVhash64(ret)%_itemcount;
 		setLastInt((int)ret);
 		return ret;

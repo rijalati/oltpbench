@@ -25,14 +25,14 @@
  ***************************************************************************/
 package com.oltpbenchmark.benchmarks.smallbank.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 
 /**
  * TransactSavings Procedure
@@ -59,8 +59,8 @@ public class TransactSavings extends Procedure {
     
     public void run(Connection conn, String custName, double amount) throws SQLException {
         // First convert the custName to the acctId
-        PreparedStatement stmt = this.getPreparedStatement(conn, GetAccount, custName);
-        ResultSet result = stmt.executeQuery();
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, GetAccount, custName);
+        @Var ResultSet result = stmt.executeQuery();
         if (result.next() == false) {
             String msg = "Invalid account '" + custName + "'";
             throw new UserAbortException(msg);

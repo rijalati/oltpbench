@@ -16,17 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
+import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
 
 public class LoadConfig extends Procedure {
     
@@ -76,7 +76,7 @@ public class LoadConfig extends Procedure {
     // -----------------------------------------------------------------
     
     public ResultSet[] run(Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
+        @Var PreparedStatement stmt = null;
         
         List<ResultSet> results = new ArrayList<ResultSet>();
         results.add(this.getPreparedStatement(conn, getConfigProfile).executeQuery());

@@ -36,7 +36,7 @@ public class Q13 extends GenericQuery {
             + "ORDER BY custdist DESC, c_count DESC"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

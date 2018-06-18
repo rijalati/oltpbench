@@ -16,12 +16,13 @@
 
 package com.oltpbenchmark.benchmarks.hyadapt.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class MaxRecord10 extends Procedure{
     public final SQLStmt maxStmt = new SQLStmt(
@@ -40,7 +41,7 @@ public class MaxRecord10 extends Procedure{
     public void run(Connection conn, int keyname) throws SQLException {
         PreparedStatement stmt = this.getPreparedStatement(conn, maxStmt);
         stmt.setInt(1, keyname);          
-        int max = -1;
+        @Var int max = -1;
         ResultSet r = stmt.executeQuery();
         if(r.next()){
             max = r.getInt(1);        

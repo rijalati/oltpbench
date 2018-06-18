@@ -40,15 +40,14 @@
 
 package com.oltpbenchmark.benchmarks.jpab.tests;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.LoaderUtil;
+import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
 import java.util.*;
 import java.util.concurrent.atomic.*;
-
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.Query;
-
-import com.oltpbenchmark.api.LoaderUtil;
-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
 
 
 
@@ -197,7 +196,7 @@ public abstract class Test {
 	 * 
 	 * @param entityCount size of the inventory (in objects) 
 	 */
-	public void buildInventory(int entityCount) {
+	public void buildInventory(@Var int entityCount) {
 		entityCount /= getGraphSize();
 		entityInventory.ensureCapacity(entityCount);
 		while (entityCount-- > 0) {
@@ -332,7 +331,7 @@ public abstract class Test {
      */
     public void query(EntityManager em) {
     	// Prepare a target last name prefix:
-    	int prefixLength = 1; // depends on batch size
+    	@Var int prefixLength = 1; // depends on batch size
     	for (int count = entityCount; (count /= 26) > batchSize; ) {
     		prefixLength++;
     	}
@@ -424,7 +423,7 @@ public abstract class Test {
 		if (e instanceof OptimisticLockException) {
 			return true;
 		}
-		String msg = e.getMessage();
+		@Var String msg = e.getMessage();
 		if (msg != null) {
 			msg = msg.toLowerCase();
 			if (msg.contains("optimistic") || msg.contains("lock") ||

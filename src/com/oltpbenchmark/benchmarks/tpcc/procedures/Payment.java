@@ -16,21 +16,20 @@
 
 package com.oltpbenchmark.benchmarks.tpcc.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
 
 public class Payment extends TPCCProcedure {
 
@@ -120,7 +119,7 @@ public class Payment extends TPCCProcedure {
     private PreparedStatement payInsertHist = null;
     private PreparedStatement customerByName = null;
 
-    public ResultSet run(Connection conn, Random gen,
+    @Override public ResultSet run(Connection conn, Random gen,
                          int w_id, int numWarehouses,
                          int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
 
@@ -139,11 +138,11 @@ public class Payment extends TPCCProcedure {
         // payUpdateWhse =this.getPreparedStatement(conn, payUpdateWhseSQL);
 
         int districtID = TPCCUtil.randomNumber(terminalDistrictLowerID, terminalDistrictUpperID, gen);
-        int customerID = TPCCUtil.getCustomerID(gen);
+        @Var int customerID = TPCCUtil.getCustomerID(gen);
 
         int x = TPCCUtil.randomNumber(1, 100, gen);
         int customerDistrictID;
-        int customerWarehouseID;
+        @Var int customerWarehouseID;
         if (x <= 85) {
             customerDistrictID = districtID;
             customerWarehouseID = w_id;
@@ -156,7 +155,7 @@ public class Payment extends TPCCProcedure {
 
         long y = TPCCUtil.randomNumber(1, 100, gen);
         boolean customerByName;
-        String customerLastName = null;
+        @Var String customerLastName = null;
         customerID = -1;
         if (y <= 60) {
             // 60% lookups by last name
@@ -170,19 +169,19 @@ public class Payment extends TPCCProcedure {
 
         float paymentAmount = (float) (TPCCUtil.randomNumber(100, 500000, gen) / 100.0);
 
-        String w_street_1, w_street_2, w_city, w_state, w_zip, w_name;
-        String d_street_1, d_street_2, d_city, d_state, d_zip, d_name;
+        @Var String w_street_1, w_street_2, w_city, w_state, w_zip, w_name;
+        @Var String d_street_1, d_street_2, d_city, d_state, d_zip, d_name;
 
         payUpdateWhse.setDouble(1, paymentAmount);
         payUpdateWhse.setInt(2, w_id);
         // MySQL reports deadlocks due to lock upgrades:
         // t1: read w_id = x; t2: update w_id = x; t1 update w_id = x
-        int result = payUpdateWhse.executeUpdate();
+        @Var int result = payUpdateWhse.executeUpdate();
         if (result == 0)
             throw new RuntimeException("W_ID=" + w_id + " not found!");
 
         payGetWhse.setInt(1, w_id);
-        ResultSet rs = payGetWhse.executeQuery();
+        @Var ResultSet rs = payGetWhse.executeQuery();
         if (!rs.next())
             throw new RuntimeException("W_ID=" + w_id + " not found!");
         w_street_1 = rs.getString("W_STREET_1");
@@ -227,7 +226,7 @@ public class Payment extends TPCCProcedure {
         c.c_balance -= paymentAmount;
         c.c_ytd_payment += paymentAmount;
         c.c_payment_cnt += 1;
-        String c_data = null;
+        @Var String c_data = null;
         if (c.c_credit.equals("BC")) { // bad credit
             payGetCustCdata.setInt(1, customerWarehouseID);
             payGetCustCdata.setInt(2, customerDistrictID);
@@ -415,7 +414,7 @@ public class Payment extends TPCCProcedure {
         // TPC-C 2.5.2.2: Position n / 2 rounded up to the next integer, but
         // that
         // counts starting from 1.
-        int index = customers.size() / 2;
+        @Var int index = customers.size() / 2;
         if (customers.size() % 2 == 0) {
             index -= 1;
         }

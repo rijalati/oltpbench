@@ -17,15 +17,14 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.util.Histogram;
+import com.oltpbenchmark.util.StringUtil;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.commons.lang.NotImplementedException;
-
-import com.oltpbenchmark.util.Histogram;
-import com.oltpbenchmark.util.StringUtil;
 
 public class UserIdGenerator implements Iterator<UserId> {
 
@@ -59,7 +58,7 @@ public class UserIdGenerator implements Iterator<UserId> {
         this.numClients = numClients;
         this.clientId = clientId;
         
-        Long temp = users_per_item_count.getMaxValue();
+        @Var Long temp = users_per_item_count.getMaxValue();
         if (temp == null) temp = users_per_item_count.getMaxValue();
         assert(temp != null) :
             "Invalid Users Per Item Histogram:\n" + users_per_item_count;
@@ -103,7 +102,7 @@ public class UserIdGenerator implements Iterator<UserId> {
     
     public UserId seekToPosition(int position) {
         assert(position <= this.getTotalUsers()) : String.format("%d < %d", position, this.getTotalUsers());
-        UserId user_id = null;
+        @Var UserId user_id = null;
         
         this.currentPosition = 0;
         this.currentItemCount = 0;
@@ -133,8 +132,8 @@ public class UserIdGenerator implements Iterator<UserId> {
     public boolean checkClient(UserId user_id) {
         if (this.clientId == null) return (true);
         
-        int tmp_count = 0;
-        int tmp_position = 0;
+        @Var int tmp_count = 0;
+        @Var int tmp_position = 0;
         while (tmp_count <= this.maxItemCount) {
             assert(tmp_count < this.usersPerItemCounts.length) :
                 String.format("Unexpected itemCount '%d' [maxItemCount=%d]", tmp_count, this.maxItemCount);
@@ -151,7 +150,7 @@ public class UserIdGenerator implements Iterator<UserId> {
     
     private UserId findNextUserId() {
         // Find the next id for this size level
-        Long found = null;
+        @Var Long found = null;
         while (this.currentItemCount <= this.maxItemCount) {
             while (this.currentOffset > 0) {
                 long nextCtr = this.currentOffset--;

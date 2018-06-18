@@ -16,17 +16,16 @@
 
 package com.oltpbenchmark.benchmarks.linkbench.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
-import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
 
 public class GetLinkList extends Procedure{
 
@@ -82,7 +81,7 @@ public class GetLinkList extends Procedure{
 
         // Fetch the link data
         Link links[] = new Link[count];
-        int i = 0;
+        @Var int i = 0;
         while (rs.next()) {
           Link l = createLinkFromRow(rs);
           links[i] = l;

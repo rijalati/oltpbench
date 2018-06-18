@@ -17,18 +17,16 @@
 
 package com.oltpbenchmark.benchmarks.wikipedia.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
+import com.oltpbenchmark.util.TimeUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-//import ch.ethz.ssh2.log.Logger;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
-import com.oltpbenchmark.util.TimeUtil;
 import org.apache.log4j.Logger;
 public class UpdatePage extends Procedure {
 	private static final Logger LOG = Logger.getLogger(Procedure.class);
@@ -133,10 +131,10 @@ public class UpdatePage extends Procedure {
 	                                 int userId, String userIp, String userText,
 	                                 int revisionId, String revComment, int revMinorEdit) throws SQLException {
 
-	    boolean adv;
-	    PreparedStatement ps = null;
-	    ResultSet rs = null;
-	    int param;
+	    @Var boolean adv;
+	    @Var PreparedStatement ps = null;
+	    @Var ResultSet rs = null;
+	    @Var int param;
 	    final String timestamp = TimeUtil.getCurrentTimeString14();
 	    
 	    // INSERT NEW TEXT
@@ -310,7 +308,7 @@ public class UpdatePage extends Procedure {
 	}	
 	
 	public void execute(Connection conn, PreparedStatement p) throws SQLException{
-	      boolean successful = false;
+	      @Var boolean successful = false;
 			while (!successful) {
 				try {
 					p.execute();
@@ -325,7 +323,7 @@ public class UpdatePage extends Procedure {
 			}
 		}
 	public void executeBatch(Connection conn, PreparedStatement p) throws SQLException{
-	      boolean successful = false;
+	      @Var boolean successful = false;
 			while (!successful) {
 				try {
 					p.executeBatch();

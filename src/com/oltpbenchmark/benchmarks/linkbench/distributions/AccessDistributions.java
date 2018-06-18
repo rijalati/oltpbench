@@ -15,17 +15,16 @@
  */
 package com.oltpbenchmark.benchmarks.linkbench.distributions;
 
-import java.util.Properties;
-import java.util.Random;
-
-import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
 import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
 import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
 import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
 import com.oltpbenchmark.util.ClassUtil;
+import java.util.Properties;
+import java.util.Random;
+import org.apache.log4j.Logger;
 
 
 
@@ -75,7 +74,7 @@ public class AccessDistributions {
 
     @Override
     public long nextID(Random rng, long previousid) {
-      long newid;
+      @Var long newid;
       double drange = (double)(maxid - minid);
 
       switch(mode) {

@@ -25,14 +25,14 @@
  ***************************************************************************/
 package com.oltpbenchmark.benchmarks.smallbank.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 
 /**
  * SendPayment Procedure
@@ -91,8 +91,8 @@ public class SendPayment extends Procedure {
         }
         
         // Debt
-        PreparedStatement updateStmt = this.getPreparedStatement(conn, UpdateCheckingBalance, amount*-1d, sendAcct);
-        int status = updateStmt.executeUpdate();
+        @Var PreparedStatement updateStmt = this.getPreparedStatement(conn, UpdateCheckingBalance, amount*-1d, sendAcct);
+        @Var int status = updateStmt.executeUpdate();
         assert(status == 1) :
             String.format("Failed to update %s for customer #%d [amount=%.2f]",
                           SmallBankConstants.TABLENAME_CHECKING, sendAcct, amount);

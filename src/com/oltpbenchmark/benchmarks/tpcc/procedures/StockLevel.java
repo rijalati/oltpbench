@@ -16,18 +16,17 @@
 
 package com.oltpbenchmark.benchmarks.tpcc.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
 
 public class StockLevel extends TPCCProcedure {
 
@@ -54,7 +53,7 @@ public class StockLevel extends TPCCProcedure {
 	private PreparedStatement stockGetDistOrderId = null;
 	private PreparedStatement stockGetCountStock = null;
 
-	 public ResultSet run(Connection conn, Random gen,
+	 @Override public ResultSet run(Connection conn, Random gen,
 				int w_id, int numWarehouses,
 				int terminalDistrictLowerID, int terminalDistrictUpperID,
 				TPCCWorker w) throws SQLException {
@@ -67,14 +66,14 @@ public class StockLevel extends TPCCProcedure {
 	     int threshold = TPCCUtil.randomNumber(10, 20, gen);
 	     int d_id = TPCCUtil.randomNumber(terminalDistrictLowerID,terminalDistrictUpperID, gen);
 
-	     int o_id = 0;
+	     @Var int o_id = 0;
 	     // XXX int i_id = 0;
-	     int stock_count = 0;
+	     @Var int stock_count = 0;
 
 	     stockGetDistOrderId.setInt(1, w_id);
          stockGetDistOrderId.setInt(2, d_id);
          if (trace) LOG.trace(String.format("stockGetDistOrderId BEGIN [W_ID=%d, D_ID=%d]", w_id, d_id));
-         ResultSet rs = stockGetDistOrderId.executeQuery();
+         @Var ResultSet rs = stockGetDistOrderId.executeQuery();
          if (trace) LOG.trace("stockGetDistOrderId END");
 
          if (!rs.next()) {

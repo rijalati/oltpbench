@@ -40,6 +40,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import com.google.errorprone.annotations.Var;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -48,8 +49,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its
@@ -116,7 +117,7 @@ public class JSONObject {
          * so the clone method returns itself.
          * @return     NULL.
          */
-        protected final Object clone() {
+        @Override protected final Object clone() {
             return this;
         }
 
@@ -127,7 +128,7 @@ public class JSONObject {
          * @return true if the object parameter is the JSONObject.NULL object
          *  or null.
          */
-        public boolean equals(Object object) {
+        @Override public boolean equals(Object object) {
             return object == null || object == this;
         }
 
@@ -136,7 +137,7 @@ public class JSONObject {
          * Get the "null" string value.
          * @return The string "null".
          */
-        public String toString() {
+        @Override public String toString() {
             return "null";
         }
     }
@@ -189,8 +190,8 @@ public class JSONObject {
      */
     public JSONObject(JSONTokener x) throws JSONException {
         this();
-        char c;
-        String key;
+        @Var char c;
+        @Var String key;
 
         if (x.nextClean() != '{') {
             throw x.syntaxError("A JSONObject text must begin with '{'");
@@ -311,7 +312,7 @@ public class JSONObject {
         populateInternalMap(bean, includeSuperClass);
     }
 
-    private void populateInternalMap(Object bean, boolean includeSuperClass){
+    private void populateInternalMap(Object bean, @Var boolean includeSuperClass){
         Class<?> klass = bean.getClass();
 
         //If klass.getSuperClass is System class then includeSuperClass = false;
@@ -326,7 +327,7 @@ public class JSONObject {
             try {
                 Method method = methods[i];
                 String name = method.getName();
-                String key = "";
+                @Var String key = "";
                 if (name.startsWith("get")) {
                     key = name.substring(3);
                 } else if (name.startsWith("is")) {
@@ -489,7 +490,7 @@ public class JSONObject {
 
 // Shave off trailing zeros and decimal point, if possible.
 
-        String s = Double.toString(d);
+        @Var String s = Double.toString(d);
         if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
             while (s.endsWith("0")) {
                 s = s.substring(0, s.length() - 1);
@@ -643,7 +644,7 @@ public class JSONObject {
         }
         Iterator<String> i = jo.keys();
         String[] names = new String[length];
-        int j = 0;
+        @Var int j = 0;
         while (i.hasNext()) {
             names[j] = (String)i.next();
             j += 1;
@@ -1118,12 +1119,12 @@ public class JSONObject {
             return "\"\"";
         }
 
-        char         b;
-        char         c = 0;
-        int          i;
+        @Var char         b;
+        @Var char         c = 0;
+        @Var int          i;
         int          len = string.length();
         StringBuffer sb = new StringBuffer(len + 4);
-        String       t;
+        @Var String       t;
 
         sb.append('"');
         for (i = 0; i < len; i += 1) {
@@ -1362,7 +1363,7 @@ public class JSONObject {
      * @throws JSONException If the object contains an invalid number.
      */
     String toString(int indentFactor, int indent) throws JSONException {
-        int j;
+        @Var int j;
         int n = length();
         if (n == 0) {
             return "{}";
@@ -1370,7 +1371,7 @@ public class JSONObject {
         Iterator<String> keys = keys();
         StringBuffer sb = new StringBuffer("{");
         int          newindent = indent + indentFactor;
-        Object       o;
+        @Var Object       o;
         if (n == 1) {
             o = keys.next();
             sb.append(quote(o.toString()));
@@ -1527,7 +1528,7 @@ public class JSONObject {
       */
      public Writer write(Writer writer) throws JSONException {
         try {
-            boolean  b = false;
+            @Var boolean  b = false;
             Iterator<String> keys = keys();
             writer.write('{');
 

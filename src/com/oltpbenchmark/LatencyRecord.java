@@ -17,6 +17,7 @@
 
 package com.oltpbenchmark;
 
+import com.google.errorprone.annotations.Var;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -78,7 +79,7 @@ public class LatencyRecord implements Iterable<LatencyRecord.Sample> {
 	/** Returns the number of recorded samples. */
 	public int size() {
 		// Samples stored in full chunks
-		int samples = (values.size() - 1) * ALLOC_SIZE;
+		@Var int samples = (values.size() - 1) * ALLOC_SIZE;
 
 		// Samples stored in the last not full chunk
 		samples += nextIndex;
@@ -164,7 +165,7 @@ public class LatencyRecord implements Iterable<LatencyRecord.Sample> {
 		}
 	}
 
-	public Iterator<Sample> iterator() {
+	@Override public Iterator<Sample> iterator() {
 		return new LatencyRecordIterator();
 	}
 }

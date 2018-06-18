@@ -25,14 +25,14 @@
  ***************************************************************************/
 package com.oltpbenchmark.benchmarks.smallbank.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.smallbank.SmallBankConstants;
 
 /**
  * WriteCheck Procedure
@@ -92,7 +92,7 @@ public class WriteCheck extends Procedure {
         }
         double total = balRes0.getDouble(1) + balRes1.getDouble(1);
         
-        PreparedStatement updateStmt = null;
+        @Var PreparedStatement updateStmt = null;
         if (total < amount) {
             updateStmt = this.getPreparedStatement(conn, UpdateCheckingBalance, amount - 1, custId);
         } else {

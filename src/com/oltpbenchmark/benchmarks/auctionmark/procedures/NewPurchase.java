@@ -17,17 +17,17 @@
 
 package com.oltpbenchmark.benchmarks.auctionmark.procedures;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.auctionmark.AuctionMarkConstants;
 import com.oltpbenchmark.benchmarks.auctionmark.util.AuctionMarkUtil;
 import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * NewPurchase
@@ -143,9 +143,9 @@ public class NewPurchase extends Procedure {
                         long item_id, long seller_id, long ip_id, double buyer_credit) throws SQLException {
         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
         
-        PreparedStatement stmt = null;
-        ResultSet results = null;
-        int updated;
+        @Var PreparedStatement stmt = null;
+        @Var ResultSet results = null;
+        @Var int updated;
         boolean adv;
         
         // HACK: Check whether we have an ITEM_MAX_BID record. If not, we'll insert one
@@ -180,7 +180,7 @@ public class NewPurchase extends Procedure {
             String msg = "No ITEM_MAX_BID is available record for item " + item_id;
             throw new UserAbortException(msg);
         }
-        int col = 1;
+        @Var int col = 1;
         long i_num_bids = results.getLong(col++);
         double i_current_price = results.getDouble(col++);
         Timestamp i_end_date = results.getTimestamp(col++);

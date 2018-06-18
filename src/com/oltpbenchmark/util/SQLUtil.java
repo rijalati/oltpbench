@@ -16,6 +16,10 @@
 
 package com.oltpbenchmark.util;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.catalog.Column;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.types.DatabaseType;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -29,12 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.catalog.Column;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.types.DatabaseType;
 
 public abstract class SQLUtil {
     private static final Logger LOG = Logger.getLogger(SQLUtil.class);
@@ -204,7 +203,7 @@ public abstract class SQLUtil {
      * @see java.sql.Types
      */
     public static Object castValue(int sqlType, String value) {
-        Object ret = null;
+        @Var Object ret = null;
         switch (sqlType) {
             case Types.CHAR:
             case Types.VARCHAR:
@@ -362,7 +361,7 @@ public abstract class SQLUtil {
     	  .append(escape_names ? catalog_tbl.getEscapedName() : catalog_tbl.getName());
     	
     	StringBuilder values = new StringBuilder();
-    	boolean first;
+    	@Var boolean first;
     	
     	// Column Names
     	// XXX: Disabled because of case issues with HSQLDB

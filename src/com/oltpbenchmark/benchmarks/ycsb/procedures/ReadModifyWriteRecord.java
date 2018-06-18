@@ -16,14 +16,14 @@
 
 package com.oltpbenchmark.benchmarks.ycsb.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.ycsb.YCSBConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.ycsb.YCSBConstants;
 
 public class ReadModifyWriteRecord extends Procedure {
     public final SQLStmt selectStmt = new SQLStmt(
@@ -37,7 +37,7 @@ public class ReadModifyWriteRecord extends Procedure {
     public void run(Connection conn, int keyname, String fields[], String results[]) throws SQLException {
         
         // Fetch it!
-        PreparedStatement stmt = this.getPreparedStatement(conn, selectStmt);
+        @Var PreparedStatement stmt = this.getPreparedStatement(conn, selectStmt);
         stmt.setInt(1, keyname);          
         ResultSet r = stmt.executeQuery();
         while (r.next()) {

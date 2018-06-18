@@ -16,15 +16,15 @@
 
 package com.oltpbenchmark.benchmarks.hyadapt.procedures;
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Procedure;
+import com.oltpbenchmark.api.SQLStmt;
+import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-
-import com.oltpbenchmark.api.Procedure;
-import com.oltpbenchmark.api.SQLStmt;
-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
 
 public class SumRecord10 extends Procedure{
     public final SQLStmt sumStmt = new SQLStmt(
@@ -43,7 +43,7 @@ public class SumRecord10 extends Procedure{
     public void run(Connection conn, int keyname) throws SQLException {
         PreparedStatement stmt = this.getPreparedStatement(conn, sumStmt);
         stmt.setInt(1, keyname);        
-        int sum = -1;
+        @Var int sum = -1;
         ResultSet r=stmt.executeQuery();
         if(r.next()){
             sum = r.getInt(1);        

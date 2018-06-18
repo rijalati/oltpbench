@@ -48,7 +48,7 @@ public class Q5 extends GenericQuery {
             + "ORDER BY revenue DESC"
         );
 	
-		protected SQLStmt get_query() {
+		@Override protected SQLStmt get_query() {
 	    return query_stmt;
 	}
 }

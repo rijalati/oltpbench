@@ -16,16 +16,16 @@
 
 package com.oltpbenchmark;
 
+import com.google.errorprone.annotations.Var;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.nio.file.Paths;
-import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.List;
 import java.util.LinkedList;
-
+import java.util.List;
+import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
 /**
@@ -68,7 +68,7 @@ public class TraceReader {
     public TraceReader(String filename) {
         try {
             BufferedReader br = Files.newBufferedReader(Paths.get(filename), StandardCharsets.UTF_8);
-            String line = br.readLine();
+            @Var String line = br.readLine();
 
             if (line == null) {
                 LOG.error("Trace file " + filename + "is empty.");
@@ -79,8 +79,8 @@ public class TraceReader {
             // determine which columns to look at gives us flexibility in case
             // the ordering changes or extra columns are added.
             String[] splitHeader = line.split(",");
-            int txnIdCol = -1, phaseIdCol = -1, startTimeCol = -1;
-            int index = 0;
+            @Var int txnIdCol = -1, phaseIdCol = -1, startTimeCol = -1;
+            @Var int index = 0;
             for (String field : splitHeader) {
                 if(field.matches(".*transaction.*"))
                     txnIdCol = index;
@@ -103,8 +103,8 @@ public class TraceReader {
             // Now iterate through the whole file, parsing transaction info
             // line-by-line to create a list of procedures to run.
             try {
-                int currPhaseId = -1;
-                long phaseBaseTime = 0;
+                @Var int currPhaseId = -1;
+                @Var long phaseBaseTime = 0;
                 while ((line = br.readLine()) != null) {
                     String[] splitLine = line.split(",");
                     int phaseId = Integer.parseInt(splitLine[phaseIdCol]);
@@ -154,7 +154,7 @@ public class TraceReader {
         }
 
         ListIterator<TraceElement> iter = tracedProcedures.listIterator();
-        TraceElement curr = tracedProcedures.peek();
+        @Var TraceElement curr = tracedProcedures.peek();
 
         // Shouldn't have a procedure from a previous phase, or else we
         // wouldn't have switched phases successfully.

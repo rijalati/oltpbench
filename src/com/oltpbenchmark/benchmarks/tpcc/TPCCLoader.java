@@ -34,6 +34,12 @@ package com.oltpbenchmark.benchmarks.tpcc;
  *
  */
 
+import com.google.errorprone.annotations.Var;
+import com.oltpbenchmark.api.Loader;
+import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+import com.oltpbenchmark.benchmarks.tpcc.pojo.*;
+import com.oltpbenchmark.catalog.Table;
+import com.oltpbenchmark.util.SQLUtil;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,14 +49,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.log4j.Logger;
-
-import com.oltpbenchmark.api.Loader;
-import com.oltpbenchmark.benchmarks.tpcc.pojo.*;
-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
-import com.oltpbenchmark.catalog.Table;
-import com.oltpbenchmark.util.SQLUtil;
 
 /**
  * TPC-C Benchmark Loader
@@ -151,17 +150,17 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
     }
 
     protected int loadItems(Connection conn, int itemKount) {
-        int k = 0;
-        int randPct = 0;
-        int len = 0;
-        int startORIGINAL = 0;
-        boolean fail = false;
+        @Var int k = 0;
+        @Var int randPct = 0;
+        @Var int len = 0;
+        @Var int startORIGINAL = 0;
+        @Var boolean fail = false;
         
         try {
             PreparedStatement itemPrepStmt = getInsertStatement(conn, TPCCConstants.TABLENAME_ITEM);
 
             Item item = new Item();
-            int batchSize = 0;
+            @Var int batchSize = 0;
             for (int i = 1; i <= itemKount; i++) {
 
                 item.i_id = i;
@@ -188,7 +187,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 
                 k++;
 
-                int idx = 1;
+                @Var int idx = 1;
                 itemPrepStmt.setLong(idx++, item.i_id);
                 itemPrepStmt.setString(idx++, item.i_name);
                 itemPrepStmt.setDouble(idx++, item.i_price);
@@ -251,7 +250,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 			warehouse.w_state = TPCCUtil.randomStr(3).toUpperCase(); 
 			warehouse.w_zip = "123456789";
 
-			int idx = 1;
+			@Var int idx = 1;
 			whsePrepStmt.setLong(idx++, warehouse.w_id);
 			whsePrepStmt.setDouble(idx++, warehouse.w_ytd);
 			whsePrepStmt.setDouble(idx++, warehouse.w_tax);
@@ -278,10 +277,10 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 
 	protected int loadStock(Connection conn, int w_id, int numItems) {
 
-		int k = 0;
-		int randPct = 0;
-		int len = 0;
-		int startORIGINAL = 0;
+		@Var int k = 0;
+		@Var int randPct = 0;
+		@Var int len = 0;
+		@Var int startORIGINAL = 0;
 		try {
 		    PreparedStatement stckPrepStmt = getInsertStatement(conn, TPCCConstants.TABLENAME_STOCK);
 
@@ -312,7 +311,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 				}
 
 				k++;
-				int idx = 1;
+				@Var int idx = 1;
 				stckPrepStmt.setLong(idx++, stock.s_w_id);
 				stckPrepStmt.setLong(idx++, stock.s_i_id);
 				stckPrepStmt.setLong(idx++, stock.s_quantity);
@@ -356,7 +355,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 
 	protected int loadDistricts(Connection conn, int w_id, int distWhseKount) {
 
-		int k = 0;
+		@Var int k = 0;
 
 		try {
 
@@ -380,7 +379,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 				district.d_zip = "123456789";
 
 				k++;
-				int idx = 1;
+				@Var int idx = 1;
 				distPrepStmt.setLong(idx++, district.d_w_id);
 				distPrepStmt.setLong(idx++, district.d_id);
 				distPrepStmt.setDouble(idx++, district.d_ytd);
@@ -410,7 +409,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 
 	protected int loadCustomers(Connection conn, int w_id, int districtsPerWarehouse, int customersPerDistrict) {
 
-		int k = 0;
+		@Var int k = 0;
 
 		Customer customer = new Customer();
 		History history = new History();
@@ -471,7 +470,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 							.randomNumber(10, 24, benchmark.rng()));
 
 					k = k + 2;
-					int idx = 1;
+					@Var int idx = 1;
 					custPrepStmt.setLong(idx++, customer.c_w_id);
 					custPrepStmt.setLong(idx++, customer.c_d_id);
 					custPrepStmt.setLong(idx++, customer.c_id);
@@ -536,7 +535,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 
 	protected int loadOrders(Connection conn, int w_id, int districtsPerWarehouse, int customersPerDistrict) {
 
-		int k = 0;
+		@Var int k = 0;
 		int t = 0;
 		try {
 		    PreparedStatement ordrPrepStmt = getInsertStatement(conn, TPCCConstants.TABLENAME_OPENORDER);
@@ -564,7 +563,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 					c_ids[i] = temp;
 				}
 
-				int newOrderBatch = 0;
+				@Var int newOrderBatch = 0;
 				for (int c = 1; c <= customersPerDistrict; c++) {
 
 					oorder.o_id = c;
@@ -583,7 +582,7 @@ public class TPCCLoader extends Loader<TPCCBenchmark> {
 					oorder.o_entry_d = this.benchmark.getTimestamp(System.currentTimeMillis());
 
 					k++;
-					int idx = 1;
+					@Var int idx = 1;
 					ordrPrepStmt.setInt(idx++, oorder.o_w_id);
 		            ordrPrepStmt.setInt(idx++, oorder.o_d_id);
 		            ordrPrepStmt.setInt(idx++, oorder.o_id);

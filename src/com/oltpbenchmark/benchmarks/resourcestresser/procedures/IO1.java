@@ -16,16 +16,15 @@
 
 package com.oltpbenchmark.benchmarks.resourcestresser.procedures;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-
+import com.google.errorprone.annotations.Var;
 import com.oltpbenchmark.api.Procedure;
 import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserConstants;
 import com.oltpbenchmark.benchmarks.resourcestresser.ResourceStresserWorker;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import org.apache.log4j.Logger;
 
 public class IO1 extends Procedure {
     private static final Logger LOG = Logger.getLogger(Procedure.class);
@@ -34,7 +33,7 @@ public class IO1 extends Procedure {
     {
         String sql = "UPDATE " + ResourceStresserConstants.TABLENAME_IOTABLE + 
         		" SET %s WHERE empid >= ? AND empid < ?";
-        String setClause = "";
+        @Var String setClause = "";
         for (int col=1; col<=ResourceStresserWorker.IO1_howManyColsPerRow; ++col) {
             setClause = setClause + (col>1 ? "," : "") + " data" + col + "=?";      
         }

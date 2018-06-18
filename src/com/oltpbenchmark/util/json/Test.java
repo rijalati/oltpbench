@@ -16,10 +16,11 @@
 
 package com.oltpbenchmark.util.json;
 
+import com.google.errorprone.annotations.Var;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.io.StringWriter;
 
 /**
  * Test class. This file is not formally a member of the com.oltpbenchmark.util.json library.
@@ -33,10 +34,10 @@ public class Test {
      */
     public static void main(String args[]) {
         Iterator<?> it;
-        JSONArray a;
-        JSONObject j;
-        JSONStringer jj;
-        String s;
+        @Var JSONArray a;
+        @Var JSONObject j;
+        @Var JSONStringer jj;
+        @Var String s;
         
 /** 
  *  Obj is a typical class that implements JSONString. It also
@@ -75,11 +76,11 @@ public class Test {
                 return "x";
             }
             
-            public String toJSONString() {
+            @Override public String toJSONString() {
                 return "{" + JSONObject.quote(this.aString) + ":" + 
                 JSONObject.doubleToString(this.aNumber) + "}";
             }            
-            public String toString() {
+            @Override public String toString() {
                 return this.getString() + " " + this.getNumber() + " " + 
                         this.isBoolean() + "." + this.getBENT() + " " + this.getX();
             }
@@ -165,7 +166,7 @@ public class Test {
             System.out.println(new JSONArray(jj.toString()).toString(4));
 
             int ar[] = {1, 2, 3};
-            JSONArray ja = new JSONArray(ar);
+            @Var JSONArray ja = new JSONArray(ar);
             System.out.println(ja.toString());
             
             String sa[] = {"aString", "aNumber", "aBoolean"};            
