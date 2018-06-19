@@ -1,0 +1,86 @@
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -370,5 +370,5 @@
+     }
+ 
+-    private boolean isStandardProperty(Class<?> clazz) {
++    private static boolean isStandardProperty(Class<?> clazz) {
+         return clazz.isPrimitive()                  ||
+             clazz.isAssignableFrom(Byte.class)      ||
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/UniformDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/UniformDistribution.java
+@@ -126,5 +126,5 @@
+    * @return
+    */
+-  private long randint2(Random rng, long n) {
++  private static long randint2(Random rng, long n) {
+     assert(n < UINT_RANGE);
+     double p = Integer.MAX_VALUE / (double)n;
+--- src/com/oltpbenchmark/ThreadBench.java
++++ src/com/oltpbenchmark/ThreadBench.java
+@@ -564,5 +564,5 @@
+     }
+ 
+-    private long getInterval(int lowestRate, Phase.Arrival arrival) {
++    private static long getInterval(int lowestRate, Phase.Arrival arrival) {
+         // TODO Auto-generated method stub
+         if (arrival == Phase.Arrival.POISSON)
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
+@@ -83,5 +83,5 @@
+     }
+ 
+-    private Link createLinkFromRow(ResultSet rs) throws SQLException {
++    private static Link createLinkFromRow(ResultSet rs) throws SQLException {
+         Link l = new Link();
+         l.id1 = rs.getLong(1);
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
+@@ -100,5 +100,5 @@
+       return run(conn, id1, link_type, 0, Long.MAX_VALUE, 0, LinkBenchConstants.DEFAULT_LIMIT);
+     }
+-    private Link createLinkFromRow(ResultSet rs) throws SQLException {
++    private static Link createLinkFromRow(ResultSet rs) throws SQLException {
+         Link l = new Link();
+         l.id1 = rs.getLong(1);
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchBenchmark.java
+@@ -80,5 +80,5 @@
+      * @return
+      */
+-    private Random createMasterRNG(Properties props, String configKey) {
++    private static Random createMasterRNG(Properties props, String configKey) {
+         long seed;
+         if (props.containsKey(configKey)) {
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
+@@ -156,5 +156,5 @@
+    * @return
+    */
+-  private boolean contains(long[] id2s, int n, long id2) {
++  private static boolean contains(long[] id2s, int n, long id2) {
+     for (int i = 0; i < n; i++) {
+       if (id2s[i] == id2) {
+@@ -166,5 +166,5 @@
+ 
+ 
+-  private long calcID2Range(double pExisting, long nlinks) {
++  private static long calcID2Range(double pExisting, long nlinks) {
+     @Var long range = (long) Math.ceil((1/pExisting) * nlinks);
+     range = Math.max(1, range);// Ensure non-empty range
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
+@@ -451,5 +451,5 @@
+     }
+ 
+-    private Pattern getFormatPattern(String format){
++    private static Pattern getFormatPattern(String format){
+ 
+         if("csv".equals(format)){
+@@ -463,5 +463,5 @@
+     }
+ 
+-    private int getFormatGroup(String format){
++    private static int getFormatGroup(String format){
+         if("csv".equals(format)){
+             return  1;

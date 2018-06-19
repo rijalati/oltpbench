@@ -1,0 +1,18 @@
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ApproxHarmonic.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ApproxHarmonic.java
+@@ -24,5 +24,5 @@
+   // Euler Mascheroni constant
+   private static final double EULER_MASCHERONI =
+-                  0.5772156649015328606065120900824024310421;
++                  0.5772156649015329;
+ 
+ 
+--- src/com/oltpbenchmark/util/json/Test.java
++++ src/com/oltpbenchmark/util/json/Test.java
+@@ -188,5 +188,5 @@
+             j.put("JSONArray", new JSONArray());
+             j.put("int", 57);
+-            j.put("double", 123456789012345678901234567890.);
++            j.put("double", 1.2345678901234568E+29);
+             j.put("true", true);
+             j.put("false", false);

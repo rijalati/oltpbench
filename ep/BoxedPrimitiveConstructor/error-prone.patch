@@ -1,0 +1,133 @@
+--- src/com/oltpbenchmark/util/json/JSONWriter.java
++++ src/com/oltpbenchmark/util/json/JSONWriter.java
+@@ -312,5 +312,5 @@
+      */
+     public JSONWriter value(double d) throws JSONException {
+-        return this.value(new Double(d));
++        return this.value(Double.valueOf(d));
+     }
+ 
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -846,5 +846,5 @@
+             Object o = opt(key);
+             return o instanceof Number ? ((Number)o).doubleValue() :
+-                new Double((String)o).doubleValue();
++                Double.valueOf((String)o).doubleValue();
+         } catch (Exception e) {
+             return defaultValue;
+@@ -997,5 +997,5 @@
+      */
+     public JSONObject put(String key, double value) throws JSONException {
+-        put(key, new Double(value));
++        put(key, Double.valueOf(value));
+         return this;
+     }
+@@ -1011,5 +1011,5 @@
+      */
+     public JSONObject put(String key, int value) throws JSONException {
+-        put(key, new Integer(value));
++        put(key, Integer.valueOf(value));
+         return this;
+     }
+@@ -1025,5 +1025,5 @@
+      */
+     public JSONObject put(String key, long value) throws JSONException {
+-        put(key, new Long(value));
++        put(key, Long.valueOf(value));
+         return this;
+     }
+@@ -1226,6 +1226,6 @@
+                         (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
+                     try {
+-                        return new Integer(Integer.parseInt(s.substring(2),
+-                                16));
++                        return Integer.parseInt(s.substring(2),
++                                16);
+                     } catch (Exception e) {
+                         /* Ignore the error */
+@@ -1233,5 +1233,5 @@
+                 } else {
+                     try {
+-                        return new Integer(Integer.parseInt(s, 8));
++                        return Integer.parseInt(s, 8);
+                     } catch (Exception e) {
+                         /* Ignore the error */
+@@ -1240,11 +1240,11 @@
+             }
+             try {
+-                return new Integer(s);
++                return Integer.valueOf(s);
+             } catch (Exception e) {
+                 try {
+-                    return new Long(s);
++                    return Long.valueOf(s);
+                 } catch (Exception f) {
+                     try {
+-                        return new Double(s);
++                        return Double.valueOf(s);
+                     }  catch (Exception g) {
+                         /* Ignore the error */
+--- src/com/oltpbenchmark/util/json/JSONArray.java
++++ src/com/oltpbenchmark/util/json/JSONArray.java
+@@ -156,5 +156,5 @@
+             case ')':
+                 if (q != c) {
+-                    throw x.syntaxError("Expected a '" + new Character(q) + "'");
++                    throw x.syntaxError("Expected a '" + q + "'");
+                 }
+                 return;
+@@ -637,5 +637,5 @@
+      */
+     public JSONArray put(double value) throws JSONException {
+-        Double d = new Double(value);
++        Double d = value;
+         JSONObject.testValidity(d);
+         put(d);
+@@ -651,5 +651,5 @@
+      */
+     public JSONArray put(int value) {
+-        put(new Integer(value));
++        put(Integer.valueOf(value));
+         return this;
+     }
+@@ -663,5 +663,5 @@
+      */
+     public JSONArray put(long value) {
+-        put(new Long(value));
++        put(Long.valueOf(value));
+         return this;
+     }
+@@ -734,5 +734,5 @@
+      */
+     public JSONArray put(int index, double value) throws JSONException {
+-        put(index, new Double(value));
++        put(index, Double.valueOf(value));
+         return this;
+     }
+@@ -749,5 +749,5 @@
+      */
+     public JSONArray put(int index, int value) throws JSONException {
+-        put(index, new Integer(value));
++        put(index, Integer.valueOf(value));
+         return this;
+     }
+@@ -764,5 +764,5 @@
+      */
+     public JSONArray put(int index, long value) throws JSONException {
+-        put(index, new Long(value));
++        put(index, Long.valueOf(value));
+         return this;
+     }
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
+@@ -814,7 +814,7 @@
+         @Var double buyer_credit = 0d;
+ 
+-	@Var Integer ip_id_cnt = ip_id_cntrs.get(new Long(encodedItemId));
++	@Var Integer ip_id_cnt = ip_id_cntrs.get(Long.valueOf(encodedItemId));
+ 	if (ip_id_cnt == null) {
+-	    ip_id_cnt = new Integer(0);
++	    ip_id_cnt = 0;
+ 	}
+ 	

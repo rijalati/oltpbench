@@ -1,0 +1,408 @@
+--- src/com/oltpbenchmark/WorkloadConfiguration.java
++++ src/com/oltpbenchmark/WorkloadConfiguration.java
+@@ -63,5 +63,5 @@
+ 	private XMLConfiguration xmlConfig = null;
+ 
+-	private List<Phase> works = new ArrayList<Phase>();
++	private final List<Phase> works = new ArrayList<Phase>();
+ 	private WorkloadState workloadState;
+ 
+--- src/com/oltpbenchmark/api/Worker.java
++++ src/com/oltpbenchmark/api/Worker.java
+@@ -49,5 +49,5 @@
+ 
+     // Interval requests used by the monitor
+-    private AtomicInteger intervalRequests = new AtomicInteger(0);
++    private final AtomicInteger intervalRequests = new AtomicInteger(0);
+ 
+     private final int id;
+--- src/com/oltpbenchmark/WorkloadState.java
++++ src/com/oltpbenchmark/WorkloadState.java
+@@ -37,15 +37,15 @@
+     private static final Logger LOG = Logger.getLogger(ThreadBench.class);
+     
+-    private LinkedList<SubmittedProcedure> workQueue = new LinkedList<SubmittedProcedure>();
+-    private BenchmarkState benchmarkState;
++    private final LinkedList<SubmittedProcedure> workQueue = new LinkedList<SubmittedProcedure>();
++    private final BenchmarkState benchmarkState;
+     private int workersWaiting = 0;
+     private int workersWorking = 0;
+-    private int num_terminals;
++    private final int num_terminals;
+     private int workerNeedSleep;
+     
+     private List<Phase> works = new ArrayList<Phase>();
+-    private Iterator<Phase> phaseIterator;
++    private final Iterator<Phase> phaseIterator;
+     private Phase currentPhase = null;
+-    private long phaseStartNs = 0;
++    private final long phaseStartNs = 0;
+     private TraceReader traceReader = null;
+     
+--- src/com/oltpbenchmark/util/json/JSONWriter.java
++++ src/com/oltpbenchmark/util/json/JSONWriter.java
+@@ -95,5 +95,5 @@
+      * The object/array stack.
+      */
+-    private JSONObject stack[];
++    private final JSONObject stack[];
+ 
+     /**
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -147,5 +147,5 @@
+      * The map where the JSONObject's properties are kept.
+      */
+-    private Map<String, Object> map;
++    private final Map<String, Object> map;
+ 
+ 
+--- src/com/oltpbenchmark/util/json/JSONTokener.java
++++ src/com/oltpbenchmark/util/json/JSONTokener.java
+@@ -57,5 +57,5 @@
+ 
+     private int index;
+-    private Reader reader;
++    private final Reader reader;
+     private char lastChar;
+     private boolean useLastChar;
+--- src/com/oltpbenchmark/util/json/JSONArray.java
++++ src/com/oltpbenchmark/util/json/JSONArray.java
+@@ -106,5 +106,5 @@
+      * The arrayList where the JSONArray's properties are kept.
+      */
+-    private ArrayList<Object> myArrayList;
++    private final ArrayList<Object> myArrayList;
+ 
+ 
+--- src/com/oltpbenchmark/BenchmarkState.java
++++ src/com/oltpbenchmark/BenchmarkState.java
+@@ -39,5 +39,5 @@
+ 
+ 	private final CountDownLatch startBarrier;
+-	private AtomicInteger notDoneCount;
++	private final AtomicInteger notDoneCount;
+ 
+ 	// Protected by this
+--- src/com/oltpbenchmark/Phase.java
++++ src/com/oltpbenchmark/Phase.java
+@@ -44,5 +44,5 @@
+     private final List<Double> weights;
+     private final int num_weights;
+-    private int activeTerminals;
++    private final int activeTerminals;
+     private int nextSerial;
+     
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -52,5 +52,5 @@
+     }
+ 
+-    private LinkedList<TraceElement> tracedProcedures = new LinkedList<TraceElement>();
++    private final LinkedList<TraceElement> tracedProcedures = new LinkedList<TraceElement>();
+     private String tracefileName;
+     private int currentPhaseId;
+--- src/com/oltpbenchmark/benchmarks/jpab/JPABBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/jpab/JPABBenchmark.java
+@@ -36,5 +36,5 @@
+     private EntityManagerFactory emf;
+ 
+-    private JPABConfiguration jpabConf;
++    private final JPABConfiguration jpabConf;
+ 
+     public JPABBenchmark(WorkloadConfiguration workConf) {
+--- src/com/oltpbenchmark/distributions/ZipFianDistribution.java
++++ src/com/oltpbenchmark/distributions/ZipFianDistribution.java
+@@ -22,7 +22,7 @@
+ 
+ public class ZipFianDistribution {
+-    private Random rnd = new Random(System.currentTimeMillis());
+-    private int size;
+-    private double skew;
++    private final Random rnd = new Random(System.currentTimeMillis());
++    private final int size;
++    private final double skew;
+     private double bottom = 0;
+ 
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterBenchmark.java
+@@ -37,5 +37,5 @@
+ public class TwitterBenchmark extends BenchmarkModule {
+ 	
+-	private TwitterConfiguration twitterConf;
++	private final TwitterConfiguration twitterConf;
+ 
+ 	public TwitterBenchmark(WorkloadConfiguration workConf) {
+--- src/com/oltpbenchmark/util/Pair.java
++++ src/com/oltpbenchmark/util/Pair.java
+@@ -43,5 +43,5 @@
+     public final T first;
+     public final U second;
+-    private transient Integer hash;
++    private final transient Integer hash;
+ 
+     public Pair(T first, U second, boolean precomputeHash) {
+--- src/com/oltpbenchmark/benchmarks/noop/NoOpWorker.java
++++ src/com/oltpbenchmark/benchmarks/noop/NoOpWorker.java
+@@ -34,5 +34,5 @@
+     private static final Logger LOG = Logger.getLogger(NoOpLoader.class);
+ 
+-    private NoOp procNoOp;
++    private final NoOp procNoOp;
+     
+     public NoOpWorker(NoOpBenchmark benchmarkModule, int id) {
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCWorker.java
+@@ -48,5 +48,5 @@
+ 	private final Random gen = new Random();
+ 
+-	private int numWarehouses;
++	private final int numWarehouses;
+ 
+ 	public TPCCWorker(TPCCBenchmark benchmarkModule, int id,
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
+@@ -55,8 +55,8 @@
+ 
+   public static class BuiltinAccessDistribution implements AccessDistribution {
+-    private AccessDistMode mode;
++    private final AccessDistMode mode;
+     protected long minid;
+     protected long maxid;
+-    private long config;
++    private final long config;
+ 
+     /** Use to generate decent quality random longs in range */
+@@ -124,5 +124,5 @@
+   public static class ProbAccessDistribution implements AccessDistribution {
+     private final ProbabilityDistribution dist;
+-    private InvertibleShuffler shuffler;
++    private final InvertibleShuffler shuffler;
+ 
+     public ProbAccessDistribution(ProbabilityDistribution dist,
+--- src/com/oltpbenchmark/ThreadBench.java
++++ src/com/oltpbenchmark/ThreadBench.java
+@@ -50,5 +50,5 @@
+     private final ArrayList<Thread> workerThreads;
+     // private File profileFile;
+-    private List<WorkloadConfiguration> workConfs;
++    private final List<WorkloadConfiguration> workConfs;
+     private List<WorkloadState> workStates;
+     ArrayList<LatencyRecord.Sample> samples = new ArrayList<LatencyRecord.Sample>();
+@@ -241,5 +241,5 @@
+         }
+ 
+-        private boolean stop = false;
++        private final boolean stop = false;
+         
+         @Override
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/LoaderItemInfo.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/LoaderItemInfo.java
+@@ -33,5 +33,5 @@
+ public class LoaderItemInfo extends ItemInfo {
+     private final List<Bid> bids = new ArrayList<Bid>();
+-    private Histogram<UserId> bidderHistogram = new Histogram<UserId>();
++    private final Histogram<UserId> bidderHistogram = new Histogram<UserId>();
+     
+     public short numImages;
+--- src/com/oltpbenchmark/util/ScriptRunner.java
++++ src/com/oltpbenchmark/util/ScriptRunner.java
+@@ -44,8 +44,8 @@
+ 	private static final String DEFAULT_DELIMITER = ";";
+ 
+-	private Connection connection;
++	private final Connection connection;
+ 
+-	private boolean stopOnError;
+-	private boolean autoCommit;
++	private final boolean stopOnError;
++	private final boolean autoCommit;
+ 
+ 	private PrintWriter logWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out, UTF_8)));
+--- src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
+@@ -31,5 +31,5 @@
+ 
+     private static Random updateRecordIdGenerator = null;
+-    private int recordCount;
++    private final int recordCount;
+     
+     public SIWorker(SIBenchmark benchmarkModule, int id, int init_record_count) {
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchBenchmark.java
+@@ -42,6 +42,6 @@
+ 
+     private static final Logger LOG = Logger.getLogger(LinkBenchBenchmark.class);
+-    private LinkBenchConfiguration linkBenchConf;
+-    private Properties props;
++    private final LinkBenchConfiguration linkBenchConf;
++    private final Properties props;
+ 
+     public LinkBenchBenchmark(WorkloadConfiguration workConf) throws Exception {
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
+@@ -38,5 +38,5 @@
+ 
+   public static class ProbLinkDistribution implements LinkDistribution {
+-    private ProbabilityDistribution dist;
++    private final ProbabilityDistribution dist;
+ 
+     public ProbLinkDistribution(ProbabilityDistribution dist) {
+@@ -73,9 +73,9 @@
+   public static class ArithLinkDistribution implements LinkDistribution {
+ 
+-    private LinkDistMode mode;
+-    private long nlinks_config;
++    private final LinkDistMode mode;
++    private final long nlinks_config;
+     private long nlinks_default;
+ 
+-    private long minid1, maxid1;
++    private final long minid1, maxid1;
+ 
+     public ArithLinkDistribution(long minid1, long maxid1, LinkDistMode mode,
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
+@@ -46,5 +46,5 @@
+ 
+   private final long startid1;
+-  private long maxid1;
++  private final long maxid1;
+ 
+   /** if > 0, choose id2s in range [startid1, randomid2max) */
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -86,5 +86,5 @@
+     private final Histogram<String> tableSizes = new Histogram<String>();
+ 
+-    private boolean fail = false;
++    private final boolean fail = false;
+ 
+     // -----------------------------------------------------------------
+@@ -812,5 +812,5 @@
+     protected class GlobalAttributeValueGenerator extends AbstractTableGenerator {
+ 
+-        private Histogram<GlobalAttributeGroupId> gag_counters = new Histogram<GlobalAttributeGroupId>(true);
++        private final Histogram<GlobalAttributeGroupId> gag_counters = new Histogram<GlobalAttributeGroupId>(true);
+         private Iterator<GlobalAttributeGroupId> gag_iterator;
+         private GlobalAttributeGroupId gag_current;
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/Category.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/Category.java
+@@ -19,9 +19,9 @@
+ 
+ public class Category {
+-    private int categoryID;
+-    private Integer parentCategoryID;
+-    private int itemCount;
+-    private String name;
+-    private boolean isLeaf;
++    private final int categoryID;
++    private final Integer parentCategoryID;
++    private final int itemCount;
++    private final String name;
++    private final boolean isLeaf;
+ 
+     public Category(int categoryID, String name, Integer parentCategoryID, int itemCount, boolean isLeaf) {
+--- src/com/oltpbenchmark/benchmarks/epinions/EpinionsWorker.java
++++ src/com/oltpbenchmark/benchmarks/epinions/EpinionsWorker.java
+@@ -42,6 +42,6 @@
+ 	private static final Logger LOG = Logger.getLogger(EpinionsWorker.class);
+ 
+-    private ArrayList<String> user_ids;
+-    private ArrayList<String> item_ids;
++    private final ArrayList<String> user_ids;
++    private final ArrayList<String> item_ids;
+     private final Random rand = new Random(System.currentTimeMillis());
+ 
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterWorker.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterWorker.java
+@@ -37,5 +37,5 @@
+ 
+ public class TwitterWorker extends Worker<TwitterBenchmark> {
+-    private TransactionGenerator<TwitterOperation> generator;
++    private final TransactionGenerator<TwitterOperation> generator;
+ 
+     private final FlatHistogram<Integer> tweet_len_rng;
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -39,7 +39,7 @@
+ 
+     private static final Logger LOG = Logger.getLogger(LinkBenchWorker.class);
+-    private Random rng;
++    private final Random rng;
+ 
+-    private Properties props;
++    private final Properties props;
+ 
+     // Last node id accessed
+@@ -133,5 +133,5 @@
+ 
+     // Limit of cache size
+-    private int listTailHistoryLimit;
++    private final int listTailHistoryLimit;
+ 
+     public LinkBenchWorker(LinkBenchBenchmark benchmarkModule, int id, 
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ZipfDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ZipfDistribution.java
+@@ -98,5 +98,5 @@
+   private static final int MAX_CACHE_ENTRIES = 1024;
+ 
+-  private static ArrayList<CacheEntry> zetanCache =
++  private static final ArrayList<CacheEntry> zetanCache =
+                 new ArrayList<CacheEntry>(MAX_CACHE_ENTRIES);
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTWorker.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTWorker.java
+@@ -63,6 +63,6 @@
+ 
+     private static CounterGenerator insertRecord;
+-    private double selectivity = wrkld.getSelectivity();
+-    private int key_lower_bound = (int) ((1 - selectivity) * HYADAPTConstants.RANGE);
++    private final double selectivity = wrkld.getSelectivity();
++    private final int key_lower_bound = (int) ((1 - selectivity) * HYADAPTConstants.RANGE);
+             
+     public HYADAPTWorker(HYADAPTBenchmark benchmarkModule, int id, int init_record_count) {
+--- src/com/oltpbenchmark/util/ResultUploader.java
++++ src/com/oltpbenchmark/util/ResultUploader.java
+@@ -47,5 +47,5 @@
+     private static final Logger LOG = Logger.getLogger(ResultUploader.class);
+ 
+-    private static String[] IGNORE_CONF = {
++    private static final String[] IGNORE_CONF = {
+             "dbtype",
+             "driver",
+@@ -57,5 +57,5 @@
+     };
+ 
+-    private static String[] BENCHMARK_KEY_FIELD = {
++    private static final String[] BENCHMARK_KEY_FIELD = {
+             "isolation",
+             "scalefactor",
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -939,5 +939,5 @@
+         private int customer_idx = 0;
+         private CustomerId last_customer_id = null;
+-        private Collection<String> customer_airlines = new HashSet<String>();
++        private final Collection<String> customer_airlines = new HashSet<String>();
+ 
+         public FrequentFlyerIterable(Table catalog_tbl, long num_customers) {
+@@ -1151,5 +1151,5 @@
+ 
+         private int day_idx = 0;
+-        private Timestamp today;
++        private final Timestamp today;
+         private Timestamp start_date;
+ 
+--- src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
+@@ -44,7 +44,7 @@
+ public class YCSBWorker extends Worker<YCSBBenchmark> {
+ 
+-    private ZipfianGenerator readRecord;
++    private final ZipfianGenerator readRecord;
+     private static CounterGenerator insertRecord;
+-    private ZipfianGenerator randScan;
++    private final ZipfianGenerator randScan;
+ 
+     private final char data[] = new char[YCSBConstants.FIELD_SIZE];

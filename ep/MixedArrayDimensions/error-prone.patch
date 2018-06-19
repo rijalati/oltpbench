@@ -1,0 +1,1559 @@
+--- src/com/oltpbenchmark/api/BenchmarkModule.java
++++ src/com/oltpbenchmark/api/BenchmarkModule.java
+@@ -182,5 +182,5 @@
+      */
+     public URL getDatabaseDDL(DatabaseType db_type) {
+-        String ddlNames[] = {
++        String[] ddlNames = {
+             this.benchmarkName + "-" + (db_type != null ? db_type.name().toLowerCase() : "") + "-ddl.sql",
+             this.benchmarkName + "-ddl.sql",
+@@ -219,5 +219,5 @@
+         // String xmlName = this.benchmarkName + "-dialects.xml";
+         // URL ddlURL = this.getClass().getResource(xmlName);
+-        String xmlNames[] = {
++        String[] xmlNames = {
+             (db_type != null ? db_type.name().toLowerCase() : "") + "-dialects.xml",
+             
+--- src/com/oltpbenchmark/catalog/Table.java
++++ src/com/oltpbenchmark/catalog/Table.java
+@@ -94,5 +94,5 @@
+     
+     public int[] getColumnTypes() {
+-        int types[] = new int[this.getColumnCount()];
++        int[] types = new int[this.getColumnCount()];
+         for (Column catalog_col : this.getColumns()) {
+             types[catalog_col.getIndex()] = catalog_col.getType();
+--- src/com/oltpbenchmark/util/json/JSONWriter.java
++++ src/com/oltpbenchmark/util/json/JSONWriter.java
+@@ -95,5 +95,5 @@
+      * The object/array stack.
+      */
+-    private JSONObject stack[];
++    private JSONObject[] stack;
+ 
+     /**
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -394,5 +394,5 @@
+      * from the object.
+      */
+-    public JSONObject(Object object, String names[]) {
++    public JSONObject(Object object, String[] names) {
+         this();
+         Class<?> c = object.getClass();
+--- src/com/oltpbenchmark/api/SQLStmt.java
++++ src/com/oltpbenchmark/api/SQLStmt.java
+@@ -40,5 +40,5 @@
+      * we will substitute it with the number of '?' specified in this array. 
+      */
+-    private final int substitutions[];
++    private final int[] substitutions;
+     
+     /**
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPUtil.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPUtil.java
+@@ -80,5 +80,5 @@
+      * Each element in arr appears at most once in sub array.
+      */
+-    public static int[] subArr(int arr[], int min_len, int max_len) {
++    public static int[] subArr(int[] arr, int min_len, int max_len) {
+         assert min_len <= max_len && min_len >= 0;
+         int sub_len = number(min_len, max_len).intValue();
+@@ -87,5 +87,5 @@
+         assert sub_len <= arr_len;
+ 
+-        int sub[] = new int[sub_len];
++        int[] sub = new int[sub_len];
+         for (int i = 0; i < sub_len; i++) {
+             int j = number(0, arr_len - 1).intValue();
+--- src/com/oltpbenchmark/util/CollectionUtil.java
++++ src/com/oltpbenchmark/util/CollectionUtil.java
+@@ -50,5 +50,5 @@
+      * @param array
+      */
+-    public static <T> void toArray(Collection<T> items, Object array[], boolean convert_to_primitive) {
++    public static <T> void toArray(Collection<T> items, Object[] array, boolean convert_to_primitive) {
+         assert(items.size() == array.length);
+         
+@@ -73,5 +73,5 @@
+     
+     public static int[] toIntArray(Collection<Integer> items) {
+-        int ret[] = new int[items.size()];
++        int[] ret = new int[items.size()];
+         @Var int idx = 0;
+         for (Integer i : items) {
+@@ -203,5 +203,5 @@
+     }
+     
+-    public static <E extends Enum<?>> Set<E> getAllExcluding(E elements[], E...excluding) {
++    public static <E extends Enum<?>> Set<E> getAllExcluding(E[] elements, E...excluding) {
+         Set<E> exclude_set = new HashSet<E>();
+         for (E e : excluding) exclude_set.add(e);
+@@ -400,5 +400,5 @@
+     }
+     
+-    public static <T> Iterable<T> iterable(final T values[]) {
++    public static <T> Iterable<T> iterable(final T[] values) {
+         return (new Iterable<T>() {
+             @Override
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/UpdateReservation.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/UpdateReservation.java
+@@ -74,5 +74,5 @@
+ 
+     public static final int NUM_UPDATES = 4;
+-    public final SQLStmt ReserveSeats[] = {
++    public final SQLStmt[] ReserveSeats = {
+         ReserveSeat0,
+         ReserveSeat1,
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewBid.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewBid.java
+@@ -135,5 +135,5 @@
+     );
+ 
+-    public Object[] run(Connection conn, Timestamp benchmarkTimes[],
++    public Object[] run(Connection conn, Timestamp[] benchmarkTimes,
+                         long item_id, long seller_id, long buyer_id, double newBid, Timestamp estimatedEndDate) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+--- src/com/oltpbenchmark/benchmarks/ycsb/procedures/ScanRecord.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/procedures/ScanRecord.java
+@@ -39,5 +39,5 @@
+         ResultSet r=stmt.executeQuery();
+         while(r.next()) {
+-            String data[] = new String[YCSBConstants.NUM_FIELDS];
++            String[] data = new String[YCSBConstants.NUM_FIELDS];
+         	for(int i = 0; i < data.length; i++)
+         		data[i] = r.getString(i+1);
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
+@@ -45,5 +45,5 @@
+     public static final String TABLENAME_CALL_FORWARDING = "CALL_FORWARDING";
+  
+-    public static final String TABLENAMES[] = {
++    public static final String[] TABLENAMES = {
+         TABLENAME_SUBSCRIBER,
+         TABLENAME_ACCESS_INFO,
+--- src/com/oltpbenchmark/util/ClassUtil.java
++++ src/com/oltpbenchmark/util/ClassUtil.java
+@@ -59,6 +59,6 @@
+     }
+     
+-    public static boolean[] isArray(final Object objs[]) {
+-        boolean is_array[] = new boolean[objs.length];
++    public static boolean[] isArray(final Object[] objs) {
++        boolean[] is_array = new boolean[objs.length];
+         for (int i = 0; i < objs.length; i++) {
+             is_array[i] = ClassUtil.isArray(objs[i]);
+@@ -76,6 +76,6 @@
+      * @throws NoSuchFieldException
+      */
+-    public static <E extends Enum<?>> Field[] getFieldsFromMembersEnum(Class<?> clazz, E members[]) throws NoSuchFieldException {
+-        Field fields[] = new Field[members.length];
++    public static <E extends Enum<?>> Field[] getFieldsFromMembersEnum(Class<?> clazz, E[] members) throws NoSuchFieldException {
++        Field[] fields = new Field[members.length];
+         for (int i = 0; i < members.length; i++) {
+             fields[i] = clazz.getDeclaredField(members[i].name().toLowerCase());
+@@ -163,10 +163,10 @@
+     
+     @SuppressWarnings("unchecked")
+-    public static <T> T newInstance(String class_name, Object params[], Class<?> classes[]) {
++    public static <T> T newInstance(String class_name, Object[] params, Class<?>[] classes) {
+         return ((T)ClassUtil.newInstance(ClassUtil.getClass(class_name), params, classes));
+     }
+ 
+     
+-    public static <T> T newInstance(Class<T> target_class, Object params[], Class<?> classes[]) {
++    public static <T> T newInstance(Class<T> target_class, Object[] params, Class<?>[] classes) {
+ //        Class<?> const_params[] = new Class<?>[params.length];
+ //        for (int i = 0; i < params.length; i++) {
+@@ -209,5 +209,5 @@
+         }
+         
+-        List<Class<?>> paramSuper[] = (List<Class<?>>[])new List[params.length]; 
++        List<Class<?>>[] paramSuper = (List<Class<?>>[])new List[params.length]; 
+         for (int i = 0; i < params.length; i++) {
+             paramSuper[i] = ClassUtil.getSuperClasses(params[i]);
+@@ -216,5 +216,5 @@
+         
+         for (Constructor<?> c : target_class.getConstructors()) {
+-            Class<?> cTypes[] = c.getParameterTypes();
++            Class<?>[] cTypes = c.getParameterTypes();
+             if (LOG.isDebugEnabled()) {
+                 LOG.debug("CANDIDATE: " + c);
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaLoader.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaLoader.java
+@@ -58,15 +58,15 @@
+      * UserId -> # of Revisions
+      */
+-    private final int user_revision_ctr[];
++    private final int[] user_revision_ctr;
+ 
+     /**
+      * PageId -> Last Revision Id
+      */
+-    private final int page_last_rev_id[];
++    private final int[] page_last_rev_id;
+ 
+     /**
+      * PageId -> Last Revision Length
+      */
+-    private final int page_last_rev_length[];
++    private final int[] page_last_rev_length;
+ 
+     /**
+@@ -187,5 +187,5 @@
+         FlatHistogram<Integer> h_revCount = new FlatHistogram<Integer>(rand, UserHistograms.REVISION_COUNT);
+ 
+-        int types[] = catalog_tbl.getColumnTypes();
++        int[] types = catalog_tbl.getColumnTypes();
+         @Var int batchSize = 0;
+         @Var int lastPercent = -1;
+@@ -199,5 +199,5 @@
+             String password = StringUtil.repeat("*", rand.nextInt(32) + 1);
+ 
+-            char eChars[] = TextGenerator.randomChars(rand, rand.nextInt(32) + 5);
++            char[] eChars = TextGenerator.randomChars(rand, rand.nextInt(32) + 5);
+             eChars[4 + rand.nextInt(eChars.length - 4)] = '@';
+             String email = new String(eChars);
+@@ -448,5 +448,5 @@
+             @Var int old_text_length = h_textLength.nextValue().intValue();
+             assert (old_text_length > 0);
+-            @Var char old_text[] = TextGenerator.randomChars(rand, old_text_length);
++            @Var char[] old_text = TextGenerator.randomChars(rand, old_text_length);
+ 
+             for (int i = 0; i < num_revised; i++) {
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaBenchmark.java
+@@ -38,5 +38,5 @@
+     protected final FlatHistogram<Integer> commentLength;
+     protected final FlatHistogram<Integer> minorEdit;
+-    private final FlatHistogram<Integer> revisionDeltas[];
++    private final FlatHistogram<Integer>[] revisionDeltas;
+ 
+     @SuppressWarnings("unchecked")
+@@ -61,5 +61,5 @@
+      * @return
+      */
+-    protected char[] generateRevisionText(@Var char orig_text[]) {
++    protected char[] generateRevisionText(@Var char[] orig_text) {
+         // Figure out how much we are going to change
+         // If the delta is greater than the length of the original
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewItem.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewItem.java
+@@ -150,8 +150,8 @@
+ 	 * the USER record to add the listing fee to the seller's balance.
+ 	 */
+-    public Object[] run(Connection conn, Timestamp benchmarkTimes[],
++    public Object[] run(Connection conn, Timestamp[] benchmarkTimes,
+                         long item_id, long seller_id, long category_id,
+                         String name, @Var String description, long duration, double initial_price, String attributes,
+-                        long gag_ids[], long gav_ids[], String images[]) throws SQLException {
++                        long[] gag_ids, long[] gav_ids, String[] images) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+         final boolean debug = LOG.isDebugEnabled();
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/ItemId.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/ItemId.java
+@@ -29,9 +29,9 @@
+ public class ItemId extends CompositeId {
+ 
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         40, // SELLER_ID
+         16, // ITEM_CTR
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     private UserId seller_id;
+@@ -61,5 +61,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.seller_id = new UserId(values[0]);
+         this.item_ctr = (int)values[1]-1;
+--- src/com/oltpbenchmark/util/CompositeId.java
++++ src/com/oltpbenchmark/util/CompositeId.java
+@@ -33,6 +33,6 @@
+     private transient int hashCode = -1;
+     
+-    protected static final long[] compositeBitsPreCompute(int offset_bits[]) {
+-        long pows[] = new long[offset_bits.length];
++    protected static final long[] compositeBitsPreCompute(int[] offset_bits) {
++        long[] pows = new long[offset_bits.length];
+         for (int i = 0; i < offset_bits.length; i++) {
+             pows[i] = (long)(Math.pow(2, offset_bits[i]) - 1l);
+@@ -41,6 +41,6 @@
+     }
+     
+-    protected final long encode(int offset_bits[], long offset_pows[]) {
+-        long values[] = this.toArray();
++    protected final long encode(int[] offset_bits, long[] offset_pows) {
++        long[] values = this.toArray();
+         assert(values.length == offset_bits.length);
+         @Var long id = 0;
+@@ -63,6 +63,6 @@
+     }
+     
+-    protected final long[] decode(long composite_id, int offset_bits[], long offset_pows[]) {
+-        long values[] = new long[offset_bits.length];
++    protected final long[] decode(long composite_id, int[] offset_bits, long[] offset_pows) {
++        long[] values = new long[offset_bits.length];
+         @Var int offset = 0;
+         for (int i = 0; i < values.length; i++) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/UserId.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/UserId.java
+@@ -23,9 +23,9 @@
+ public class UserId extends CompositeId {
+     
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         16, // ITEM_COUNT
+         24, // OFFSET
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     /**
+@@ -69,5 +69,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.offset = (int)values[0];
+         this.itemCount = (int)values[1];
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewCommentResponse.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewCommentResponse.java
+@@ -56,5 +56,5 @@
+     // -----------------------------------------------------------------
+     
+-    public void run(Connection conn, Timestamp benchmarkTimes[],
++    public void run(Connection conn, Timestamp[] benchmarkTimes,
+                     long item_id, long seller_id, long comment_id, String response) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+--- src/com/oltpbenchmark/benchmarks/seats/util/FlightId.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/FlightId.java
+@@ -25,5 +25,5 @@
+ public class FlightId extends CompositeId {
+     
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         14, // AIRLINE_ID
+         16, // DEPART AIRPORT_ID
+@@ -31,5 +31,5 @@
+         16, // DEPART DATE
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     /** 
+@@ -91,5 +91,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.airline_id = (int)values[0];
+         this.depart_airport_id = (int)values[1];
+--- src/com/oltpbenchmark/util/StringBoxUtil.java
++++ src/com/oltpbenchmark/util/StringBoxUtil.java
+@@ -14,9 +14,9 @@
+     private static final String DEFAULT_MARKER = "*";
+     
+-    public static final String UNICODE_BOX_CORNERS[] = {"\u250C", "\u2510", "\u2514", "\u2518"};
++    public static final String[] UNICODE_BOX_CORNERS = {"\u250C", "\u2510", "\u2514", "\u2518"};
+     public static final String UNICODE_BOX_VERTICAL = "\u2502";
+     public static final String UNICODE_BOX_HORIZONTAL = "\u2500";
+     
+-    public static final String UNICODE_HEAVYBOX_CORNERS[] = {"\u250F", "\u2513", "\u2517", "\u251B"};
++    public static final String[] UNICODE_HEAVYBOX_CORNERS = {"\u250F", "\u2513", "\u2517", "\u251B"};
+     public static final String UNICODE_HEAVYBOX_VERTICAL = "\u2503";
+     public static final String UNICODE_HEAVYBOX_HORIZONTAL = "\u2501";
+@@ -31,6 +31,6 @@
+      * @return
+      */
+-    public static String box(String str, String horzMark, String vertMark, @Var Integer max_len, @Var String corners[]) {
+-        String lines[] = LINE_SPLIT.split(str);
++    public static String box(String str, String horzMark, String vertMark, @Var Integer max_len, @Var String[] corners) {
++        String[] lines = LINE_SPLIT.split(str);
+         if (lines.length == 0)
+             return ("");
+--- src/com/oltpbenchmark/benchmarks/seats/util/CustomerId.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/CustomerId.java
+@@ -22,9 +22,9 @@
+ public class CustomerId extends CompositeId {
+ 
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         48, // ID
+         16, // AIRPORT_ID
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     private int id;
+@@ -47,5 +47,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.id = (int)values[0];
+         this.depart_airport_id = values[1];
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
+@@ -142,5 +142,5 @@
+                 long f_arrive_airport = flightResults.getLong(6);
+ 
+-                Object row[] = new Object[13];
++                Object[] row = new Object[13];
+                 @Var int r = 0;
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
+@@ -419,5 +419,5 @@
+      */
+     @SuppressWarnings("unused")
+-    public ItemId processItemRecord(Object row[]) {
++    public ItemId processItemRecord(Object[] row) {
+         @Var int col = 0;
+         ItemId i_id = new ItemId(SQLUtil.getLong(row[col++]));  // i_id
+@@ -456,5 +456,5 @@
+         if (LOG.isDebugEnabled())
+             LOG.debug("Executing " + proc);
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         Timestamp startTime = profile.getLastCloseAuctionsTime();
+         Timestamp endTime = profile.updateAndGetLastCloseAuctionsTime();
+@@ -464,5 +464,5 @@
+         
+         assert(null != results);
+-        for (Object row[] : results) {
++        for (Object[] row : results) {
+             ItemId itemId = this.processItemRecord(row);
+             assert(itemId != null);
+@@ -480,8 +480,8 @@
+     
+     protected boolean executeGetItem(GetItem proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         ItemInfo itemInfo = profile.getRandomAvailableItemId();
+         
+-        Object results[][] = proc.run(conn, benchmarkTimes, itemInfo.itemId.encode(),
++        Object[][] results = proc.run(conn, benchmarkTimes, itemInfo.itemId.encode(),
+                                                             itemInfo.getSellerId().encode());
+         conn.commit();
+@@ -500,5 +500,5 @@
+     
+     protected boolean executeGetUserInfo(GetUserInfo proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         UserId userId = profile.getRandomBuyerId();
+         @Var int rand;
+@@ -552,7 +552,7 @@
+             vt = results[idx];
+             assert(vt != null);
+-            Long vals[] = new Long[3];
+-            int cols[] = { AuctionMarkConstants.ITEM_COLUMNS.length + 1, 1, 2 };
+-            for (Object row[] : vt) {
++            Long[] vals = new Long[3];
++            int[] cols = { AuctionMarkConstants.ITEM_COLUMNS.length + 1, 1, 2 };
++            for (Object[] row : vt) {
+                 @Var boolean valid = true;
+                 for (int i = 0; i < cols.length; i++) {
+@@ -579,5 +579,5 @@
+             vt = results[idx];
+             if (vt == null) continue;
+-            for (Object row[] : vt) {
++            for (Object[] row : vt) {
+                 ItemId itemId = this.processItemRecord(row);
+                 assert(itemId != null);
+@@ -593,5 +593,5 @@
+     
+     protected boolean executeNewBid(NewBid proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         @Var ItemInfo itemInfo = null;
+         UserId sellerId;
+@@ -647,5 +647,5 @@
+         }
+ 
+-        Object results[] = proc.run(conn, benchmarkTimes, itemInfo.itemId.encode(),
++        Object[] results = proc.run(conn, benchmarkTimes, itemInfo.itemId.encode(),
+                                                           sellerId.encode(),
+                                                           buyerId.encode(),
+@@ -665,5 +665,5 @@
+     
+     protected boolean executeNewComment(NewComment proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         ItemInfo itemInfo = profile.getRandomCompleteItem();
+         UserId sellerId = itemInfo.getSellerId();
+@@ -672,5 +672,5 @@
+                                               AuctionMarkConstants.ITEM_COMMENT_LENGTH_MAX);
+         
+-        Object results[] = proc.run(conn, benchmarkTimes,
++        Object[] results = proc.run(conn, benchmarkTimes,
+                                           itemInfo.itemId.encode(),
+                                           sellerId.encode(),
+@@ -691,5 +691,5 @@
+     
+     protected boolean executeNewCommentResponse(NewCommentResponse proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         int idx = profile.rng.nextInt(profile.pending_commentResponses.size());
+         ItemCommentResponse cr = profile.pending_commentResponses.remove(idx);
+@@ -717,5 +717,5 @@
+     
+     protected boolean executeNewFeedback(NewFeedback proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         ItemInfo itemInfo = profile.getRandomCompleteItem();
+         UserId sellerId = itemInfo.getSellerId();
+@@ -750,5 +750,5 @@
+ 
+     protected boolean executeNewItem(NewItem proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         UserId sellerId = profile.getRandomSellerId(this.getId());
+         @Var ItemId itemId = profile.getNextItemId(sellerId);
+@@ -784,5 +784,5 @@
+         long duration = profile.randomDuration.nextInt();
+ 
+-        @Var Object results[] = null;
++        @Var Object[] results = null;
+         try {
+             long itemIdEncoded = itemId.encode();
+@@ -808,5 +808,5 @@
+     
+     protected boolean executeNewPurchase(NewPurchase proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         ItemInfo itemInfo = profile.getRandomWaitForPurchaseItem();
+         long encodedItemId = itemInfo.itemId.encode();
+@@ -833,5 +833,5 @@
+         }
+         
+-        Object results[] = proc.run(conn, benchmarkTimes, encodedItemId,
++        Object[] results = proc.run(conn, benchmarkTimes, encodedItemId,
+                                                           sellerId.encode(),
+                                                           ip_id,
+@@ -850,5 +850,5 @@
+     
+     protected boolean executeUpdateItem(UpdateItem proc) throws SQLException {
+-        Timestamp benchmarkTimes[] = this.getTimestampParameterArray();
++        Timestamp[] benchmarkTimes = this.getTimestampParameterArray();
+         ItemInfo itemInfo = profile.getRandomAvailableItemId();
+         UserId sellerId = itemInfo.getSellerId();
+@@ -856,5 +856,5 @@
+         
+         @Var boolean delete_attribute = false;
+-        long add_attribute[] = {
++        long[] add_attribute = {
+             -1,
+             -1
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -141,5 +141,5 @@
+     
+     @SuppressWarnings("unchecked")
+-    protected transient final LinkedList<ItemInfo> allItemSets[] = new LinkedList[]{
++    protected transient final LinkedList<ItemInfo>[] allItemSets = new LinkedList[]{
+         this.items_available,
+         this.items_endingSoon,
+@@ -365,5 +365,5 @@
+                 if (LOG.isDebugEnabled())
+                     LOG.debug("Loading AuctionMarkProfile for the first time");
+-                ResultSet results[] = worker.getProcedure(LoadConfig.class).run(conn);
++                ResultSet[] results = worker.getProcedure(LoadConfig.class).run(conn);
+                 @Var int result_idx = 0;
+                 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/CloseAuctions.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/CloseAuctions.java
+@@ -88,5 +88,5 @@
+      * @return
+      */
+-    public List<Object[]> run(Connection conn, Timestamp benchmarkTimes[],
++    public List<Object[]> run(Connection conn, Timestamp[] benchmarkTimes,
+                               Timestamp startTime, Timestamp endTime) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+@@ -172,5 +172,5 @@
+                     LOG.debug(String.format("Updated Status for Item %d => %s", itemId, itemStatus));
+                 
+-                Object row[] = new Object[] {
++                Object[] row = new Object[] {
+                         itemId,               // i_id
+                         sellerId,             // i_u_id
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/GetItem.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/GetItem.java
+@@ -56,5 +56,5 @@
+     // -----------------------------------------------------------------
+     
+-    public Object[][] run(Connection conn, Timestamp benchmarkTimes[],
++    public Object[][] run(Connection conn, Timestamp[] benchmarkTimes,
+                           long item_id, long seller_id) throws SQLException {
+         PreparedStatement item_stmt = this.getPreparedStatement(conn, getItem, item_id, seller_id);
+@@ -64,5 +64,5 @@
+             throw new UserAbortException("Invalid item " + item_id);
+         }
+-        Object item_row[] = new Object[item_results.getMetaData().getColumnCount()];
++        Object[] item_row = new Object[item_results.getMetaData().getColumnCount()];
+         for (int i = 0; i < item_row.length; i++) {
+             item_row[i] = item_results.getObject(i+1);
+@@ -72,5 +72,5 @@
+         PreparedStatement user_stmt = this.getPreparedStatement(conn, getUser, seller_id);
+         ResultSet user_results = user_stmt.executeQuery();
+-        @Var Object user_row[] = null;
++        @Var Object[] user_row = null;
+         try {
+             if (user_results.next() == false) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/GetUserInfo.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/GetUserInfo.java
+@@ -111,5 +111,5 @@
+      * @throws SQLException
+      */
+-    public List<Object[]>[] run(Connection conn, Timestamp benchmarkTimes[],
++    public List<Object[]>[] run(Connection conn, Timestamp[] benchmarkTimes,
+                                 long user_id,
+                                 boolean get_feedback,
+@@ -120,5 +120,5 @@
+         final boolean debug = LOG.isDebugEnabled();
+         
+-        ResultSet results[] = new ResultSet[6];
++        ResultSet[] results = new ResultSet[6];
+         @Var int result_idx = 0;
+         
+@@ -173,5 +173,5 @@
+ 
+         @SuppressWarnings("unchecked")
+-        List<Object[]> final_results[] = new List[results.length];
++        List<Object[]>[] final_results = new List[results.length];
+         for (result_idx = 0; result_idx < results.length; result_idx++) {
+             @Var List<Object[]> inner = null; 
+@@ -180,5 +180,5 @@
+                 int num_cols = results[result_idx].getMetaData().getColumnCount();
+                 while (results[result_idx].next()) {
+-                    Object row[] = new Object[num_cols];
++                    Object[] row = new Object[num_cols];
+                     for (int i = 0; i < num_cols; i++) {
+                         row[i] = results[result_idx].getObject(i+1);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewComment.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewComment.java
+@@ -74,5 +74,5 @@
+     // -----------------------------------------------------------------
+     
+-    public Object[] run(Connection conn, Timestamp benchmarkTimes[],
++    public Object[] run(Connection conn, Timestamp[] benchmarkTimes,
+                         long item_id, long seller_id, long buyer_id, String question) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewFeedback.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewFeedback.java
+@@ -76,5 +76,5 @@
+     // -----------------------------------------------------------------
+     
+-    public void run(Connection conn, Timestamp benchmarkTimes[],
++    public void run(Connection conn, Timestamp[] benchmarkTimes,
+                     long user_id, long i_id, long seller_id, long from_id, long rating, String comment) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewPurchase.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewPurchase.java
+@@ -140,5 +140,5 @@
+     // -----------------------------------------------------------------
+     
+-    public Object[] run(Connection conn, Timestamp benchmarkTimes[],
++    public Object[] run(Connection conn, Timestamp[] benchmarkTimes,
+                         long item_id, long seller_id, long ip_id, double buyer_credit) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/UpdateItem.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/UpdateItem.java
+@@ -78,7 +78,7 @@
+ 	 * uneditable (1.0%?); when this occurs, the transaction will abort.
+ 	 */
+-    public boolean run(Connection conn, Timestamp benchmarkTimes[],
++    public boolean run(Connection conn, Timestamp[] benchmarkTimes,
+                        long item_id, long seller_id, String description,
+-                       boolean delete_attribute, long add_attribute[]) throws SQLException {
++                       boolean delete_attribute, long[] add_attribute) throws SQLException {
+         final Timestamp currentTime = AuctionMarkUtil.getProcTimestamp(benchmarkTimes);
+         
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/GlobalAttributeGroupId.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/GlobalAttributeGroupId.java
+@@ -22,10 +22,10 @@
+ public class GlobalAttributeGroupId extends CompositeId {
+ 
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         16, // CATEGORY
+         8,  // ID
+         8   // COUNT
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     private int category_id;
+@@ -50,5 +50,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.category_id = (int)values[0];
+         this.id = (int)values[1];
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
+@@ -31,5 +31,5 @@
+     private final int numClients;
+     private final Integer clientId;
+-    private final int usersPerItemCounts[];
++    private final int[] usersPerItemCounts;
+     private final int minItemCount;
+     private final int maxItemCount;
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/GlobalAttributeValueId.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/GlobalAttributeValueId.java
+@@ -22,9 +22,9 @@
+ public class GlobalAttributeValueId extends CompositeId {
+ 
+-    private static final int COMPOSITE_BITS[] = {
++    private static final int[] COMPOSITE_BITS = {
+         32, // GROUP_ATTRIBUTE_ID
+         8,  // ID
+     };
+-    private static final long COMPOSITE_POWS[] = compositeBitsPreCompute(COMPOSITE_BITS);
++    private static final long[] COMPOSITE_POWS = compositeBitsPreCompute(COMPOSITE_BITS);
+     
+     private long group_attribute_id;
+@@ -51,5 +51,5 @@
+     @Override
+     public void decode(long composite_id) {
+-        long values[] = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
++        long[] values = super.decode(composite_id, COMPOSITE_BITS, COMPOSITE_POWS);
+         this.group_attribute_id = (int)values[0];
+         this.id = (int)values[1];
+--- src/com/oltpbenchmark/util/ThreadUtil.java
++++ src/com/oltpbenchmark/util/ThreadUtil.java
+@@ -105,5 +105,5 @@
+      * @return
+      */
+-    public static Pair<Integer, Process> exec(String command[]) {
++    public static Pair<Integer, Process> exec(String[] command) {
+         ProcessBuilder pb = new ProcessBuilder(command);
+         @Var Process p = null;
+@@ -137,5 +137,5 @@
+      * @param command
+      */
+-    public static <T> void fork(String command[], EventObservable<T> stop_observable) {
++    public static <T> void fork(String[] command, EventObservable<T> stop_observable) {
+         ThreadUtil.fork(command, stop_observable, null, false);
+     }
+@@ -147,5 +147,5 @@
+      * @param print_output
+      */
+-    public static <T> void fork(String command[], final EventObservable<T> stop_observable, final String prefix, final boolean print_output) {
++    public static <T> void fork(String[] command, final EventObservable<T> stop_observable, final String prefix, final boolean print_output) {
+         if (LOG.isDebugEnabled())
+             LOG.debug("Forking off process: " + Arrays.toString(command));
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindOpenSeats.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindOpenSeats.java
+@@ -76,5 +76,5 @@
+         
+         // 150 seats
+-        final long seatmap[] = new long[]
++        final long[] seatmap = new long[]
+           {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,     
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
+@@ -39,5 +39,5 @@
+     private final int custNameLength;
+     private final String custNameFormat;
+-    private final long custIdsBuffer[] = { -1l, -1l };
++    private final long[] custIdsBuffer = { -1l, -1l };
+     
+     public SmallBankWorker(SmallBankBenchmark benchmarkModule, int id) {
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
+@@ -75,8 +75,8 @@
+ 
+   protected void init(long min, long max, ArrayList<Point> cdf) {
+-    double pdf[] = getPDF(cdf);
+-    double ccdf[] = getCCDF(pdf);
+-    double cs[] = getCumulativeSum(ccdf);
+-    long right_points[] = new long[cs.length];
++    double[] pdf = getPDF(cdf);
++    double[] ccdf = getCCDF(pdf);
++    double[] cs = getCumulativeSum(ccdf);
++    long[] right_points = new long[cs.length];
+     init(min, max, cdf, cs, right_points, expectedValue(cdf));
+   }
+@@ -92,5 +92,5 @@
+    */
+   protected void init(long min, long max, ArrayList<Point> cdf,
+-        double cs[], long right_points[], double expectedValue) {
++        double[] cs, long[] right_points, double expectedValue) {
+     this.min = min;
+     this.max = max;
+--- src/com/oltpbenchmark/benchmarks/linkbench/pojo/Node.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/pojo/Node.java
+@@ -52,8 +52,8 @@
+ 
+   /** Arbitrary payload data */
+-  public byte data[];
++  public byte[] data;
+ 
+   public Node(long id, int type, long version, int time,
+-      byte data[]) {
++      byte[] data) {
+     super();
+     this.id = id;
+--- src/com/oltpbenchmark/benchmarks/seats/util/SEATSHistogramUtil.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/SEATSHistogramUtil.java
+@@ -75,5 +75,5 @@
+         Collection<String> values = h.values();
+         for (String value : values) {
+-            String split[] = pattern.split(value);
++            String[] split = pattern.split(value);
+             @Var Histogram<String> src_h = m.get(split[0]);
+             if (src_h == null) {
+--- src/com/oltpbenchmark/Results.java
++++ src/com/oltpbenchmark/Results.java
+@@ -108,5 +108,5 @@
+ 
+     public void writeCSV2(int windowSizeSeconds, PrintStream out, TransactionType txType) {
+-    	String header[] = {
++    	String[] header = {
+ 	    	"Time (seconds)",
+ 	    	"Requests",
+@@ -160,5 +160,5 @@
+ 
+         // long startNs = latencySamples.get(0).startNs;
+-        String header[] = {
++        String[] header = {
+             "Transaction Type Index",
+             "Transaction Name",
+@@ -171,5 +171,5 @@
+         for (Sample s : latencySamples) {
+             double startUs = ((double) s.startNs / (double) 1000000000);
+-            String row[] = {
++            String[] row = {
+                 Integer.toString(s.tranType),
+                 // Important!
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/LoadConfig.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/LoadConfig.java
+@@ -59,5 +59,5 @@
+     
+     public ResultSet[] run(Connection conn) throws SQLException {
+-        ResultSet results[] = new ResultSet[6];
++        ResultSet[] results = new ResultSet[6];
+         @Var int result_idx = 0;
+         
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
+@@ -78,5 +78,5 @@
+      * @return
+      */
+-    public static Timestamp getProcTimestamp(Timestamp benchmarkTimes[]) {
++    public static Timestamp getProcTimestamp(Timestamp[] benchmarkTimes) {
+         assert(benchmarkTimes.length == 2);
+         
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
+@@ -44,5 +44,5 @@
+     
+     // Zhenwu made the changes. The original code is above
+-    public static final int DISTANCES[] = { 5, 10, 25, 50, 100 };
++    public static final int[] DISTANCES = { 5, 10, 25, 50, 100 };
+     
+     /**
+@@ -225,5 +225,5 @@
+     
+     /** Tables that are loaded from data files */
+-    public static final String TABLES_DATAFILES[] = {
++    public static final String[] TABLES_DATAFILES = {
+         SEATSConstants.TABLENAME_COUNTRY,
+         SEATSConstants.TABLENAME_AIRPORT,
+@@ -235,5 +235,5 @@
+      * IMPORTANT: FLIGHT must come before FREQUENT_FLYER
+      */
+-    public static final String TABLES_SCALING[] = {
++    public static final String[] TABLES_SCALING = {
+         SEATSConstants.TABLENAME_CUSTOMER,
+         SEATSConstants.TABLENAME_AIRPORT_DISTANCE,
+@@ -244,5 +244,5 @@
+     
+     /** Configuration Tables */
+-    public static final String TABLES_CONFIG[] = {
++    public static final String[] TABLES_CONFIG = {
+         SEATSConstants.TABLENAME_CONFIG_PROFILE,
+         SEATSConstants.TABLENAME_CONFIG_HISTOGRAMS,
+@@ -250,5 +250,5 @@
+     
+     /** Histograms generated from data files */
+-    public static final String HISTOGRAM_DATA_FILES[] = {
++    public static final String[] HISTOGRAM_DATA_FILES = {
+         SEATSConstants.HISTOGRAM_FLIGHTS_PER_AIRPORT,
+         SEATSConstants.HISTOGRAM_FLIGHTS_PER_DEPART_TIMES,
+@@ -262,5 +262,5 @@
+      * to keep a table of how to map these codes to the ids when loading.
+      */
+-    public static final String CODE_TO_ID_COLUMNS[][] = {
++    public static final String[][] CODE_TO_ID_COLUMNS = {
+         {TABLENAME_COUNTRY, "CO_CODE_3",    "CO_ID"},
+         {TABLENAME_AIRPORT, "AP_CODE",      "AP_ID"},
+--- src/com/oltpbenchmark/benchmarks/ycsb/procedures/UpdateRecord.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/procedures/UpdateRecord.java
+@@ -32,5 +32,5 @@
+     );
+     
+-    public void run(Connection conn, int keyname, String vals[]) throws SQLException {
++    public void run(Connection conn, int keyname, String[] vals) throws SQLException {
+     	PreparedStatement stmt = this.getPreparedStatement(conn, updateAllStmt);
+ 		assert(vals.length == YCSBConstants.NUM_FIELDS);
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
+@@ -68,5 +68,5 @@
+         rs.beforeFirst();
+ 
+-        Link results[] = new Link[count];
++        Link[] results = new Link[count];
+         @Var int i = 0;
+         while (rs.next()) {
+--- src/com/oltpbenchmark/benchmarks/wikipedia/data/RevisionHistograms.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/data/RevisionHistograms.java
+@@ -288,5 +288,5 @@
+      * 
+      */
+-    public static final int REVISION_DELTA_SIZES[] = { 1000, 10000, 100000 };
++    public static final int[] REVISION_DELTA_SIZES = { 1000, 10000, 100000 };
+     
+     /**
+@@ -294,5 +294,5 @@
+      */
+     @SuppressWarnings("unchecked")
+-    public static final Histogram<Integer> REVISION_DELTAS[] = (Histogram<Integer>[])new Histogram[] {
++    public static final Histogram<Integer>[] REVISION_DELTAS = (Histogram<Integer>[])new Histogram[] {
+         new Histogram<Integer>() {
+             {
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
+@@ -81,5 +81,5 @@
+ 
+         // Fetch the link data
+-        Link links[] = new Link[count];
++        Link[] links = new Link[count];
+         @Var int i = 0;
+         while (rs.next()) {
+--- src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
+@@ -275,5 +275,5 @@
+ 
+     protected long loadHelper() {
+-        Thread loaders[] = new Thread[8];
++        Thread[] loaders = new Thread[8];
+         loaders[0] = loadCustomers();
+         loaders[1] = loadLineItems();
+--- src/com/oltpbenchmark/util/TextGenerator.java
++++ src/com/oltpbenchmark/util/TextGenerator.java
+@@ -57,9 +57,9 @@
+      */
+     public static char[] randomChars(Random rng, int strLen) {
+-        char chars[] = new char[strLen];
++        char[] chars = new char[strLen];
+         return randomFastChars(rng, chars);
+     }
+ 
+-    public static char[] randomChars(Random rng, char chars[]) {
++    public static char[] randomChars(Random rng, char[] chars) {
+         for (int i = 0; i < chars.length; i++) {
+             chars[i] = CHAR_SYMBOLS[rng.nextInt(CHAR_SYMBOLS.length)];
+@@ -74,5 +74,5 @@
+      * @return
+      */
+-    public static char[] randomFastChars(Random rng, char chars[]) {
++    public static char[] randomFastChars(Random rng, char[] chars) {
+         // Ok so now the goal of this is to reduce the number of times that we have to 
+         // invoke a random number. We'll do this by grabbing a single random int
+@@ -115,5 +115,5 @@
+     public static String randomStr(Random rng, int strLen, String prefix) {
+         // Generate the random chars and then add in our prefix
+-        char chars[] = randomChars(rng, strLen);
++        char[] chars = randomChars(rng, strLen);
+         prefix.getChars(0, Math.min(prefix.length(), strLen), chars, 0);
+         return new String(chars);
+@@ -128,8 +128,8 @@
+      * @return
+      */
+-    public static char[] resizeText(Random rng, char orig[], int delta) {
++    public static char[] resizeText(Random rng, char[] orig, int delta) {
+         assert(orig.length + delta > 0) :
+             String.format("Invalid resize (orig:%d, delta:%d)", orig.length, delta);
+-        char chars[] = Arrays.copyOf(orig, orig.length + delta);
++        char[] chars = Arrays.copyOf(orig, orig.length + delta);
+         for (int i = orig.length; i < chars.length; i++) {
+             chars[i] = (char)CHAR_SYMBOLS[rng.nextInt(CHAR_SYMBOLS.length)];
+@@ -145,5 +145,5 @@
+      * @return
+      */
+-    public static char[] permuteText(Random rng, char chars[]) {
++    public static char[] permuteText(Random rng, char[] chars) {
+         // We will try to be fast about this and permute the text by blocks
+         @Var int idx = 0;
+--- src/com/oltpbenchmark/util/JSONUtil.java
++++ src/com/oltpbenchmark/util/JSONUtil.java
+@@ -54,5 +54,5 @@
+      */
+     public static Field[] getSerializableFields(Class<?> clazz, String...fieldsToExclude) {
+-        @Var Field ret[] = SERIALIZABLE_FIELDS.get(clazz);
++        @Var Field[] ret = SERIALIZABLE_FIELDS.get(clazz);
+         if (ret == null) {
+             Collection<String> exclude = CollectionUtil.addAll(new HashSet<String>(), fieldsToExclude);
+@@ -209,5 +209,5 @@
+      * @throws JSONException
+      */
+-    public static <E extends Enum<?>, T> void fieldsToJSON(JSONStringer stringer, T object, Class<? extends T> base_class, E members[]) throws JSONException {
++    public static <E extends Enum<?>, T> void fieldsToJSON(JSONStringer stringer, T object, Class<? extends T> base_class, E[] members) throws JSONException {
+         try {
+             fieldsToJSON(stringer, object, base_class, ClassUtil.getFieldsFromMembersEnum(base_class, members));    
+@@ -227,5 +227,5 @@
+      * @throws JSONException
+      */
+-    public static <T> void fieldsToJSON(JSONStringer stringer, T object, Class<? extends T> base_class, Field fields[]) throws JSONException {
++    public static <T> void fieldsToJSON(JSONStringer stringer, T object, Class<? extends T> base_class, Field[] fields) throws JSONException {
+         if (LOG.isDebugEnabled()) LOG.debug("Serializing out " + fields.length + " elements for " + base_class.getSimpleName());
+         for (Field f : fields) {
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ID2Chooser.java
+@@ -121,5 +121,5 @@
+   public long[] chooseMultipleForOp(Random rng, long id1, long linkType,
+       int nid2s, double pExisting) {
+-    long id2s[] = new long[nid2s];
++    long[] id2s = new long[nid2s];
+     long nlinks = calcLinkCount(id1, linkType);
+     long range = calcID2Range(pExisting, nlinks);
+@@ -236,5 +236,5 @@
+ 
+   public long[] getLinkTypes() {
+-    long res[] = new long[linkTypeCount];
++    long[] res = new long[linkTypeCount];
+     // Just have link types in a sequence starting at the default one
+     for (int i = 0; i < linkTypeCount; i++) {
+--- src/com/oltpbenchmark/benchmarks/linkbench/generators/DataGenerator.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/generators/DataGenerator.java
+@@ -29,5 +29,5 @@
+    *    constructed and filled in a single statement
+    */
+-  public byte[] fill(Random rng, byte data[]);
++  public byte[] fill(Random rng, byte[] data);
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
+@@ -214,5 +214,5 @@
+      * in AuctionMarkWorker.processItemRecord()
+      */
+-    public static final String ITEM_COLUMNS[] = { "i_id",
++    public static final String[] ITEM_COLUMNS = { "i_id",
+                                                   "i_u_id",
+                                                   "i_name",
+@@ -265,5 +265,5 @@
+     public static final String TABLENAME_ITEM_PURCHASE          = "ITEM_PURCHASE";
+ 
+-    public static final String TABLENAMES[] = {
++    public static final String[] TABLENAMES = {
+         AuctionMarkConstants.TABLENAME_REGION,
+         AuctionMarkConstants.TABLENAME_CATEGORY,
+--- src/com/oltpbenchmark/benchmarks/ycsb/procedures/ReadRecord.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/procedures/ReadRecord.java
+@@ -32,5 +32,5 @@
+     
+ 	//FIXME: The value in ysqb is a byteiterator
+-    public void run(Connection conn, int keyname, String results[]) throws SQLException {
++    public void run(Connection conn, int keyname, String[] results) throws SQLException {
+         PreparedStatement stmt = this.getPreparedStatement(conn, readStmt);
+         stmt.setInt(1, keyname);          
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -230,5 +230,5 @@
+         final String sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
+         final PreparedStatement stmt = conn.prepareStatement(sql);
+-        final int types[] = catalog_tbl.getColumnTypes();
++        final int[] types = catalog_tbl.getColumnTypes();
+         
+         while (generator.hasMore()) {
+@@ -244,5 +244,5 @@
+ //            }
+             
+-            for (Object row[] : volt_table) {
++            for (Object[] row : volt_table) {
+                 for (int i = 0; i < row.length; i++) {
+                     if (row[i] != null) {
+@@ -462,5 +462,5 @@
+         }
+         
+-        protected int populateRandomColumns(Object row[]) {
++        protected int populateRandomColumns(Object[] row) {
+             @Var int cols = 0;
+             
+@@ -535,5 +535,5 @@
+          */
+         public synchronized void addRow() {
+-            Object row[] = new Object[this.catalog_tbl.getColumnCount()];
++            Object[] row = new Object[this.catalog_tbl.getColumnCount()];
+             
+             // Main Columns
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
+@@ -163,5 +163,5 @@
+ 
+         // Tuple Code to Tuple Id Mapping
+-        for (String xref[] : SEATSConstants.CODE_TO_ID_COLUMNS) {
++        for (String[] xref : SEATSConstants.CODE_TO_ID_COLUMNS) {
+             assert (xref.length == 3);
+             String tableName = xref[0];
+@@ -313,5 +313,5 @@
+             // Otherwise we have to go fetch everything again
+             LoadConfig proc = worker.getProcedure(LoadConfig.class);
+-            ResultSet results[] = proc.run(worker.getConnection());
++            ResultSet[] results = proc.run(worker.getConnection());
+             @Var int result_idx = 0;
+ 
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -520,5 +520,5 @@
+             // Convert the data into a FlightIds that other transactions can use
+             @Var int ctr = 0;
+-            for (Object row[] : results) {
++            for (Object[] row : results) {
+                 FlightId flight_id = new FlightId((Long)row[0]);
+                 assert(flight_id != null);
+@@ -564,5 +564,5 @@
+         tmp_reservations.clear();
+         
+-        for (Object row[] : results) {
++        for (Object[] row : results) {
+             if (row == null) continue; //  || rng.nextInt(100) < 75) continue; // HACK
+             Integer seatnum = (Integer)row[1];
+@@ -660,5 +660,5 @@
+         
+         // Generate random attributes
+-        long attributes[] = new long[9];
++        long[] attributes = new long[9];
+         for (int i = 0; i < attributes.length; i++) {
+             attributes[i] = rng.nextLong();
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/NewReservation.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/NewReservation.java
+@@ -113,5 +113,5 @@
+             ")");
+     
+-    public void run(Connection conn, long r_id, long c_id, long f_id, long seatnum, double price, long attrs[]) throws SQLException {
++    public void run(Connection conn, long r_id, long c_id, long f_id, long seatnum, double price, long[] attrs) throws SQLException {
+         final boolean debug = LOG.isDebugEnabled();
+         @Var boolean found;
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddNode.java
+@@ -60,5 +60,5 @@
+         ResultSet rs = stmt.getGeneratedKeys();
+ 
+-        long newIds[] = new long[1];
++        long[] newIds = new long[1];
+         // Find the generated id
+         @Var int i = 0;
+--- src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserLoader.java
++++ src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserLoader.java
+@@ -81,5 +81,5 @@
+             stmt.addBatch();
+             if (++batch >= ResourceStresserConstants.COMMIT_BATCH_SIZE) {
+-                int result[] = stmt.executeBatch();
++                int[] result = stmt.executeBatch();
+                 assert (result != null);
+                 conn.commit();
+--- src/com/oltpbenchmark/benchmarks/ycsb/procedures/ReadModifyWriteRecord.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/procedures/ReadModifyWriteRecord.java
+@@ -35,5 +35,5 @@
+     );
+ 	//FIXME: The value in ysqb is a byteiterator
+-    public void run(Connection conn, int keyname, String fields[], String results[]) throws SQLException {
++    public void run(Connection conn, int keyname, String[] fields, String[] results) throws SQLException {
+         
+         // Fetch it!
+--- src/com/oltpbenchmark/benchmarks/sibench/SILoader.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SILoader.java
+@@ -78,5 +78,5 @@
+ 
+             if (++batch >= SIConstants.configCommitCount) {
+-                int result[] = stmt.executeBatch();
++                int[] result = stmt.executeBatch();
+                 assert (result != null);
+                 conn.commit();
+--- src/com/oltpbenchmark/benchmarks/linkbench/generators/MotifDataGenerator.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/generators/MotifDataGenerator.java
+@@ -68,5 +68,5 @@
+    * on demand.
+    */
+-  private byte motifs[];
++  private byte[] motifs;
+   /** Size of motif buffer */
+   private int motifBytes;
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPLoader.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPLoader.java
+@@ -137,5 +137,5 @@
+             if (++batch >= TATPConstants.BATCH_SIZE) {
+                 if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %6d / %d", catalog_tbl.getName(), total, subscriberSize));
+-                int results[] = pstmt.executeBatch();
++                int[] results = pstmt.executeBatch();
+                 conn.commit();
+                 assert(results != null);
+@@ -145,5 +145,5 @@
+         if (batch > 0) {
+         	if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %6d / %d", catalog_tbl.getName(), total, subscriberSize));
+-            int results[] = pstmt.executeBatch();
++            int[] results = pstmt.executeBatch();
+             conn.commit();
+             assert(results != null);
+@@ -183,5 +183,5 @@
+             if (batch >= TATPConstants.BATCH_SIZE) {
+                 if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %6d / %d", TATPConstants.TABLENAME_ACCESS_INFO, total, ai_types.length * subscriberSize));
+-                int results[] = pstmt.executeBatch();
++                int[] results = pstmt.executeBatch();
+                 assert(results != null);
+                 conn.commit();
+@@ -191,5 +191,5 @@
+         if (batch > 0) {
+         	if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %6d / %d", TATPConstants.TABLENAME_ACCESS_INFO, total, ai_types.length * subscriberSize));
+-            int results[] = pstmt.executeBatch();
++            int[] results = pstmt.executeBatch();
+             assert(results != null);
+             conn.commit();
+@@ -252,5 +252,5 @@
+ 													TATPConstants.TABLENAME_SPECIAL_FACILITY, spe_total,
+ 													TATPConstants.TABLENAME_SUBSCRIBER, s_id, subscriberSize));
+-                @Var int results[] = spe_pstmt.executeBatch();
++                @Var int[] results = spe_pstmt.executeBatch();
+                 assert(results != null);
+                 
+@@ -269,5 +269,5 @@
+         if (spe_batch > 0) {
+             if (LOG.isDebugEnabled()) LOG.debug(String.format("%s: %d", TATPConstants.TABLENAME_SPECIAL_FACILITY, spe_total));
+-            @Var int results[] = spe_pstmt.executeBatch();
++            @Var int[] results = spe_pstmt.executeBatch();
+             assert(results != null);
+             
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -132,6 +132,6 @@
+      */
+     public static String columns(String...strs) {
+-        String lines[][] = new String[strs.length][];
+-        String prefixes[] = new String[strs.length];
++        String[][] lines = new String[strs.length][];
++        String[] prefixes = new String[strs.length];
+         @Var int max_length = 0;
+         @Var int max_lines = 0;
+@@ -208,6 +208,6 @@
+         @Var int max_key_size = 0;
+         @Var int max_title_size = 0;
+-        final Map<Object, String[]> map_keys[] = (Map<Object, String[]>[])new Map[maps.length];
+-        final boolean map_titles[] = new boolean[maps.length];
++        final Map<Object, String[]>[] map_keys = (Map<Object, String[]>[])new Map[maps.length];
++        final boolean[] map_titles = new boolean[maps.length];
+         for (int i = 0; i < maps.length; i++) {
+             Map<?, ?> m = maps[i];
+@@ -216,5 +216,5 @@
+             @Var boolean first = true;
+             for (Object k : m.keySet()) {
+-                String k_str[] = LINE_SPLIT.split(k != null ? k.toString() : "");
++                String[] k_str = LINE_SPLIT.split(k != null ? k.toString() : "");
+                 keys.put(k, k_str);
+                 
+@@ -245,5 +245,5 @@
+         // We do it in this way so that we can get the max length of the values
+         @Var int max_value_size = 0;
+-        StringBuilder blocks[] = new StringBuilder[maps.length];
++        StringBuilder[] blocks = new StringBuilder[maps.length];
+         for (int map_i = 0; map_i < maps.length; map_i++) {
+             blocks[map_i] = new StringBuilder();
+@@ -254,5 +254,5 @@
+             @Var boolean first = true;
+             for (Entry<?, ?> e : m.entrySet()) {
+-                String key[] = keys.get(e.getKey());
++                String[] key = keys.get(e.getKey());
+                 
+                 if (first && map_titles[map_i]) {
+@@ -276,5 +276,5 @@
+                     
+                     // If the key or value is multiple lines, format them nicely!
+-                    String value[] = LINE_SPLIT.split(v);
++                    String[] value = LINE_SPLIT.split(v);
+                     int total_lines = Math.max(key.length, value.length); 
+                     for (int line_i = 0; line_i < total_lines; line_i++) {
+@@ -375,5 +375,5 @@
+      */
+     public static String box(String str, String mark, @Var Integer max_len) {
+-        String lines[] = LINE_SPLIT.split(str);
++        String[] lines = LINE_SPLIT.split(str);
+         if (lines.length == 0) return "";
+         
+@@ -404,5 +404,5 @@
+      */
+     public static String prefix(String str, String prefix) {
+-        String lines[] = LINE_SPLIT.split(str);
++        String[] lines = LINE_SPLIT.split(str);
+         if (lines.length == 0) return "";
+         
+@@ -557,5 +557,5 @@
+      * @return
+      */
+-    public static String stringLiteral(byte arr[]) {
++    public static String stringLiteral(byte[] arr) {
+       CharBuffer cb = Charset.forName("ISO-8859-1").decode(ByteBuffer.wrap(arr));
+       StringBuilder sb = new StringBuilder();
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -255,5 +255,5 @@
+             nid2s = (int)multigetDist.choose(rng);
+         }
+-        long id2s[] = id2chooser.chooseMultipleForOp(rng, id1, link_type, nid2s,
++        long[] id2s = id2chooser.chooseMultipleForOp(rng, id1, link_type, nid2s,
+                 ID2Chooser.P_GET_EXIST);
+ 
+@@ -329,5 +329,5 @@
+         assert (proc != null);
+         Link link = new Link();
+-        Link links[];
++        Link[] links;
+         if (rng.nextDouble() < p_historical_getlinklist &&
+                     !this.listTailHistory.isEmpty()) {
+@@ -506,5 +506,5 @@
+      */
+     private Node createAddNode() {
+-        byte data[] = nodeAddDataGen.fill(rng, new byte[(int)nodeDataSize.choose(rng)]);
++        byte[] data = nodeAddDataGen.fill(rng, new byte[(int)nodeDataSize.choose(rng)]);
+         return new Node(-1, LinkBenchConstants.DEFAULT_NODE_TYPE, 1,
+                 (int)(System.currentTimeMillis()/1000), data);
+@@ -567,15 +567,15 @@
+      */
+     private Node createUpdateNode(long id) {
+-        byte data[] = nodeUpDataGen.fill(rng, new byte[(int)nodeDataSize.choose(rng)]);
++        byte[] data = nodeUpDataGen.fill(rng, new byte[(int)nodeDataSize.choose(rng)]);
+         return new Node(id, LinkBenchConstants.DEFAULT_NODE_TYPE, 2,
+                 (int)(System.currentTimeMillis()/1000), data);
+     }
+-    int getLink(long id1, long link_type, long id2s[]) throws SQLException {
+-        Link links[] = multigetLinks(id1, link_type, id2s);
++    int getLink(long id1, long link_type, long[] id2s) throws SQLException {
++        Link[] links = multigetLinks(id1, link_type, id2s);
+         return links == null ? 0 : links.length;
+     }
+-    Link[] multigetLinks(long id1, long link_type, long id2s[]) throws SQLException {
++    Link[] multigetLinks(long id1, long link_type, long[] id2s) throws SQLException {
+         GetLink proc= this.getProcedure(GetLink.class);
+-        Link links[] = proc.run(conn, id1, link_type, id2s);
++        Link[] links = proc.run(conn, id1, link_type, id2s);
+         if (LOG.isDebugEnabled()) {
+             LOG.trace("getLinkList(id1=" + id1 + ", link_type="  + link_type
+@@ -596,5 +596,5 @@
+     Link[] getLinkList(long id1, long link_type) throws SQLException {
+         GetLinkList proc= this.getProcedure(GetLinkList.class);
+-        Link links[] = proc.run(conn, id1, link_type);
++        Link[] links = proc.run(conn, id1, link_type);
+         if (LOG.isDebugEnabled()) {
+            LOG.trace("getLinkList(id1=" + id1 + ", link_type="  + link_type
+@@ -621,5 +621,5 @@
+ 
+         // Get links past the oldest last retrieved
+-        Link links[] = proc.run(conn, prevLast.id1,
++        Link[] links = proc.run(conn, prevLast.id1,
+             prevLast.link_type, 0, prevLast.time, 1, LinkBenchConstants.DEFAULT_LIMIT);
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTLoader.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTLoader.java
+@@ -83,5 +83,5 @@
+             total++;
+             if (++batch >= HYADAPTConstants.configCommitCount) {
+-                int result[] = stmt.executeBatch();
++                int[] result = stmt.executeBatch();
+                 assert (result != null);
+                 conn.commit();
+--- src/com/oltpbenchmark/util/json/Test.java
++++ src/com/oltpbenchmark/util/json/Test.java
+@@ -33,5 +33,5 @@
+      * @param args
+      */
+-    public static void main(String args[]) {
++    public static void main(String[] args) {
+         Iterator<?> it;
+         @Var JSONArray a;
+@@ -166,9 +166,9 @@
+             System.out.println(new JSONArray(jj.toString()).toString(4));
+ 
+-            int ar[] = {1, 2, 3};
++            int[] ar = {1, 2, 3};
+             @Var JSONArray ja = new JSONArray(ar);
+             System.out.println(ja.toString());
+             
+-            String sa[] = {"aString", "aNumber", "aBoolean"};            
++            String[] sa = {"aString", "aNumber", "aBoolean"};            
+             j = new JSONObject(obj, sa);
+             j.put("Testing JSONString interface", obj);
+--- src/com/oltpbenchmark/util/TableDataIterable.java
++++ src/com/oltpbenchmark/util/TableDataIterable.java
+@@ -34,7 +34,7 @@
+     private final boolean auto_generate_first_column;
+     
+-    private final int types[];
+-    private final boolean fkeys[];
+-    private final boolean nullable[];
++    private final int[] types;
++    private final boolean[] fkeys;
++    private final boolean[] nullable;
+     private int line_ctr = 0;
+     
+@@ -98,5 +98,5 @@
+             this.getNext();
+             if (next == null) return (next);
+-            @Var String row[] = null;
++            @Var String[] row = null;
+             synchronized (this) {
+                 row = this.next;
+@@ -104,5 +104,5 @@
+             } // SYNCH
+             
+-            Object tuple[] = new Object[types.length];
++            Object[] tuple = new Object[types.length];
+             @Var int row_idx = 0;
+             for (int col_idx = 0; col_idx < types.length; col_idx++) {
+--- src/com/oltpbenchmark/benchmarks/ycsb/YCSBLoader.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/YCSBLoader.java
+@@ -77,5 +77,5 @@
+             total++;
+             if (++batch >= YCSBConstants.COMMIT_BATCH_SIZE) {
+-                int result[] = stmt.executeBatch();
++                int[] result = stmt.executeBatch();
+                 assert (result != null);
+                 conn.commit();
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -494,7 +494,7 @@
+             String insert_sql = SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType());
+             PreparedStatement insert_stmt = conn.prepareStatement(insert_sql);
+-            int sqlTypes[] = catalog_tbl.getColumnTypes();
++            int[] sqlTypes = catalog_tbl.getColumnTypes();
+ 
+-            for (Object tuple[] : iterable) {
++            for (Object[] tuple : iterable) {
+                 assert (tuple[0] != null) : "The primary key for " + catalog_tbl.getName() + " is null";
+ 
+@@ -729,7 +729,7 @@
+     protected abstract class ScalingDataIterable implements Iterable<Object[]> {
+         private final Table catalog_tbl;
+-        private final boolean special[];
++        private final boolean[] special;
+         private final Object[] data;
+-        private final int types[];
++        private final int[] types;
+         protected long total;
+         private long last_id = 0;
+@@ -754,5 +754,5 @@
+          * @throws Exception
+          */
+-        public ScalingDataIterable(Table catalog_tbl, long total, int special_columns[]) {
++        public ScalingDataIterable(Table catalog_tbl, long total, int[] special_columns) {
+             this.catalog_tbl = catalog_tbl;
+             this.total = total;
+@@ -934,5 +934,5 @@
+     protected class FrequentFlyerIterable extends ScalingDataIterable {
+         private final Iterator<CustomerId> customer_id_iterator;
+-        private final short ff_per_customer[];
++        private final short[] ff_per_customer;
+         private final FlatHistogram<String> airline_rand;
+ 
+@@ -1430,5 +1430,5 @@
+ 
+         private final LinkedBlockingDeque<Object[]> queue = new LinkedBlockingDeque<Object[]>(100);
+-        private Object current[] = null;
++        private Object[] current = null;
+         private Throwable error = null;
+ 
+@@ -1771,5 +1771,5 @@
+     public void setDistance(String airport0, String airport1, double distance) {
+         short short_distance = (short) Math.round(distance);
+-        for (String a[] : new String[][] { { airport0, airport1 }, { airport1, airport0 } }) {
++        for (String[] a : new String[][] { { airport0, airport1 }, { airport1, airport0 } }) {
+             if (!this.airport_distances.containsKey(a[0])) {
+                 this.airport_distances.put(a[0], new HashMap<String, Short>());
+--- src/com/oltpbenchmark/util/SQLUtil.java
++++ src/com/oltpbenchmark/util/SQLUtil.java
+@@ -39,5 +39,5 @@
+     private static final Logger LOG = Logger.getLogger(SQLUtil.class);
+     
+-    private static final DateFormat timestamp_formats[] = new DateFormat[] {
++    private static final DateFormat[] timestamp_formats = new DateFormat[] {
+         new SimpleDateFormat("yyyy-MM-dd"),
+         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+@@ -187,5 +187,5 @@
+         ResultSetMetaData rs_md = rs.getMetaData();
+         int num_cols = rs_md.getColumnCount();
+-        Object data[] = new Object[num_cols];
++        Object[] data = new Object[num_cols];
+         for (int i = 0; i < num_cols; i++) {
+             data[i] = rs.getObject(i+1);
+--- src/com/oltpbenchmark/util/FileUtil.java
++++ src/com/oltpbenchmark/util/FileUtil.java
+@@ -74,5 +74,5 @@
+         File f = new File(basename);
+         if (f != null && f.isFile()) {
+-            String parts[] = EXT_SPLIT.split(basename);
++            String[] parts = EXT_SPLIT.split(basename);
+             
+             // Check how many files already exist
+@@ -112,5 +112,5 @@
+     public static String getExtension(File f) {
+         if (f != null && f.isFile()) {
+-            String parts[] = EXT_SPLIT.split(f.getName());
++            String[] parts = EXT_SPLIT.split(f.getName());
+             if (parts.length > 1) {
+                 return (parts[parts.length - 1]);
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
+@@ -171,5 +171,5 @@
+         // Permute the original text of the article
+         // Important: We have to make sure that we fill in the entire array
+-        char newText[] = b.generateRevisionText(a.oldText.toCharArray());
++        char[] newText = b.generateRevisionText(a.oldText.toCharArray());
+ 
+         if (LOG.isTraceEnabled()) {
+--- src/com/oltpbenchmark/benchmarks/ycsb/procedures/InsertRecord.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/procedures/InsertRecord.java
+@@ -30,5 +30,5 @@
+ 
+     // FIXME: The value in ysqb is a byteiterator
+-    public void run(Connection conn, int keyname, String vals[]) throws SQLException {
++    public void run(Connection conn, int keyname, String[] vals) throws SQLException {
+         PreparedStatement stmt = this.getPreparedStatement(conn, this.insertStmt);
+         stmt.setInt(1, keyname);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
+@@ -115,5 +115,5 @@
+ 	}
+ 	
+-	public static void main(String args[]) throws Exception {	
++	public static void main(String[] args) throws Exception {	
+ 		CategoryParser ebp = new CategoryParser(new File("bin/edu/brown/benchmark/auctionmark/data/categories.txt"));
+ 		
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterLoader.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterLoader.java
+@@ -160,5 +160,5 @@
+             total++;
+             if ((batchSize % configCommitCount) == 0) {
+-                int result[] = userInsert.executeBatch();
++                int[] result = userInsert.executeBatch();
+                 assert (result != null);
+                 conn.commit();
+--- src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
+@@ -48,7 +48,7 @@
+     private ZipfianGenerator randScan;
+ 
+-    private final char data[] = new char[YCSBConstants.FIELD_SIZE];
+-    private final String params[] = new String[YCSBConstants.NUM_FIELDS]; 
+-    private final String results[] = new String[YCSBConstants.NUM_FIELDS];
++    private final char[] data = new char[YCSBConstants.FIELD_SIZE];
++    private final String[] params = new String[YCSBConstants.NUM_FIELDS]; 
++    private final String[] results = new String[YCSBConstants.NUM_FIELDS];
+     
+     private final UpdateRecord procUpdateRecord;

@@ -1,0 +1,18 @@
+--- src/com/oltpbenchmark/util/json/JSONTokener.java
++++ src/com/oltpbenchmark/util/json/JSONTokener.java
+@@ -364,4 +364,6 @@
+                 back();
+                 return new JSONArray(this);
++default: // fall out
++
+         }
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
+@@ -373,4 +373,6 @@
+ 					ol_dist_info = s_dist_10;
+ 					break;
++default: // fall out
++
+ 				}
+ 

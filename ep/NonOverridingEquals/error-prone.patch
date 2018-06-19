@@ -1,0 +1,10 @@
+--- src/com/oltpbenchmark/catalog/IntegrityConstraint.java
++++ src/com/oltpbenchmark/catalog/IntegrityConstraint.java
+@@ -56,5 +56,6 @@
+ 	}
+ 	
+-	public abstract boolean equals(IntegrityConstraint ic);
++	@Override
++public abstract boolean equals(Object ic);
+ 	
+ 

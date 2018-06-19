@@ -1,0 +1,496 @@
+--- src/com/oltpbenchmark/util/Histogram.java
++++ src/com/oltpbenchmark/util/Histogram.java
+@@ -19,9 +19,24 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import com.oltpbenchmark.util.json.*;
++import com.oltpbenchmark.util.json.JSONException;
++import com.oltpbenchmark.util.json.JSONObject;
++import com.oltpbenchmark.util.json.JSONStringer;
+ import java.io.IOException;
+ import java.lang.reflect.Field;
+-import java.util.*;
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.Iterator;
++import java.util.List;
++import java.util.Map;
+ import java.util.Map.Entry;
++import java.util.Set;
++import java.util.SortedMap;
++import java.util.SortedSet;
++import java.util.TreeMap;
++import java.util.TreeSet;
+ import org.apache.log4j.Logger;
+ 
+--- src/com/oltpbenchmark/types/SortDirectionType.java
++++ src/com/oltpbenchmark/types/SortDirectionType.java
+@@ -34,5 +34,7 @@
+ package com.oltpbenchmark.types;
+ 
+-import java.util.*;
++import java.util.EnumSet;
++import java.util.HashMap;
++import java.util.Map;
+ 
+ /**
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/PersonBase.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/PersonBase.java
+@@ -36,9 +36,13 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import javax.persistence.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import javax.persistence.DiscriminatorColumn;
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.persistence.TableGenerator;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple based entity class.
+--- src/com/oltpbenchmark/benchmarks/jpab/tests/Test.java
++++ src/com/oltpbenchmark/benchmarks/jpab/tests/Test.java
+@@ -44,6 +44,8 @@
+ import com.oltpbenchmark.api.LoaderUtil;
+ import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
+-import java.util.*;
+-import java.util.concurrent.atomic.*;
++import java.util.List;
++import java.util.Random;
++import java.util.Stack;
++import java.util.concurrent.atomic.AtomicInteger;
+ import javax.persistence.EntityManager;
+ import javax.persistence.OptimisticLockException;
+--- src/com/oltpbenchmark/benchmarks/tpch/procedures/Q15.java
++++ src/com/oltpbenchmark/benchmarks/tpch/procedures/Q15.java
+@@ -20,5 +20,9 @@
+ import com.oltpbenchmark.api.SQLStmt;
+ import com.oltpbenchmark.util.RandomGenerator;
+-import java.sql.*;
++import java.sql.Connection;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ 
+ public class Q15 extends GenericQuery {
+--- src/com/oltpbenchmark/util/RandomGenerator.java
++++ src/com/oltpbenchmark/util/RandomGenerator.java
+@@ -19,5 +19,7 @@
+ import com.google.errorprone.annotations.Var;
+ import java.nio.charset.StandardCharsets;
+-import java.util.*;
++import java.util.HashSet;
++import java.util.Random;
++import java.util.Set;
+ 
+ @SuppressWarnings("serial")
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -34,5 +34,12 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import java.util.*;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.HashSet;
++import java.util.Random;
++import java.util.Set;
++import java.util.SortedMap;
++import java.util.TreeMap;
+ 
+ /**
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
+@@ -19,5 +19,6 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import com.oltpbenchmark.api.*;
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
+ import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+ import java.sql.Connection;
+--- src/com/oltpbenchmark/util/EventObserver.java
++++ src/com/oltpbenchmark/util/EventObserver.java
+@@ -18,5 +18,6 @@
+ package com.oltpbenchmark.util;
+ 
+-import java.util.*;
++import java.util.Observable;
++import java.util.Observer;
+ 
+ /**
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindOpenSeats.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindOpenSeats.java
+@@ -42,5 +42,6 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import com.oltpbenchmark.api.*;
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
+ import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+ import java.sql.Connection;
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
+@@ -1,11 +1,6 @@
+ package com.oltpbenchmark.benchmarks.smallbank;
+ 
+-import java.sql.SQLException;
+-import java.util.Arrays;
+-
+-import org.apache.log4j.Logger;
+-
+-import com.oltpbenchmark.api.Procedure.UserAbortException;
+ import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.Procedure.UserAbortException;
+ import com.oltpbenchmark.api.TransactionType;
+ import com.oltpbenchmark.api.Worker;
+@@ -17,5 +12,9 @@
+ import com.oltpbenchmark.benchmarks.smallbank.procedures.WriteCheck;
+ import com.oltpbenchmark.types.TransactionStatus;
+-import com.oltpbenchmark.util.RandomDistribution.*;
++import com.oltpbenchmark.util.RandomDistribution.DiscreteRNG;
++import com.oltpbenchmark.util.RandomDistribution.Flat;
++import java.sql.SQLException;
++import java.util.Arrays;
++import org.apache.log4j.Logger;
+ 
+ /**
+--- src/com/oltpbenchmark/util/ScriptRunner.java
++++ src/com/oltpbenchmark/util/ScriptRunner.java
+@@ -32,5 +32,9 @@
+ import java.io.Reader;
+ import java.net.URL;
+-import java.sql.*;
++import java.sql.Connection;
++import java.sql.ResultSet;
++import java.sql.ResultSetMetaData;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import org.apache.log4j.Logger;
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCUtil.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCUtil.java
+@@ -27,13 +27,15 @@
+  */
+ 
+-import static com.oltpbenchmark.benchmarks.tpcc.TPCCConfig.*;
++import static com.oltpbenchmark.benchmarks.tpcc.TPCCConfig.configCustPerDist;
++import static com.oltpbenchmark.benchmarks.tpcc.TPCCConfig.configItemCount;
++import static com.oltpbenchmark.benchmarks.tpcc.TPCCConfig.dateFormat;
++import static com.oltpbenchmark.benchmarks.tpcc.TPCCConfig.nameTokens;
+ 
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
++import com.oltpbenchmark.util.RandomGenerator;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+ import java.util.Random;
+ 
+-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
+-import com.oltpbenchmark.util.RandomGenerator;
+-
+ public class TPCCUtil {
+ 
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Node.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Node.java
+@@ -36,5 +36,10 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import javax.persistence.*;
++import javax.persistence.Basic;
++import javax.persistence.CascadeType;
++import javax.persistence.Entity;
++import javax.persistence.FetchType;
++import javax.persistence.Id;
++import javax.persistence.ManyToOne;
+ 
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
+@@ -18,7 +18,7 @@
+ package com.oltpbenchmark.benchmarks.auctionmark;
+ 
+-import java.util.*;
+-
+ import com.oltpbenchmark.util.StringUtil;
++import java.util.Collection;
++import java.util.HashSet;
+ 
+ public abstract class AuctionMarkConstants {
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -59,5 +59,14 @@
+ import java.sql.SQLException;
+ import java.sql.Timestamp;
+-import java.util.*;
++import java.util.ArrayList;
++import java.util.BitSet;
++import java.util.Collections;
++import java.util.EnumSet;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.LinkedList;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person1st.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person1st.java
+@@ -36,9 +36,8 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import javax.persistence.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import javax.persistence.Entity;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple sub entity class (one inheritance level).
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPLoader.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPLoader.java
+@@ -21,5 +21,5 @@
+ import com.oltpbenchmark.api.Loader;
+ import com.oltpbenchmark.api.Loader.LoaderThread;
+-import com.oltpbenchmark.catalog.*;
++import com.oltpbenchmark.catalog.Table;
+ import com.oltpbenchmark.util.SQLUtil;
+ import java.sql.Connection;
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
+@@ -36,10 +36,17 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
+-import javax.persistence.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import java.util.Date;
++import java.util.Random;
++import javax.persistence.Basic;
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.persistence.TableGenerator;
++import javax.persistence.Temporal;
++import javax.persistence.TemporalType;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple entity class with one index.
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCLoader.java
+@@ -38,5 +38,13 @@
+ import com.oltpbenchmark.api.Loader;
+ import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+-import com.oltpbenchmark.benchmarks.tpcc.pojo.*;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.District;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.History;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Item;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.NewOrder;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Oorder;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.OrderLine;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Stock;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Warehouse;
+ import com.oltpbenchmark.catalog.Table;
+ import com.oltpbenchmark.util.SQLUtil;
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -18,15 +18,30 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import com.oltpbenchmark.api.*;
++import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.Procedure.UserAbortException;
+-import com.oltpbenchmark.benchmarks.linkbench.distributions.*;
+-import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.*;
++import com.oltpbenchmark.api.TransactionType;
++import com.oltpbenchmark.api.Worker;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.AccessDistributions.AccessDistribution;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.ID2Chooser;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.LogNormalDistribution;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.ProbabilityDistribution;
+ import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+-import com.oltpbenchmark.benchmarks.linkbench.generators.*;
+-import com.oltpbenchmark.benchmarks.linkbench.pojo.*;
+-import com.oltpbenchmark.benchmarks.linkbench.procedures.*;
+-import com.oltpbenchmark.benchmarks.linkbench.utils.*;
+-import com.oltpbenchmark.types.*;
+-import com.oltpbenchmark.util.*;
++import com.oltpbenchmark.benchmarks.linkbench.generators.DataGenerator;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.AddLink;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.AddNode;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.CountLink;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.DeleteLink;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.DeleteNode;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.GetLink;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.GetLinkList;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.GetNode;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.UpdateLink;
++import com.oltpbenchmark.benchmarks.linkbench.procedures.UpdateNode;
++import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
++import com.oltpbenchmark.types.TransactionStatus;
++import com.oltpbenchmark.util.ClassUtil;
+ import java.sql.SQLException;
+ import java.util.ArrayList;
+--- src/com/oltpbenchmark/benchmarks/jpab/tests/NodeTest.java
++++ src/com/oltpbenchmark/benchmarks/jpab/tests/NodeTest.java
+@@ -36,14 +36,14 @@
+ package com.oltpbenchmark.benchmarks.jpab.tests;
+ 
+-import java.util.*;
+-import java.util.concurrent.atomic.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.objects.Node;
++import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
++import java.util.List;
++import java.util.Random;
++import java.util.concurrent.atomic.AtomicInteger;
++import javax.persistence.EntityManager;
++import javax.persistence.Query;
+ 
+-import javax.persistence.*;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.objects.Node;
+-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
+-
+-
+ /**
+  * Tests using graphs (trees) of entity objects.  
+--- src/com/oltpbenchmark/util/ResultUploader.java
++++ src/com/oltpbenchmark/util/ResultUploader.java
+@@ -22,5 +22,8 @@
+ import com.oltpbenchmark.api.collectors.DBParameterCollector;
+ import com.oltpbenchmark.api.collectors.DBParameterCollectorGen;
+-import java.io.*;
++import java.io.File;
++import java.io.FileOutputStream;
++import java.io.IOException;
++import java.io.PrintStream;
+ import java.util.Date;
+ import java.util.List;
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
+@@ -36,11 +36,22 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
+-import javax.persistence.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import com.oltpbenchmark.util.TextGenerator;
++import java.util.ArrayList;
++import java.util.Date;
++import java.util.List;
++import java.util.Random;
++import javax.persistence.Basic;
++import javax.persistence.ElementCollection;
++import javax.persistence.Entity;
++import javax.persistence.FetchType;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.persistence.TableGenerator;
++import javax.persistence.Temporal;
++import javax.persistence.TemporalType;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-import com.oltpbenchmark.util.TextGenerator;
+-
+ /**
+  * A simple entity class with a simple element collection.
+--- src/com/oltpbenchmark/util/FileUtil.java
++++ src/com/oltpbenchmark/util/FileUtil.java
+@@ -21,5 +21,10 @@
+ 
+ import com.google.errorprone.annotations.Var;
+-import java.io.*;
++import java.io.BufferedReader;
++import java.io.File;
++import java.io.FileInputStream;
++import java.io.FilenameFilter;
++import java.io.IOException;
++import java.io.InputStreamReader;
+ import java.io.Writer;
+ import java.nio.file.Files;
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
+@@ -36,11 +36,13 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import java.util.Date;
++import java.util.Random;
++import javax.persistence.Basic;
++import javax.persistence.Entity;
++import javax.persistence.Temporal;
++import javax.persistence.TemporalType;
+ 
+-import javax.persistence.*;
+-
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple sub entity class (two inheritance levels).
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person.java
+@@ -36,11 +36,18 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
+-import javax.persistence.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import java.util.Date;
++import java.util.Random;
++import javax.persistence.Basic;
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.persistence.TableGenerator;
++import javax.persistence.Temporal;
++import javax.persistence.TemporalType;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ 
+-
+ /**
+  * A simple entity class with no inheritance/collections/indexes.
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankLoader.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankLoader.java
+@@ -5,5 +5,6 @@
+ import com.oltpbenchmark.api.Loader.LoaderThread;
+ import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.RandomDistribution.*;
++import com.oltpbenchmark.util.RandomDistribution.DiscreteRNG;
++import com.oltpbenchmark.util.RandomDistribution.Gaussian;
+ import com.oltpbenchmark.util.SQLUtil;
+ import java.sql.Connection;

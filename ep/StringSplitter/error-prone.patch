@@ -1,0 +1,125 @@
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -17,4 +17,5 @@
+ package com.oltpbenchmark;
+ 
++import com.google.common.base.Splitter;
+ import com.google.errorprone.annotations.Var;
+ import java.io.BufferedReader;
+@@ -79,5 +80,5 @@
+             // determine which columns to look at gives us flexibility in case
+             // the ordering changes or extra columns are added.
+-            String[] splitHeader = line.split(",");
++            Iterable<String> splitHeader = Splitter.on(',').split(line);
+             @Var int txnIdCol = -1, phaseIdCol = -1, startTimeCol = -1;
+             @Var int index = 0;
+@@ -107,8 +108,8 @@
+                 @Var long phaseBaseTime = 0;
+                 while ((line = br.readLine()) != null) {
+-                    String[] splitLine = line.split(",");
+-                    int phaseId = Integer.parseInt(splitLine[phaseIdCol]);
++                    List<String> splitLine = Splitter.on(',').splitToList(line);
++                    int phaseId = Integer.parseInt(splitLine.get(phaseIdCol));
+                     long startTimeNs = (long)(1000*1000*1000
+-                                       * Double.parseDouble(splitLine[startTimeCol]));
++                                       * Double.parseDouble(splitLine.get(startTimeCol)));
+ 
+                     // We base transaction start times on the start of a phase
+@@ -123,5 +124,5 @@
+                     assert phaseBaseTime <= startTimeNs;
+                     tracedProcedures.add(new TraceElement(
+-                                             Integer.parseInt(splitLine[txnIdCol])
++                                             Integer.parseInt(splitLine.get(txnIdCol))
+                                              , phaseId
+                                              , startTimeNs - phaseBaseTime));
+--- src/com/oltpbenchmark/benchmarks/voter/VoterLoader.java
++++ src/com/oltpbenchmark/benchmarks/voter/VoterLoader.java
+@@ -17,4 +17,9 @@
+ package com.oltpbenchmark.benchmarks.voter;
+ 
++import com.google.common.base.Splitter;
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.api.Loader.LoaderThread;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.SQLUtil;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -23,9 +28,4 @@
+ import java.util.List;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.api.Loader.LoaderThread;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.SQLUtil;
+-
+ public class VoterLoader extends Loader<VoterBenchmark> {
+ 
+@@ -103,9 +103,9 @@
+         Table catalog_tbl = this.benchmark.getTableCatalog(VoterConstants.TABLENAME_CONTESTANTS);
+         PreparedStatement ps = conn.prepareStatement(SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType()));
+-        String[] contestants = VoterConstants.CONTESTANT_NAMES_CSV.split(",");
++        List<String> contestants = Splitter.on(',').splitToList(VoterConstants.CONTESTANT_NAMES_CSV);
+ 
+         for (int i = 0; i < this.benchmark.numContestants; i++) {
+             ps.setInt(1, i+1);
+-            ps.setString(2, contestants[i]);
++            ps.setString(2, contestants.get(i));
+             ps.addBatch();
+         }
+--- src/com/oltpbenchmark/DBWorkload.java
++++ src/com/oltpbenchmark/DBWorkload.java
+@@ -17,4 +17,5 @@
+ 
+ package com.oltpbenchmark;
++import com.google.common.base.Splitter;
+ import com.google.errorprone.annotations.Var;
+ import com.oltpbenchmark.api.BenchmarkModule;
+@@ -171,5 +172,5 @@
+         String targetBenchmarks = argsLine.getOptionValue("b");
+         
+-        String[] targetList = targetBenchmarks.split(",");
++        List<String> targetList = Splitter.on(',').splitToList(targetBenchmarks);
+         List<BenchmarkModule> benchList = new ArrayList<BenchmarkModule>();
+         
+@@ -263,5 +264,5 @@
+             // ----------------------------------------------------------------
+             @Var int numTxnTypes = xmlConfig.configurationsAt("transactiontypes" + pluginTest + "/transactiontype").size();
+-            if (numTxnTypes == 0 && targetList.length == 1) {
++            if (numTxnTypes == 0 && targetList.size() == 1) {
+                 //if it is a single workload run, <transactiontypes /> w/o attribute is used
+                 pluginTest = "[not(@bench)]";
+@@ -354,5 +355,5 @@
+                 // use a workaround if there multiple workloads or single
+                 // attributed workload
+-                if (targetList.length > 1 || work.containsKey("weights[@bench]")) {
++                if (targetList.size() > 1 || work.containsKey("weights[@bench]")) {
+                     String weightKey = work.getString("weights" + pluginTest).toLowerCase();
+                     if (groupings.containsKey(weightKey))
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
+@@ -18,8 +18,10 @@
+ package com.oltpbenchmark.benchmarks.auctionmark.util;
+ 
++import com.google.common.base.Splitter;
+ import com.google.errorprone.annotations.Var;
+ import com.oltpbenchmark.util.FileUtil;
+ import java.io.BufferedReader;
+ import java.io.File;
++import java.util.List;
+ import java.util.Map;
+ import java.util.TreeMap;
+@@ -54,10 +56,10 @@
+ 
+ 	public void extractCategory(String s){
+-		String[] tokens = s.split("\t");
+-		int itemCount = Integer.parseInt(tokens[5]);
++		List<String> tokens = Splitter.on("\t").splitToList(s);
++		int itemCount = Integer.parseInt(tokens.get(5));
+ 		StringBuilder sb = new StringBuilder();
+ 		for(int i=0; i<=4; i++){
+-			if(!tokens[i].trim().isEmpty()){
+-				sb.append(tokens[i].trim())
++			if(!tokens.get(i).trim().isEmpty()){
++				sb.append(tokens.get(i).trim())
+ 				  .append("/");	
+ 			} else {

@@ -1,0 +1,499 @@
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPUtil.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPUtil.java
+@@ -102,4 +102,7 @@
+     }
+     
++
++
++private TATPUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCConstants.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCConstants.java
+@@ -27,4 +27,7 @@
+     public static final String TABLENAME_ORDERLINE = "order_line";
+     public static final String TABLENAME_NEWORDER = "new_order";
++
++
++private TPCCConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/Harmonic.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/Harmonic.java
+@@ -42,4 +42,7 @@
+       return value;
+   }
++
++
++private Harmonic() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/CollectionUtil.java
++++ src/com/oltpbenchmark/util/CollectionUtil.java
+@@ -461,4 +461,7 @@
+         return (t);
+     }
++
++
++private CollectionUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
+@@ -240,4 +240,7 @@
+     }
+   }
++
++
++private ConfigUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
+@@ -51,4 +51,7 @@
+         TABLENAME_CALL_FORWARDING
+     };
++
++
++private TATPConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/ClassUtil.java
++++ src/com/oltpbenchmark/util/ClassUtil.java
+@@ -292,4 +292,7 @@
+         return (ret);
+ }
++
++
++private ClassUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/distributions/Utils.java
++++ src/com/oltpbenchmark/distributions/Utils.java
+@@ -130,4 +130,7 @@
+ 	 return Math.abs(hashval);
+       }
++
++
++private Utils() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -495,4 +495,7 @@
+         }
+     }
++
++
++private RandomDistribution() {}
+ }
+ 
+--- src/com/oltpbenchmark/api/LoaderUtil.java
++++ src/com/oltpbenchmark/api/LoaderUtil.java
+@@ -91,4 +91,7 @@
+ 	}
+ 
++
++
++private LoaderUtil() {}
+ } // end jTPCCUtil
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCConfig.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCConfig.java
+@@ -50,4 +50,7 @@
+ 	/** An invalid item id used to rollback a new order transaction. */
+ 	public static final int INVALID_ITEM_ID = -12345;
++
++
++private TPCCConfig() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/tpch/util/TPCHUtil.java
++++ src/com/oltpbenchmark/benchmarks/tpch/util/TPCHUtil.java
+@@ -113,4 +113,7 @@
+     }
+ 
++
++
++private TPCHUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/StringBoxUtil.java
++++ src/com/oltpbenchmark/util/StringBoxUtil.java
+@@ -113,4 +113,7 @@
+ 
+ 
++
++
++private StringBoxUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/epinions/EpinionsConstants.java
++++ src/com/oltpbenchmark/benchmarks/epinions/EpinionsConstants.java
+@@ -30,4 +30,7 @@
+ 
+     public final static int BATCH_SIZE = 1000;
++
++
++private EpinionsConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/ThreadUtil.java
++++ src/com/oltpbenchmark/util/ThreadUtil.java
+@@ -346,4 +346,7 @@
+     }
+ 
++
++
++private ThreadUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
+@@ -239,4 +239,7 @@
+     }
+   }
++
++
++private AccessDistributions() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/seats/util/SEATSHistogramUtil.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/SEATSHistogramUtil.java
+@@ -109,4 +109,7 @@
+         return (histogram);
+     }
++
++
++private SEATSHistogramUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterConstants.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterConstants.java
+@@ -55,4 +55,7 @@
+     public static int LIMIT_FOLLOWERS = 20; 
+ 	
++
++
++private TwitterConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
+@@ -106,4 +106,7 @@
+     }
+     
++
++
++private AuctionMarkUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
+@@ -267,4 +267,7 @@
+         {TABLENAME_AIRLINE, "AL_IATA_CODE", "AL_ID"},
+     };
++
++
++private SEATSConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/TimeUtil.java
++++ src/com/oltpbenchmark/util/TimeUtil.java
+@@ -47,4 +47,7 @@
+     }
+ 
++
++
++private TimeUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/voter/VoterConstants.java
++++ src/com/oltpbenchmark/benchmarks/voter/VoterConstants.java
+@@ -32,4 +32,7 @@
+ 											   "Alana Bregman,Jessie Eichman,Allie Rogalski,Nita Coster," +
+ 											   "Kurt Walser,Ericka Dieter,Loraine NygrenTania Mattioli";
++
++
++private VoterConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/ycsb/YCSBConstants.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/YCSBConstants.java
+@@ -37,4 +37,7 @@
+     public static final int MAX_SCAN = 1000;
+ 
++
++
++private YCSBConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSConstants.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSConstants.java
+@@ -528,4 +528,7 @@
+     };
+ 
++
++
++private TPCDSConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/data/RevisionHistograms.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/data/RevisionHistograms.java
+@@ -1332,4 +1332,7 @@
+     };
+     
++
++
++private RevisionHistograms() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCUtil.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCUtil.java
+@@ -135,4 +135,7 @@
+ 	}
+ 
++
++
++private TPCCUtil() {}
+ } // end jTPCCUtil
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/data/PageHistograms.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/data/PageHistograms.java
+@@ -381,4 +381,7 @@
+     };
+     
++
++
++private PageHistograms() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/sibench/SIConstants.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SIConstants.java
+@@ -25,4 +25,7 @@
+     public static final int configCommitCount = 10;
+ 
++
++
++private SIConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/TextGenerator.java
++++ src/com/oltpbenchmark/util/TextGenerator.java
+@@ -170,4 +170,7 @@
+     }
+     
++
++
++private TextGenerator() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
+@@ -204,4 +204,7 @@
+   }
+ 
++
++
++private LinkDistributions() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/JSONUtil.java
++++ src/com/oltpbenchmark/util/JSONUtil.java
+@@ -686,4 +686,7 @@
+         return (String.class);
+     }
++
++
++private JSONUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
+@@ -344,4 +344,7 @@
+     public static final int PROB_NEWBID_ENDINGSOON_ITEM = 50;
+ 
++
++
++private AuctionMarkConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/voter/VoterUtil.java
++++ src/com/oltpbenchmark/benchmarks/voter/VoterUtil.java
+@@ -34,4 +34,7 @@
+         return (num_contestants);
+     }
++
++
++private VoterUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTConstants.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTConstants.java
+@@ -29,4 +29,7 @@
+     static final int MAX_SCAN=1000;
+ 
++
++
++private HYADAPTConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/data/UserHistograms.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/data/UserHistograms.java
+@@ -715,4 +715,7 @@
+     };
+ 
++
++
++private UserHistograms() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaConstants.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaConstants.java
+@@ -80,4 +80,7 @@
+ 	public static final int BATCH_SIZE = 1000;
+ 
++
++
++private WikipediaConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserConstants.java
++++ src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserConstants.java
+@@ -16,4 +16,7 @@
+     public static final String TABLENAME_LOCKTABLE = "locktable";
+     
++
++
++private ResourceStresserConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ApproxHarmonic.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ApproxHarmonic.java
+@@ -66,4 +66,7 @@
+     }
+   }
++
++
++private ApproxHarmonic() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -617,4 +617,7 @@
+       return sb.toString();
+     }
++
++
++private StringUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/DBWorkload.java
++++ src/com/oltpbenchmark/DBWorkload.java
+@@ -857,4 +857,7 @@
+         return StringBoxUtil.heavyBox(msg);
+     }
++
++
++private DBWorkload() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/data/TextHistograms.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/data/TextHistograms.java
+@@ -1541,4 +1541,7 @@
+     };
+     
++
++
++private TextHistograms() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/json/Test.java
++++ src/com/oltpbenchmark/util/json/Test.java
+@@ -429,4 +429,7 @@
+         }
+     }
++
++
++private Test() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/seats/util/DistanceUtil.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/DistanceUtil.java
+@@ -60,4 +60,7 @@
+         return (rad * 180.0 / Math.PI);
+     }
++
++
++private DistanceUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchConstants.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchConstants.java
+@@ -154,4 +154,7 @@
+     public static final String WORKLOAD_CONFIG_FILE = "workload_file";
+ 
++
++
++private LinkBenchConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/SQLUtil.java
++++ src/com/oltpbenchmark/util/SQLUtil.java
+@@ -407,3 +407,6 @@
+                 col, catalog_tbl.getEscapedName());
+     }
++
++
++private SQLUtil() {}
+ }
+--- src/com/oltpbenchmark/benchmarks/tpch/util/TPCHConstants.java
++++ src/com/oltpbenchmark/benchmarks/tpch/util/TPCHConstants.java
+@@ -66,4 +66,7 @@
+ 
+ 
++
++
++private TPCHConstants() {}
+ }
+ 
+--- src/com/oltpbenchmark/util/FileUtil.java
++++ src/com/oltpbenchmark/util/FileUtil.java
+@@ -383,4 +383,7 @@
+         return (Arrays.asList(dir.listFiles(filter)));
+     }
++
++
++private FileUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/wikipedia/util/WikipediaUtil.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/util/WikipediaUtil.java
+@@ -42,4 +42,7 @@
+         return h_namespace.nextInt();
+     }
++
++
++private WikipediaUtil() {}
+ }
+ 
+--- src/com/oltpbenchmark/api/collectors/DBParameterCollectorGen.java
++++ src/com/oltpbenchmark/api/collectors/DBParameterCollectorGen.java
+@@ -31,4 +31,7 @@
+         }
+     }
++
++
++private DBParameterCollectorGen() {}
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankConstants.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankConstants.java
+@@ -68,4 +68,7 @@
+     
+ 
++
++
++private SmallBankConstants() {}
+ }
+ 

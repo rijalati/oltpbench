@@ -1,0 +1,69 @@
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
+@@ -394,6 +394,5 @@
+                 ret = executeUpdateItem((UpdateItem)proc);
+                 break;
+-            default:
+-                assert(false) : "Unexpected transaction: " + txn; 
++             
+         } // SWITCH
+ //        assert(ret);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -815,5 +815,5 @@
+                     this.addItem(this.items_completed, itemInfo);
+                     break;
+-                default:
++                
+                     
+             } // SWITCH
+@@ -1008,6 +1008,5 @@
+                     cnt = this.items_completed.size();
+                     break;
+-                default:
+-                    assert(false) : "Unexpected " + status;
++                
+             } // SWITCH
+             itemCounts.put(status, cnt);
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
+@@ -399,7 +399,6 @@
+       return new InvertibleShuffler(NLINKS_SHUFFLER_SEED,
+           NLINKS_SHUFFLER_GROUPS, n);
+-    default:
+-      return null;
+-    }
++    
++    }return null;
+   }
+ }
+--- src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
+@@ -461,6 +461,5 @@
+                                         prepStmt.setDate(i+1, fieldAsDate, null);
+                                         break;
+-                                    default:
+-                                        throw new RuntimeException("Unrecognized type for prepared statement");
++                                    
+                                 }
+                             }
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -348,6 +348,5 @@
+                 break;
+             }
+-            default:
+-                assert(false) : "Unexpected transaction: " + txn; 
++             
+         } // SWITCH
+         } catch(SQLException esql) {
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
+@@ -568,6 +568,5 @@
+                                 ps.setDate(i+1, fieldAsDate, null);
+                                 break;
+-                            default:
+-                                throw new RuntimeException("Unrecognized type for prepared statement");
++                            
+                         }
+ 

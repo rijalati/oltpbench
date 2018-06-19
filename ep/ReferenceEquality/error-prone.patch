@@ -1,0 +1,15 @@
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -53,4 +53,5 @@
+ import java.util.List;
+ import java.util.Map;
++import java.util.Objects;
+ import java.util.Set;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+@@ -737,5 +738,5 @@
+             // If the items is already in the completed queue, then we don't need
+             // to do anything with it.
+-            if (items == this.items_completed) continue;
++            if (Objects.equals(items, this.items_completed)) continue;
+             
+             for (ItemInfo itemInfo : items) {

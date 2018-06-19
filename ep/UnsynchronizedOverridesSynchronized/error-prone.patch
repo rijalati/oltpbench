@@ -1,0 +1,9 @@
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -636,5 +636,5 @@
+         }
+         @Override
+-        public final boolean hasMore() {
++        public final synchronized boolean hasMore() {
+             return (this.getNext() != null);
+         }

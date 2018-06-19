@@ -1,0 +1,15 @@
+--- src/com/oltpbenchmark/util/ScriptRunner.java
++++ src/com/oltpbenchmark/util/ScriptRunner.java
+@@ -150,8 +150,8 @@
+ 						|| trimmedLine.startsWith("--")) {
+ 					// Do nothing
+-				} else if (!fullLineDelimiter
+-						&& trimmedLine.endsWith(getDelimiter())
+-						|| fullLineDelimiter
+-						&& trimmedLine.equals(getDelimiter())) {
++				} else if ((!fullLineDelimiter
++						&& trimmedLine.endsWith(getDelimiter()))
++						|| (fullLineDelimiter
++						&& trimmedLine.equals(getDelimiter()))) {
+ 					command.append(line.substring(0, line
+ 							.lastIndexOf(getDelimiter())));

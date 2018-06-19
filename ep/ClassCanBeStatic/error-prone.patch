@@ -1,0 +1,9 @@
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -40,5 +40,5 @@
+ 
+     // POD for tracking submitted/read procedures.
+-    private class TraceElement {
++    private static class TraceElement {
+         int txnId;
+         int phaseId;

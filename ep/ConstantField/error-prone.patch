@@ -1,0 +1,373 @@
+--- src/com/oltpbenchmark/util/json/JSONWriter.java
++++ src/com/oltpbenchmark/util/json/JSONWriter.java
+@@ -74,5 +74,5 @@
+  */
+ public class JSONWriter {
+-    private static final int maxdepth = 20;
++    private static final int MAXDEPTH = 20;
+ 
+     /**
+@@ -113,5 +113,5 @@
+         this.comma = false;
+         this.mode = 'i';
+-        this.stack = new JSONObject[maxdepth];
++        this.stack = new JSONObject[MAXDEPTH];
+         this.top = 0;
+         this.writer = w;
+@@ -285,5 +285,5 @@
+      */
+     private void push(JSONObject jo) throws JSONException {
+-        if (this.top >= maxdepth) {
++        if (this.top >= MAXDEPTH) {
+             throw new JSONException("Nesting too deep.");
+         }
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
+@@ -46,5 +46,5 @@
+ 
+ public class ConfigUtil {
+-  public static final String linkbenchHomeEnvVar = "LINKBENCH_HOME";
++  public static final String LINKBENCH_HOME_ENV_VAR = "LINKBENCH_HOME";
+   public static final String LINKBENCH_LOGGER = "com.facebook.linkbench";
+ 
+--- src/com/oltpbenchmark/distributions/Utils.java
++++ src/com/oltpbenchmark/distributions/Utils.java
+@@ -79,6 +79,6 @@
+       }
+ 	
+-      public static final int FNV_offset_basis_32=0x811c9dc5;
+-      public static final int FNV_prime_32=16777619;
++      public static final int F_N_V_OFFSET_BASIS_32=0x811c9dc5;
++      public static final int F_N_V_PRIME_32=16777619;
+       
+       /**
+@@ -91,5 +91,5 @@
+       {
+ 	 //from http://en.wikipedia.org/wiki/Fowler_Noll_Vo_hash
+-	 @Var int hashval = FNV_offset_basis_32;
++	 @Var int hashval = F_N_V_OFFSET_BASIS_32;
+ 	 
+ 	 for (int i=0; i<4; i++)
+@@ -99,5 +99,5 @@
+ 	    
+ 	    hashval = hashval ^ octet;
+-	    hashval = hashval * FNV_prime_32;
++	    hashval = hashval * F_N_V_PRIME_32;
+ 	    //hashval = hashval ^ octet;
+ 	 }
+@@ -105,6 +105,6 @@
+       }
+       
+-      public static final long FNV_offset_basis_64=0xCBF29CE484222325L;
+-      public static final long FNV_prime_64=1099511628211L;
++      public static final long F_N_V_OFFSET_BASIS_64=0xCBF29CE484222325L;
++      public static final long F_N_V_PRIME_64=1099511628211L;
+       
+       /**
+@@ -117,5 +117,5 @@
+       {
+ 	 //from http://en.wikipedia.org/wiki/Fowler_Noll_Vo_hash
+-	 @Var long hashval = FNV_offset_basis_64;
++	 @Var long hashval = F_N_V_OFFSET_BASIS_64;
+ 	 
+ 	 for (int i=0; i<8; i++)
+@@ -125,5 +125,5 @@
+ 	    
+ 	    hashval = hashval ^ octet;
+-	    hashval = hashval * FNV_prime_64;
++	    hashval = hashval * F_N_V_PRIME_64;
+ 	    //hashval = hashval ^ octet;
+ 	 }
+--- src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserWorker.java
++++ src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserWorker.java
+@@ -33,26 +33,26 @@
+ 
+ public class ResourceStresserWorker extends Worker<ResourceStresserBenchmark> {
+-    public static final int CONTENTION1_howManyKeys = 10;
+-    public static final int CONTENTION1_howManyUpdates = 20;
+-    public static final int CONTENTION1_sleepLength = 1;
++    public static final int C_O_N_T_E_N_T_I_O_N1_HOW_MANY_KEYS = 10;
++    public static final int C_O_N_T_E_N_T_I_O_N1_HOW_MANY_UPDATES = 20;
++    public static final int C_O_N_T_E_N_T_I_O_N1_SLEEP_LENGTH = 1;
+     
+-    public static final int CONTENTION2_howManyKeys = 10;
+-    public static final int CONTENTION2_howManyUpdates = 5;
+-    public static final int CONTENTION2_sleepLength = 2;
++    public static final int C_O_N_T_E_N_T_I_O_N2_HOW_MANY_KEYS = 10;
++    public static final int C_O_N_T_E_N_T_I_O_N2_HOW_MANY_UPDATES = 5;
++    public static final int C_O_N_T_E_N_T_I_O_N2_SLEEP_LENGTH = 2;
+ 
+-    public static final int IO1_howManyColsPerRow = 16;
+-    public static final int IO1_howManyRowsPerUpdate = 10;
+-    public static final int IO1_howManyUpdatePerTransaction = 10;
++    public static final int I_O1_HOW_MANY_COLS_PER_ROW = 16;
++    public static final int I_O1_HOW_MANY_ROWS_PER_UPDATE = 10;
++    public static final int I_O1_HOW_MANY_UPDATE_PER_TRANSACTION = 10;
+ 
+-    public static final int IO2_howManyUpdatePerTransaction = 50;
+-    public static final boolean IO2_makeSureWorketSetFitsInMemory = true;
++    public static final int I_O2_HOW_MANY_UPDATE_PER_TRANSACTION = 50;
++    public static final boolean I_O2_MAKE_SURE_WORKET_SET_FITS_IN_MEMORY = true;
+ 
+-    public static final int CPU1_howManyPerTrasaction = 10;
+-    public static final int CPU1_sleep = 1;
+-    public static final int CPU1_nestedLevel = 5;
++    public static final int C_P_U1_HOW_MANY_PER_TRASACTION = 10;
++    public static final int C_P_U1_SLEEP = 1;
++    public static final int C_P_U1_NESTED_LEVEL = 5;
+ 
+-    public static final int CPU2_howManyPerTrasaction = 5;
+-    public static final int CPU2_sleep = 2;
+-    public static final int CPU2_nestedLevel = 5;
++    public static final int C_P_U2_HOW_MANY_PER_TRASACTION = 5;
++    public static final int C_P_U2_SLEEP = 2;
++    public static final int C_P_U2_NESTED_LEVEL = 5;
+ 
+     public static final Random gen = new Random(1); // I change the random seed
+@@ -71,15 +71,15 @@
+     protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
+         if (nextTrans.getProcedureClass().equals(CPU1.class)) {
+-            cpu1Transaction(CPU1_howManyPerTrasaction, CPU1_sleep, CPU1_nestedLevel);
++            cpu1Transaction(C_P_U1_HOW_MANY_PER_TRASACTION, C_P_U1_SLEEP, C_P_U1_NESTED_LEVEL);
+         } else if (nextTrans.getProcedureClass().equals(CPU2.class)) {
+-            cpu2Transaction(CPU2_howManyPerTrasaction, CPU2_sleep, CPU2_nestedLevel);
++            cpu2Transaction(C_P_U2_HOW_MANY_PER_TRASACTION, C_P_U2_SLEEP, C_P_U2_NESTED_LEVEL);
+         } else if (nextTrans.getProcedureClass().equals(IO1.class)) {
+-            io1Transaction(IO1_howManyColsPerRow, IO1_howManyRowsPerUpdate, IO1_howManyUpdatePerTransaction, keyRange);
++            io1Transaction(I_O1_HOW_MANY_COLS_PER_ROW, I_O1_HOW_MANY_ROWS_PER_UPDATE, I_O1_HOW_MANY_UPDATE_PER_TRANSACTION, keyRange);
+         } else if (nextTrans.getProcedureClass().equals(IO2.class)) {
+-            io2Transaction(IO2_howManyUpdatePerTransaction, IO2_makeSureWorketSetFitsInMemory, keyRange);
++            io2Transaction(I_O2_HOW_MANY_UPDATE_PER_TRANSACTION, I_O2_MAKE_SURE_WORKET_SET_FITS_IN_MEMORY, keyRange);
+         } else if (nextTrans.getProcedureClass().equals(Contention1.class)) {
+-            contention1Transaction(CONTENTION1_howManyUpdates, CONTENTION1_sleepLength);
++            contention1Transaction(C_O_N_T_E_N_T_I_O_N1_HOW_MANY_UPDATES, C_O_N_T_E_N_T_I_O_N1_SLEEP_LENGTH);
+         } else if (nextTrans.getProcedureClass().equals(Contention2.class)) {
+-            contention2Transaction(CONTENTION2_howManyKeys, CONTENTION2_howManyUpdates, CONTENTION2_sleepLength);
++            contention2Transaction(C_O_N_T_E_N_T_I_O_N2_HOW_MANY_KEYS, C_O_N_T_E_N_T_I_O_N2_HOW_MANY_UPDATES, C_O_N_T_E_N_T_I_O_N2_SLEEP_LENGTH);
+         }
+         conn.commit();
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCConfig.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCConfig.java
+@@ -38,13 +38,13 @@
+ 			"PRES", "ESE", "ANTI", "CALLY", "ATION", "EING" };
+ 
+-	public final static String terminalPrefix = "Term-";
++	public final static String TERMINAL_PREFIX = "Term-";
+ 
+ 	public final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+ 
+-	public final static int configCommitCount = 1000; // commit every n records
+-	public final static int configWhseCount = 1;
+-	public final static int configItemCount = 100000; // tpc-c std = 100,000
+-	public final static int configDistPerWhse = 10; // tpc-c std = 10
+-	public final static int configCustPerDist = 3000; // tpc-c std = 3,000
++	public final static int CONFIG_COMMIT_COUNT = 1000; // commit every n records
++	public final static int CONFIG_WHSE_COUNT = 1;
++	public final static int CONFIG_ITEM_COUNT = 100000; // tpc-c std = 100,000
++	public final static int CONFIG_DIST_PER_WHSE = 10; // tpc-c std = 10
++	public final static int CONFIG_CUST_PER_DIST = 3000; // tpc-c std = 3,000
+ 
+ 	/** An invalid item id used to rollback a new order transaction. */
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
+@@ -69,5 +69,5 @@
+     );
+ 
+-    private final static String BaseGetFlights =
++    private final static String BASE_GET_FLIGHTS =
+             "SELECT F_ID, F_AL_ID, F_SEATS_LEFT, " +
+                   " F_DEPART_AP_ID, F_DEPART_TIME, F_ARRIVE_AP_ID, F_ARRIVE_TIME, " +
+@@ -80,7 +80,7 @@
+             "   AND F_ARRIVE_AP_ID IN (??)";
+ 
+-    public final SQLStmt GetFlights1 = new SQLStmt(BaseGetFlights, 1);
+-    public final SQLStmt GetFlights2 = new SQLStmt(BaseGetFlights, 2);
+-    public final SQLStmt GetFlights3 = new SQLStmt(BaseGetFlights, 3);
++    public final SQLStmt GetFlights1 = new SQLStmt(BASE_GET_FLIGHTS, 1);
++    public final SQLStmt GetFlights2 = new SQLStmt(BASE_GET_FLIGHTS, 2);
++    public final SQLStmt GetFlights3 = new SQLStmt(BASE_GET_FLIGHTS, 3);
+ 
+     public List<Object[]> run(Connection conn, long depart_aid, long arrive_aid, Timestamp start_date, Timestamp end_date, long distance) throws SQLException {
+--- src/com/oltpbenchmark/util/ThreadUtil.java
++++ src/com/oltpbenchmark/util/ThreadUtil.java
+@@ -49,5 +49,5 @@
+ 
+     private static final int DEFAULT_NUM_THREADS = Runtime.getRuntime().availableProcessors();
+-    private static Integer OVERRIDE_NUM_THREADS = null;
++    private static final Integer OVERRIDE_NUM_THREADS = null;
+ 
+     public static int availableProcessors() {
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkLoader.java
+@@ -43,5 +43,5 @@
+ 	private static final Logger LOG = Logger.getLogger(CHBenCHmarkLoader.class);
+ 	
+-	private final static int configCommitCount = 1000; // commit every n records
++	private final static int CONFIG_COMMIT_COUNT = 1000; // commit every n records
+ 	private static final RandomGenerator ran = new RandomGenerator(0);
+ 	private static PreparedStatement regionPrepStmt;
+@@ -323,5 +323,5 @@
+ 				supplierPrepStmt.addBatch();
+ 
+-				if ((k % configCommitCount) == 0) {
++				if ((k % CONFIG_COMMIT_COUNT) == 0) {
+ 					long tmpTime = new java.util.Date().getTime();
+ 					String etStr = "  Elasped Time(ms): "
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterConstants.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterConstants.java
+@@ -51,7 +51,7 @@
+     public static final int MAX_NAME_LENGTH = 20;
+     // TODO: make the next parameters of WorkLoadConfiguration
+-    public static int LIMIT_TWEETS = 100;
+-    public static int LIMIT_TWEETS_FOR_UID = 10;
+-    public static int LIMIT_FOLLOWERS = 20; 
++    public static final int LIMIT_TWEETS = 100;
++    public static final int LIMIT_TWEETS_FOR_UID = 10;
++    public static final int LIMIT_FOLLOWERS = 20; 
+ 	
+ }
+--- src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
+@@ -50,5 +50,5 @@
+ public class TPCHLoader extends Loader<TPCHBenchmark> {
+     private static final Logger LOG = Logger.getLogger(TPCHLoader.class);
+-    private final static int configCommitCount = 10000; // commit every n records
++    private final static int CONFIG_COMMIT_COUNT = 10000; // commit every n records
+     private static PreparedStatement customerPrepStmt;
+     private static PreparedStatement lineitemPrepStmt;
+@@ -473,5 +473,5 @@
+                         ++recordsRead;
+ 
+-                        if ((recordsRead % configCommitCount) == 0) {
++                        if ((recordsRead % CONFIG_COMMIT_COUNT) == 0) {
+                             long currTime = new java.util.Date().getTime();
+                             String elapsedStr = "  Elapsed Time(ms): "
+--- src/com/oltpbenchmark/benchmarks/sibench/SIConstants.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SIConstants.java
+@@ -23,5 +23,5 @@
+     public static final int RECORD_COUNT = 10;
+     
+-    public static final int configCommitCount = 10;
++    public static final int CONFIG_COMMIT_COUNT = 10;
+ 
+ }
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
+@@ -51,5 +51,5 @@
+     // ----------------------------------------------------------------
+     
+-    public static boolean CLOSE_AUCTIONS_ENABLE = false;
++    public static final boolean CLOSE_AUCTIONS_ENABLE = false;
+     
+     /**
+@@ -64,5 +64,5 @@
+      * whenever the interval interrupt occurs on the first worker thread 
+      */
+-    public static boolean CLOSE_AUCTIONS_SEPARATE_THREAD = false;
++    public static final boolean CLOSE_AUCTIONS_SEPARATE_THREAD = false;
+     
+     /**
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -128,5 +128,5 @@
+     }
+     
+-    protected final Map<CacheType, LinkedList<Reservation>> CACHE_RESERVATIONS = new HashMap<SEATSWorker.CacheType, LinkedList<Reservation>>();
++    protected static final Map<CacheType, LinkedList<Reservation>> CACHE_RESERVATIONS = new HashMap<SEATSWorker.CacheType, LinkedList<Reservation>>();
+     {
+         for (CacheType ctype : CacheType.values()) {
+@@ -136,6 +136,6 @@
+     
+     
+-    protected final Map<CustomerId, Set<FlightId>> CACHE_CUSTOMER_BOOKED_FLIGHTS = new HashMap<CustomerId, Set<FlightId>>();
+-    protected final Map<FlightId, BitSet> CACHE_BOOKED_SEATS = new HashMap<FlightId, BitSet>();
++    protected static final Map<CustomerId, Set<FlightId>> CACHE_CUSTOMER_BOOKED_FLIGHTS = new HashMap<CustomerId, Set<FlightId>>();
++    protected static final Map<FlightId, BitSet> CACHE_BOOKED_SEATS = new HashMap<FlightId, BitSet>();
+ 
+     private static final BitSet FULL_FLIGHT_BITSET = new BitSet(SEATSConstants.FLIGHTS_NUM_SEATS);
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTConstants.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTConstants.java
+@@ -25,5 +25,5 @@
+     public static final int RANGE = 1000000;
+ 
+-    public static final int configCommitCount = 10000;
++    public static final int CONFIG_COMMIT_COUNT = 10000;
+ 
+     static final int MAX_SCAN=1000;
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -51,7 +51,7 @@
+     private static final String SET_BOLD_TEXT = "\033[0;1m";
+     
+-    private static String CACHE_REPEAT_STR = null;
+-    private static Integer CACHE_REPEAT_SIZE = null;
+-    private static String CACHE_REPEAT_RESULT = null;
++    private static final String CACHE_REPEAT_STR = null;
++    private static final Integer CACHE_REPEAT_SIZE = null;
++    private static final String CACHE_REPEAT_RESULT = null;
+ 
+     private static final double BASE = 1024, KB = BASE, MB = KB*BASE, GB = MB*BASE;
+--- src/com/oltpbenchmark/util/ResultUploader.java
++++ src/com/oltpbenchmark/util/ResultUploader.java
+@@ -47,5 +47,5 @@
+     private static final Logger LOG = Logger.getLogger(ResultUploader.class);
+ 
+-    private static String[] IGNORE_CONF = {
++    private static final String[] IGNORE_CONF = {
+             "dbtype",
+             "driver",
+@@ -57,5 +57,5 @@
+     };
+ 
+-    private static String[] BENCHMARK_KEY_FIELD = {
++    private static final String[] BENCHMARK_KEY_FIELD = {
+             "isolation",
+             "scalefactor",
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchConstants.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchConstants.java
+@@ -21,5 +21,5 @@
+     public static final long MAX_NODE_DATA = 1024 * 1024;
+     public static final int START_ID = 1;
+-    public static final int configCommitCount = 100;
++    public static final int CONFIG_COMMIT_COUNT = 100;
+ 
+     // visibility
+@@ -142,6 +142,6 @@
+ 
+     /* Reporting for progress indicators */
+-    public static String REQ_PROG_INTERVAL = "req_progress_interval";
+-    public static String LOAD_PROG_INTERVAL = "load_progress_interval";
++    public static final String REQ_PROG_INTERVAL = "req_progress_interval";
++    public static final String LOAD_PROG_INTERVAL = "load_progress_interval";
+ 
+     /* MapReduce specific configuration */
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterLoader.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterLoader.java
+@@ -38,5 +38,5 @@
+     private static final Logger LOG = Logger.getLogger(TwitterLoader.class);
+ 
+-    public final static int configCommitCount = 1000;
++    public final static int CONFIG_COMMIT_COUNT = 1000;
+ 
+     private final int num_users;
+@@ -159,5 +159,5 @@
+             batchSize++;
+             total++;
+-            if ((batchSize % configCommitCount) == 0) {
++            if ((batchSize % CONFIG_COMMIT_COUNT) == 0) {
+                 int result[] = userInsert.executeBatch();
+                 assert (result != null);
+@@ -210,5 +210,5 @@
+             total++;
+ 
+-            if ((batchSize % configCommitCount) == 0) {
++            if ((batchSize % CONFIG_COMMIT_COUNT) == 0) {
+                 tweetInsert.executeBatch();
+                 conn.commit();
+@@ -280,5 +280,5 @@
+                     f++;
+ 
+-                    if ((batchSize % configCommitCount) == 0) {
++                    if ((batchSize % CONFIG_COMMIT_COUNT) == 0) {
+                         followsInsert.executeBatch();
+                         followersInsert.executeBatch();

@@ -1,0 +1,75 @@
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
+@@ -65,6 +65,6 @@
+             			 conn,
+             			 TATPUtil.padWithZero(s_id), // s_id
+-                         TATPUtil.number(1, 4).byteValue(), // sf_type
+-                         (byte)(8 * TATPUtil.number(0, 2)) // start_time
++                         /* sf_type= */ TATPUtil.number(1, 4).byteValue(), 
++                         /* start_time= */ (byte)(8 * TATPUtil.number(0, 2)) 
+                 );
+             }
+@@ -75,6 +75,6 @@
+                 ((GetAccessData)proc).run(
+                 		conn,
+-                        s_id, // s_id
+-                        TATPUtil.number(1, 4).byteValue() // ai_type
++                        /* s_id= */ s_id, 
++                        /* ai_type= */ TATPUtil.number(1, 4).byteValue() 
+                 );
+             }
+@@ -85,8 +85,8 @@
+                 ((GetNewDestination)proc).run(
+                 		conn,
+-                        s_id, // s_id
+-                        TATPUtil.number(1, 4).byteValue(), // sf_type
+-                        (byte)(8 * TATPUtil.number(0, 2)), // start_time
+-                        TATPUtil.number(1, 24).byteValue() // end_time
++                        /* s_id= */ s_id, 
++                        /* sf_type= */ TATPUtil.number(1, 4).byteValue(), 
++                        /* start_time= */ (byte)(8 * TATPUtil.number(0, 2)), 
++                        /* end_time= */ TATPUtil.number(1, 24).byteValue() 
+                 );
+             }
+@@ -97,5 +97,5 @@
+                 ((GetSubscriberData)proc).run(
+                 		conn,
+-                		s_id // s_id
++                		/* s_id= */ s_id 
+                 );
+             }
+@@ -106,9 +106,9 @@
+                 ((InsertCallForwarding)proc).run(
+                 		conn,
+-                        TATPUtil.padWithZero(s_id), // sub_nbr
+-                        TATPUtil.number(1, 4).byteValue(), // sf_type
+-                        (byte)(8 * TATPUtil.number(0, 2)), // start_time
+-                        TATPUtil.number(1, 24).byteValue(), // end_time
+-                        TATPUtil.padWithZero(s_id) // numberx
++                        /* sub_nbr= */ TATPUtil.padWithZero(s_id), 
++                        /* sf_type= */ TATPUtil.number(1, 4).byteValue(), 
++                        /* start_time= */ (byte)(8 * TATPUtil.number(0, 2)), 
++                        /* end_time= */ TATPUtil.number(1, 24).byteValue(), 
++                        /* numberx= */ TATPUtil.padWithZero(s_id) 
+                 );
+             }
+@@ -120,5 +120,5 @@
+                 		conn,
+                         TATPUtil.number(0, Integer.MAX_VALUE).intValue(), // vlr_location
+-                        TATPUtil.padWithZero(s_id) // sub_nbr
++                        /* sub_nbr= */ TATPUtil.padWithZero(s_id) 
+                 );
+             }
+@@ -129,8 +129,8 @@
+                 ((UpdateSubscriberData)proc).run(
+                 		conn,
+-                        s_id, // s_id
+-                        TATPUtil.number(0, 1).byteValue(), // bit_1
+-                        TATPUtil.number(0, 255).shortValue(), // data_a
+-                        TATPUtil.number(1, 4).byteValue() // sf_type
++                        /* s_id= */ s_id, 
++                        /* bit_1= */ TATPUtil.number(0, 1).byteValue(), 
++                        /* data_a= */ TATPUtil.number(0, 255).shortValue(), 
++                        /* sf_type= */ TATPUtil.number(1, 4).byteValue() 
+                 );
+             }

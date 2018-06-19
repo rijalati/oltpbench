@@ -1,0 +1,78 @@
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -1124,5 +1124,5 @@
+         @Var int          i;
+         int          len = string.length();
+-        StringBuffer sb = new StringBuffer(len + 4);
++        StringBuilder sb = new StringBuilder(len + 4);
+         @Var String       t;
+ 
+@@ -1314,5 +1314,5 @@
+         try {
+             Iterator<String> keys = keys();
+-            StringBuffer sb = new StringBuffer("{");
++            StringBuilder sb = new StringBuilder("{");
+ 
+             while (keys.hasNext()) {
+@@ -1370,5 +1370,5 @@
+         }
+         Iterator<String> keys = keys();
+-        StringBuffer sb = new StringBuffer("{");
++        StringBuilder sb = new StringBuilder("{");
+         int          newindent = indent + indentFactor;
+         @Var Object       o;
+--- src/com/oltpbenchmark/util/json/JSONTokener.java
++++ src/com/oltpbenchmark/util/json/JSONTokener.java
+@@ -252,5 +252,5 @@
+     public String nextString(char quote) throws JSONException {
+         @Var char c;
+-        StringBuffer sb = new StringBuffer();
++        StringBuilder sb = new StringBuilder();
+         for (;;) {
+             c = next();
+@@ -305,5 +305,5 @@
+      */
+     public String nextTo(char d) throws JSONException {
+-        StringBuffer sb = new StringBuffer();
++        StringBuilder sb = new StringBuilder();
+         for (;;) {
+             char c = next();
+@@ -327,5 +327,5 @@
+     public String nextTo(String delimiters) throws JSONException {
+         @Var char c;
+-        StringBuffer sb = new StringBuffer();
++        StringBuilder sb = new StringBuilder();
+         for (;;) {
+             c = next();
+@@ -375,5 +375,5 @@
+          */
+ 
+-        StringBuffer sb = new StringBuffer();
++        StringBuilder sb = new StringBuilder();
+         while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
+             sb.append(c);
+--- src/com/oltpbenchmark/util/json/JSONArray.java
++++ src/com/oltpbenchmark/util/json/JSONArray.java
+@@ -396,5 +396,5 @@
+     public String join(String separator) throws JSONException {
+         int len = length();
+-        StringBuffer sb = new StringBuffer();
++        StringBuilder sb = new StringBuilder();
+ 
+         for (int i = 0; i < len; i += 1) {
+@@ -887,5 +887,5 @@
+         }
+         @Var int i;
+-        StringBuffer sb = new StringBuffer("[");
++        StringBuilder sb = new StringBuilder("[");
+         if (len == 1) {
+             sb.append(JSONObject.valueToString(this.myArrayList.get(0),
+--- src/com/oltpbenchmark/DBWorkload.java
++++ src/com/oltpbenchmark/DBWorkload.java
+@@ -769,5 +769,5 @@
+     private static List<String> getWeights(String plugin, SubnodeConfiguration work) {
+ 
+-        List<String> weight_strings = new LinkedList<String>();
++        List<String> weight_strings = new ArrayList<String>();
+         @SuppressWarnings("unchecked")
+         List<SubnodeConfiguration> weights = work.configurationsAt("weights");

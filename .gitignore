@@ -16,10 +16,7 @@ results
 ## -------------------------------
 ## Backup artifacts
 ## -------------------------------
-~*
-*~
 walkmod.xml
 infer-out/
-*.patch
 # maven output
 target

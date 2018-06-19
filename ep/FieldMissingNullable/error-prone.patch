@@ -1,0 +1,1002 @@
+--- src/com/oltpbenchmark/api/BenchmarkModule.java
++++ src/com/oltpbenchmark/api/BenchmarkModule.java
+@@ -40,4 +40,5 @@
+ import java.util.Random;
+ import java.util.Set;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -79,5 +80,5 @@
+      * Database Catalog
+      */
+-    protected final Catalog catalog;
++    @Nullable protected final Catalog catalog;
+ 
+     /**
+--- src/com/oltpbenchmark/WorkloadConfiguration.java
++++ src/com/oltpbenchmark/WorkloadConfiguration.java
+@@ -28,4 +28,5 @@
+ import java.util.List;
+ import java.util.Map;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.commons.configuration.XMLConfiguration;
+@@ -53,5 +54,5 @@
+ 	private int loaderThreads = ThreadUtil.availableProcessors();
+ 	private int numTxnTypes;
+-    private TraceReader traceReader = null;
++    @Nullable private TraceReader traceReader = null;
+     public TraceReader getTraceReader() {
+         return traceReader;
+@@ -61,5 +62,5 @@
+     }
+     
+-	private XMLConfiguration xmlConfig = null;
++	@Nullable private XMLConfiguration xmlConfig = null;
+ 
+ 	private List<Phase> works = new ArrayList<Phase>();
+@@ -80,8 +81,8 @@
+ 
+     private int numberOfPhases = 0;
+-	private TransactionTypes transTypes = null;
++	@Nullable private TransactionTypes transTypes = null;
+ 	private int isolationMode = Connection.TRANSACTION_SERIALIZABLE;
+ 	private boolean recordAbortMessages = false;
+-    private String dataDir = null;
++    @Nullable private String dataDir = null;
+ 
+  
+--- src/com/oltpbenchmark/api/Worker.java
++++ src/com/oltpbenchmark/api/Worker.java
+@@ -39,4 +39,5 @@
+ import java.util.Random;
+ import java.util.concurrent.atomic.AtomicInteger;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -46,5 +47,5 @@
+     private WorkloadState wrkldState;
+     private LatencyRecord latencies;
+-    private Statement currStatement;
++    @Nullable private Statement currStatement;
+ 
+     // Interval requests used by the monitor
+--- src/com/oltpbenchmark/WorkloadState.java
++++ src/com/oltpbenchmark/WorkloadState.java
+@@ -17,11 +17,11 @@
+ package com.oltpbenchmark;
+ 
++import com.oltpbenchmark.types.State;
++import com.oltpbenchmark.util.QueueLimitException;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+-import java.util.List;
+ import java.util.LinkedList;
+-
+-import com.oltpbenchmark.types.State;
+-import com.oltpbenchmark.util.QueueLimitException;
++import java.util.List;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -46,7 +46,7 @@
+     private List<Phase> works = new ArrayList<Phase>();
+     private Iterator<Phase> phaseIterator;
+-    private Phase currentPhase = null;
++    @Nullable private Phase currentPhase = null;
+     private long phaseStartNs = 0;
+-    private TraceReader traceReader = null;
++    @Nullable private TraceReader traceReader = null;
+     
+     public WorkloadState(BenchmarkState benchmarkState, List<Phase> works, int num_terminals, TraceReader traceReader) {
+--- src/com/oltpbenchmark/util/Histogram.java
++++ src/com/oltpbenchmark/util/Histogram.java
+@@ -24,4 +24,5 @@
+ import java.util.*;
+ import java.util.Map.Entry;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -58,6 +59,6 @@
+      * on some natural ordering
+      */
+-    protected Comparable<X> min_value;
+-    protected Comparable<X> max_value;
++    @Nullable protected Comparable<X> min_value;
++    @Nullable protected Comparable<X> max_value;
+     
+     /**
+--- src/com/oltpbenchmark/catalog/Column.java
++++ src/com/oltpbenchmark/catalog/Column.java
+@@ -18,4 +18,6 @@
+ package com.oltpbenchmark.catalog;
+ 
++import javax.annotation.Nullable;
++
+ /**
+  * Column Catalog Object
+@@ -34,5 +36,5 @@
+     private boolean autoincrement = false;
+     private boolean signed = false;
+-    private Column foreignkey = null;
++    @Nullable private Column foreignkey = null;
+     
+     public Column(Table catalog_tbl, String name, int type, String typename, Integer size) {
+--- src/com/oltpbenchmark/LoadLineReader.java
++++ src/com/oltpbenchmark/LoadLineReader.java
+@@ -18,4 +18,5 @@
+ 
+ import java.util.StringTokenizer;
++import javax.annotation.Nullable;
+ 
+ public class LoadLineReader {
+@@ -24,5 +25,5 @@
+ 	public long timeInSec = -1;
+ 	public long ratePerSec = -1;
+-	public double[] transactionRatios = null;
++	@Nullable public double[] transactionRatios = null;
+ 	
+ 	
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -35,4 +35,5 @@
+ import com.google.errorprone.annotations.Var;
+ import java.util.*;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -425,5 +426,5 @@
+     public static final class Binomial extends DiscreteRNG {
+         private static final long serialVersionUID = 1L;
+-        private final double[] v;
++        @Nullable private final double[] v;
+         private final long n;
+     
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddLink.java
+@@ -27,4 +27,5 @@
+ import java.sql.SQLException;
+ import java.util.Date;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -33,7 +34,7 @@
+     private static final Logger LOG = Logger.getLogger(AddLink.class);
+     //TODO: give the these better names
+-    private PreparedStatement stmt1 = null;
+-    private PreparedStatement stmt2 = null;
+-    private PreparedStatement stmt3 = null;
++    @Nullable private PreparedStatement stmt1 = null;
++    @Nullable private PreparedStatement stmt2 = null;
++    @Nullable private PreparedStatement stmt3 = null;
+ 
+     public final SQLStmt insertNoCount = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
+@@ -52,4 +52,5 @@
+ import java.util.Map;
+ import java.util.concurrent.atomic.AtomicBoolean;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -65,5 +66,5 @@
+     private final AtomicBoolean closeAuctions_flag = new AtomicBoolean();
+     
+-    private final Thread closeAuctions_checker;
++    @Nullable private final Thread closeAuctions_checker;
+ 
+     protected static final Map<Long, Integer> ip_id_cntrs = new HashMap<Long, Integer>(); 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -54,4 +54,5 @@
+ import java.util.Map;
+ import java.util.Set;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+@@ -69,5 +70,5 @@
+      * This prevents the need to have every single client thread load up a separate copy
+      */
+-    private static AuctionMarkProfile cachedProfile;
++    @Nullable private static AuctionMarkProfile cachedProfile;
+ 
+     // ----------------------------------------------------------------
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/ItemInfo.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/ItemInfo.java
+@@ -18,7 +18,4 @@
+ package com.oltpbenchmark.benchmarks.auctionmark.util;
+ 
+-import java.io.IOException;
+-import java.sql.Timestamp;
+-
+ import com.oltpbenchmark.util.JSONSerializable;
+ import com.oltpbenchmark.util.JSONUtil;
+@@ -26,11 +23,14 @@
+ import com.oltpbenchmark.util.json.JSONObject;
+ import com.oltpbenchmark.util.json.JSONStringer;
++import java.io.IOException;
++import java.sql.Timestamp;
++import javax.annotation.Nullable;
+ 
+ public class ItemInfo implements JSONSerializable, Comparable<ItemInfo> {
+     public ItemId itemId;
+-    public Float currentPrice;
++    @Nullable public Float currentPrice;
+     public Timestamp endDate;
+     public long numBids = 0;
+-    public ItemStatus status = null;
++    @Nullable public ItemStatus status = null;
+     
+     public ItemInfo(ItemId id, Double currentPrice, Timestamp endDate, int numBids) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
+@@ -24,4 +24,5 @@
+ import java.util.Iterator;
+ import java.util.Map;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.commons.lang.NotImplementedException;
+@@ -36,5 +37,5 @@
+     private final long totalUsers;
+     
+-    private UserId next = null;
++    @Nullable private UserId next = null;
+     private int currentItemCount = -1;
+     private int currentOffset;
+--- src/com/oltpbenchmark/util/ThreadUtil.java
++++ src/com/oltpbenchmark/util/ThreadUtil.java
+@@ -40,4 +40,5 @@
+ import java.util.concurrent.ScheduledThreadPoolExecutor;
+ import java.util.concurrent.ThreadFactory;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -46,8 +47,8 @@
+ 
+     private static final Object lock = new Object();
+-    private static ExecutorService pool;
++    @Nullable private static ExecutorService pool;
+ 
+     private static final int DEFAULT_NUM_THREADS = Runtime.getRuntime().availableProcessors();
+-    private static Integer OVERRIDE_NUM_THREADS = null;
++    @Nullable private static Integer OVERRIDE_NUM_THREADS = null;
+ 
+     public static int availableProcessors() {
+--- src/com/oltpbenchmark/util/Pair.java
++++ src/com/oltpbenchmark/util/Pair.java
+@@ -34,4 +34,6 @@
+ package com.oltpbenchmark.util;
+ 
++import javax.annotation.Nullable;
++
+ /**
+  * Class representing a pair of generic-ized types. Supports equality, hashing
+@@ -43,5 +45,5 @@
+     public final T first;
+     public final U second;
+-    private transient Integer hash;
++    @Nullable private transient Integer hash;
+ 
+     public Pair(T first, U second, boolean precomputeHash) {
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
+@@ -29,4 +29,5 @@
+ import java.sql.Timestamp;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -85,11 +86,11 @@
+ 
+ 	// Delivery Txn
+-	private PreparedStatement delivGetOrderId = null;
+-	private PreparedStatement delivDeleteNewOrder = null;
+-	private PreparedStatement delivGetCustId = null;
+-	private PreparedStatement delivUpdateCarrierId = null;
+-	private PreparedStatement delivUpdateDeliveryDate = null;
+-	private PreparedStatement delivSumOrderAmount = null;
+-	private PreparedStatement delivUpdateCustBalDelivCnt = null;
++	@Nullable private PreparedStatement delivGetOrderId = null;
++	@Nullable private PreparedStatement delivDeleteNewOrder = null;
++	@Nullable private PreparedStatement delivGetCustId = null;
++	@Nullable private PreparedStatement delivUpdateCarrierId = null;
++	@Nullable private PreparedStatement delivUpdateDeliveryDate = null;
++	@Nullable private PreparedStatement delivSumOrderAmount = null;
++	@Nullable private PreparedStatement delivUpdateCustBalDelivCnt = null;
+ 
+     @Override
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
+@@ -33,4 +33,5 @@
+ import java.util.Scanner;
+ import java.util.TreeMap;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -88,5 +89,5 @@
+   }
+ 
+-  private DistributionType type = null;
++  @Nullable private DistributionType type = null;
+ 
+   public RealDistribution() {
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetNode.java
+@@ -17,20 +17,19 @@
+ package com.oltpbenchmark.benchmarks.linkbench.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-
+ public class GetNode extends Procedure{
+ 
+     private static final Logger LOG = Logger.getLogger(GetNode.class);
+ 
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+     
+     public final SQLStmt getNodeStmt = new SQLStmt(
+--- src/com/oltpbenchmark/ThreadBench.java
++++ src/com/oltpbenchmark/ThreadBench.java
+@@ -39,4 +39,5 @@
+ import java.util.Objects;
+ import java.util.Set;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+@@ -46,5 +47,5 @@
+ 
+     
+-    private static BenchmarkState testState;
++    @Nullable private static BenchmarkState testState;
+     private final List<? extends Worker<? extends BenchmarkModule>> workers;
+     private final ArrayList<Thread> workerThreads;
+@@ -93,8 +94,8 @@
+         private final TransactionType txType;
+ 
+-        private Sample sample;
++        @Nullable private Sample sample;
+         private long nextStartNs;
+ 
+-        private DistributionStatistics next;
++        @Nullable private DistributionStatistics next;
+ 
+         /**
+--- src/com/oltpbenchmark/Results.java
++++ src/com/oltpbenchmark/Results.java
+@@ -30,4 +30,5 @@
+ import java.util.List;
+ import java.util.Map;
++import javax.annotation.Nullable;
+ 
+ public final class Results {
+@@ -41,5 +42,5 @@
+     final Map<TransactionType, Histogram<String>> txnAbortMessages = new HashMap<TransactionType, Histogram<String>>();
+     
+-    public final List<LatencyRecord.Sample> latencySamples;
++    @Nullable public final List<LatencyRecord.Sample> latencySamples;
+ 
+     public Results(long nanoSeconds, int measuredRequests, DistributionStatistics latencyDistribution, final List<LatencyRecord.Sample> latencySamples) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/LoaderItemInfo.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/LoaderItemInfo.java
+@@ -29,4 +29,5 @@
+ import java.util.ArrayList;
+ import java.util.List;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ 
+@@ -39,9 +40,9 @@
+     public short numComments;
+     public short numWatches;
+-    public Timestamp startDate;
+-    public Timestamp purchaseDate;
++    @Nullable public Timestamp startDate;
++    @Nullable public Timestamp purchaseDate;
+     public float initialPrice;
+-    public UserId sellerId;
+-    public UserId lastBidderId; // if null, then no bidder
++    @Nullable public UserId sellerId;
++    @Nullable public UserId lastBidderId; // if null, then no bidder
+ 
+     public LoaderItemInfo(ItemId id, Timestamp endDate, int numBids) {
+@@ -98,6 +99,6 @@
+         public final UserId bidderId;
+         public float maxBid;
+-        public Timestamp createDate;
+-        public Timestamp updateDate;
++        @Nullable public Timestamp createDate;
++        @Nullable public Timestamp updateDate;
+         public boolean buyer_feedback = false;
+         public boolean seller_feedback = false;
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLink.java
+@@ -26,4 +26,5 @@
+ import java.sql.SQLException;
+ import java.util.Arrays;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -32,5 +33,5 @@
+     private static final Logger LOG = Logger.getLogger(GetLink.class);
+ 
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+ 
+     public final SQLStmt getLinkStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
+@@ -26,4 +26,5 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -32,5 +33,5 @@
+     private static final Logger LOG = Logger.getLogger(GetLinkList.class);
+ 
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+     
+     public final SQLStmt getLinkListsStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
+@@ -17,7 +17,4 @@
+ package com.oltpbenchmark.benchmarks.sibench;
+ 
+-import java.sql.SQLException;
+-import java.util.Random;
+-
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.Procedure.UserAbortException;
+@@ -27,8 +24,11 @@
+ import com.oltpbenchmark.benchmarks.sibench.procedures.UpdateRecord;
+ import com.oltpbenchmark.types.TransactionStatus;
++import java.sql.SQLException;
++import java.util.Random;
++import javax.annotation.Nullable;
+ 
+ public class SIWorker extends Worker<SIBenchmark> {
+ 
+-    private static Random updateRecordIdGenerator = null;
++    @Nullable private static Random updateRecordIdGenerator = null;
+     private int recordCount;
+     
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
+@@ -28,4 +28,5 @@
+ import java.sql.SQLException;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -95,14 +96,14 @@
+ 
+ 	// NewOrder Txn
+-	private PreparedStatement stmtGetCust = null;
+-	private PreparedStatement stmtGetWhse = null;
+-	private PreparedStatement stmtGetDist = null;
+-	private PreparedStatement stmtInsertNewOrder = null;
+-	private PreparedStatement stmtUpdateDist = null;
+-	private PreparedStatement stmtInsertOOrder = null;
+-	private PreparedStatement stmtGetItem = null;
+-	private PreparedStatement stmtGetStock = null;
+-	private PreparedStatement stmtUpdateStock = null;
+-	private PreparedStatement stmtInsertOrderLine = null;
++	@Nullable private PreparedStatement stmtGetCust = null;
++	@Nullable private PreparedStatement stmtGetWhse = null;
++	@Nullable private PreparedStatement stmtGetDist = null;
++	@Nullable private PreparedStatement stmtInsertNewOrder = null;
++	@Nullable private PreparedStatement stmtUpdateDist = null;
++	@Nullable private PreparedStatement stmtInsertOOrder = null;
++	@Nullable private PreparedStatement stmtGetItem = null;
++	@Nullable private PreparedStatement stmtGetStock = null;
++	@Nullable private PreparedStatement stmtUpdateStock = null;
++	@Nullable private PreparedStatement stmtInsertOrderLine = null;
+ 
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
+@@ -30,4 +30,5 @@
+ import java.util.ArrayList;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -109,14 +110,14 @@
+ 
+     // Payment Txn
+-    private PreparedStatement payUpdateWhse = null;
+-    private PreparedStatement payGetWhse = null;
+-    private PreparedStatement payUpdateDist = null;
+-    private PreparedStatement payGetDist = null;
+-    private PreparedStatement payGetCust = null;
+-    private PreparedStatement payGetCustCdata = null;
+-    private PreparedStatement payUpdateCustBalCdata = null;
+-    private PreparedStatement payUpdateCustBal = null;
+-    private PreparedStatement payInsertHist = null;
+-    private PreparedStatement customerByName = null;
++    @Nullable private PreparedStatement payUpdateWhse = null;
++    @Nullable private PreparedStatement payGetWhse = null;
++    @Nullable private PreparedStatement payUpdateDist = null;
++    @Nullable private PreparedStatement payGetDist = null;
++    @Nullable private PreparedStatement payGetCust = null;
++    @Nullable private PreparedStatement payGetCustCdata = null;
++    @Nullable private PreparedStatement payUpdateCustBalCdata = null;
++    @Nullable private PreparedStatement payUpdateCustBal = null;
++    @Nullable private PreparedStatement payInsertHist = null;
++    @Nullable private PreparedStatement customerByName = null;
+ 
+     @Override public ResultSet run(Connection conn, Random gen,
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
+@@ -27,4 +27,5 @@
+ import java.sql.SQLException;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -51,6 +52,6 @@
+ 
+ 	// Stock Level Txn
+-	private PreparedStatement stockGetDistOrderId = null;
+-	private PreparedStatement stockGetCountStock = null;
++	@Nullable private PreparedStatement stockGetDistOrderId = null;
++	@Nullable private PreparedStatement stockGetCountStock = null;
+ 
+ 	 @Override public ResultSet run(Connection conn, Random gen,
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -57,4 +57,5 @@
+ import java.util.concurrent.TimeUnit;
+ import java.util.regex.Pattern;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.CollectionUtils;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+@@ -602,5 +603,5 @@
+         
+         private final LinkedBlockingDeque<T> queue = new LinkedBlockingDeque<T>();
+-        private T current;
++        @Nullable private T current;
+         private short currentCounter;
+         private boolean stop = false;
+@@ -1240,5 +1241,5 @@
+     protected class ItemBidGenerator extends SubTableGenerator<LoaderItemInfo> {
+ 
+-        private LoaderItemInfo.Bid bid = null;
++        @Nullable private LoaderItemInfo.Bid bid = null;
+         private float currentBidPriceAdvanceStep;
+         private long currentCreateDateAdvanceStep;
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/CountLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/CountLink.java
+@@ -24,4 +24,5 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -34,5 +35,5 @@
+     );
+     
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+     
+     public long run(Connection conn, long id1, long link_type) throws SQLException {
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/DeleteNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/DeleteNode.java
+@@ -17,18 +17,17 @@
+ package com.oltpbenchmark.benchmarks.linkbench.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-
+ public class DeleteNode extends Procedure{
+ 
+     private static final Logger LOG = Logger.getLogger(DeleteNode.class);
+ 
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+     
+     public final SQLStmt deleteStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
+@@ -41,4 +41,5 @@
+ import java.util.Map;
+ import java.util.Map.Entry;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+@@ -82,9 +83,9 @@
+      * The offset of when upcoming flights begin in the seats_remaining list
+      */
+-    protected Long flight_upcoming_offset = null;
++    @Nullable protected Long flight_upcoming_offset = null;
+     /**
+      * The offset of when reservations for upcoming flights begin
+      */
+-    protected Long reservation_upcoming_offset = null;
++    @Nullable protected Long reservation_upcoming_offset = null;
+     /**
+      * The number of reservations initially created.
+@@ -294,5 +295,5 @@
+      * Load the profile information stored in the database
+      */
+-    private static SEATSProfile cachedProfile;
++    @Nullable private static SEATSProfile cachedProfile;
+ 
+     protected final void loadProfile(SEATSWorker worker) throws SQLException {
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/AddNode.java
+@@ -26,4 +26,5 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -38,5 +39,5 @@
+     );
+     
+-    private PreparedStatement stmt= null;
++    @Nullable private PreparedStatement stmt= null;
+     
+ 	//FIXME: The value in ysqb is a byteiterator
+--- src/com/oltpbenchmark/benchmarks/linkbench/generators/MotifDataGenerator.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/generators/MotifDataGenerator.java
+@@ -16,10 +16,10 @@
+ package com.oltpbenchmark.benchmarks.linkbench.generators;
+ 
+-import java.util.Properties;
+-import java.util.Random;
+-
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+ import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
++import java.util.Properties;
++import java.util.Random;
++import javax.annotation.Nullable;
+ 
+ 
+@@ -68,5 +68,5 @@
+    * on demand.
+    */
+-  private byte motifs[];
++  @Nullable private byte motifs[];
+   /** Size of motif buffer */
+   private int motifBytes;
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
+@@ -36,10 +36,10 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import java.util.*;
++import javax.annotation.Nullable;
+ import javax.persistence.*;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple entity class with one index.
+@@ -70,9 +70,9 @@
+ 	private String email;
+ 
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date birthDate;
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date joinDate;
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date lastLoginDate;
+ 
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -34,4 +34,5 @@
+ import java.util.Map.Entry;
+ import java.util.regex.Pattern;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -51,7 +52,7 @@
+     private static final String SET_BOLD_TEXT = "\033[0;1m";
+     
+-    private static String CACHE_REPEAT_STR = null;
+-    private static Integer CACHE_REPEAT_SIZE = null;
+-    private static String CACHE_REPEAT_RESULT = null;
++    @Nullable private static String CACHE_REPEAT_STR = null;
++    @Nullable private static Integer CACHE_REPEAT_SIZE = null;
++    @Nullable private static String CACHE_REPEAT_RESULT = null;
+ 
+     private static final double BASE = 1024, KB = BASE, MB = KB*BASE, GB = MB*BASE;
+--- src/com/oltpbenchmark/util/MeasureTargetSystem.java
++++ src/com/oltpbenchmark/util/MeasureTargetSystem.java
+@@ -22,9 +22,10 @@
+ import java.io.IOException;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ 
+ public class MeasureTargetSystem implements Runnable {
+ 
+-	BufferedWriter out, out2 = null;
+-	StatisticsCollector sc = null;
++	@Nullable BufferedWriter out, out2 = null;
++	@Nullable StatisticsCollector sc = null;
+ 	int intermediateWarmupTime, measuringTime, speed;
+ 	long lastPhaseChange;
+--- src/com/oltpbenchmark/benchmarks/seats/util/CustomerIdIterable.java
++++ src/com/oltpbenchmark/benchmarks/seats/util/CustomerIdIterable.java
+@@ -18,15 +18,14 @@
+ package com.oltpbenchmark.benchmarks.seats.util;
+ 
++import com.oltpbenchmark.util.Histogram;
+ import java.util.Collection;
+ import java.util.Iterator;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.set.ListOrderedSet;
+ 
+-import com.oltpbenchmark.util.Histogram;
+-
+ public class CustomerIdIterable implements Iterable<CustomerId> {
+     private final Histogram<Long> airport_max_customer_id;
+     private final ListOrderedSet<Long> airport_ids = new ListOrderedSet<Long>();
+-    private Long last_airport_id = null;
++    @Nullable private Long last_airport_id = null;
+     private int last_id = -1;
+     private long last_max_id = -1;
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -34,4 +34,5 @@
+ import java.util.Properties;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -73,8 +74,8 @@
+     // Access distributions
+     private AccessDistribution writeDist; // link writes
+-    private AccessDistribution writeDistUncorr; // to blend with link writes
++    @Nullable private AccessDistribution writeDistUncorr; // to blend with link writes
+     private double writeDistUncorrBlend; // Percentage to used writeDist2 for
+     private AccessDistribution readDist; // link reads
+-    private AccessDistribution readDistUncorr; // to blend with link reads
++    @Nullable private AccessDistribution readDistUncorr; // to blend with link reads
+     private double readDistUncorrBlend; // Percentage to used readDist2 for
+     private AccessDistribution nodeReadDist; // node reads
+@@ -93,5 +94,5 @@
+ 
+     // Probability distribution for ids in multiget
+-    ProbabilityDistribution multigetDist;
++    @Nullable ProbabilityDistribution multigetDist;
+ 
+     private static class HistoryKey {
+--- src/com/oltpbenchmark/util/TableDataIterable.java
++++ src/com/oltpbenchmark/util/TableDataIterable.java
+@@ -24,4 +24,5 @@
+ import java.io.File;
+ import java.util.Iterator;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -76,5 +77,5 @@
+     
+     public class TableIterator implements Iterator<Object[]> {
+-        String[] next = null;
++        @Nullable String[] next = null;
+ 
+         private void getNext() {
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
+@@ -36,11 +36,11 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import com.oltpbenchmark.util.TextGenerator;
++import java.util.*;
++import javax.annotation.Nullable;
+ import javax.persistence.*;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-import com.oltpbenchmark.util.TextGenerator;
+-
+ /**
+  * A simple entity class with a simple element collection.
+@@ -67,9 +67,9 @@
+ 	private String email;
+ 
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date birthDate;
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date joinDate;
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date lastLoginDate;
+ 
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -61,4 +61,5 @@
+ import java.util.concurrent.atomic.AtomicInteger;
+ import java.util.regex.Matcher;
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.commons.collections15.set.ListOrderedSet;
+@@ -853,6 +854,6 @@
+         private final FlatHistogram<String> rand;
+         private final RandomDistribution.Flat randBalance;
+-        private String airport_code = null;
+-        private CustomerId last_id = null;
++        @Nullable private String airport_code = null;
++        @Nullable private CustomerId last_id = null;
+ 
+         public CustomerIterable(Table catalog_tbl, long total) {
+@@ -938,5 +939,5 @@
+ 
+         private int customer_idx = 0;
+-        private CustomerId last_customer_id = null;
++        @Nullable private CustomerId last_customer_id = null;
+         private Collection<String> customer_airlines = new HashSet<String>();
+ 
+@@ -1051,5 +1052,5 @@
+         private Pair<Double, Double> outer_location;
+ 
+-        private Integer last_inner_ctr = null;
++        @Nullable private Integer last_inner_ctr = null;
+         private String inner_airport;
+         private Pair<Double, Double> inner_location;
+@@ -1430,6 +1431,6 @@
+ 
+         private final LinkedBlockingDeque<Object[]> queue = new LinkedBlockingDeque<Object[]>(100);
+-        private Object current[] = null;
+-        private Throwable error = null;
++        @Nullable private Object current[] = null;
++        @Nullable private Throwable error = null;
+ 
+         /**
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
+@@ -30,4 +30,5 @@
+ import java.util.ArrayList;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -70,8 +71,8 @@
+             " ORDER BY C_FIRST");
+ 
+-	private PreparedStatement ordStatGetNewestOrd = null;
+-	private PreparedStatement ordStatGetOrderLines = null;
+-	private PreparedStatement payGetCust = null;
+-	private PreparedStatement customerByName = null;
++	@Nullable private PreparedStatement ordStatGetNewestOrd = null;
++	@Nullable private PreparedStatement ordStatGetOrderLines = null;
++	@Nullable private PreparedStatement payGetCust = null;
++	@Nullable private PreparedStatement customerByName = null;
+ 
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/UpdateNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/UpdateNode.java
+@@ -17,20 +17,19 @@
+ package com.oltpbenchmark.benchmarks.linkbench.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
++import com.oltpbenchmark.util.StringUtil;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+-import com.oltpbenchmark.util.StringUtil;
+-
+ public class UpdateNode extends Procedure{
+     
+     private static final Logger LOG = Logger.getLogger(UpdateNode.class);
+     
+-    private PreparedStatement stmt = null;
++    @Nullable private PreparedStatement stmt = null;
+     
+     public final SQLStmt updateNodeStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/twitter/util/TransactionSelector.java
++++ src/com/oltpbenchmark/benchmarks/twitter/util/TransactionSelector.java
+@@ -29,10 +29,11 @@
+ import java.util.ArrayList;
+ import java.util.Random;
++import javax.annotation.Nullable;
+ 
+ public class TransactionSelector {
+ 
+ 	String filename,filename2;
+-	DataInputStream dis,dis2 = null;
+-	Random r = null;
++	@Nullable DataInputStream dis,dis2 = null;
++	@Nullable Random r = null;
+ 	TransactionTypes transTypes;
+ 	static final double READ_WRITE_RATIO = 11.8; // from
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
+@@ -36,11 +36,10 @@
+ package com.oltpbenchmark.benchmarks.jpab.objects;
+ 
+-import java.util.*;
+-
++import com.oltpbenchmark.api.LoaderUtil;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
++import java.util.*;
++import javax.annotation.Nullable;
+ import javax.persistence.*;
+ 
+-import com.oltpbenchmark.api.LoaderUtil;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ /**
+  * A simple sub entity class (two inheritance levels).
+@@ -51,10 +50,10 @@
+ 	// Fields:
+ 
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date birthDate;
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date joinDate;
+ 
+-	@Temporal(TemporalType.DATE)
++	@Nullable @Temporal(TemporalType.DATE)
+ 	private Date lastLoginDate;
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/DeleteLink.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/DeleteLink.java
+@@ -26,4 +26,5 @@
+ import java.sql.SQLException;
+ import java.util.Date;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -32,8 +33,8 @@
+     private static final Logger LOG = Logger.getLogger(DeleteLink.class);
+     
+-    private PreparedStatement stmt1 = null;
+-    private PreparedStatement stmt2 = null;
+-    private PreparedStatement stmt3 = null;
+-    private PreparedStatement stmt4 = null;
++    @Nullable private PreparedStatement stmt1 = null;
++    @Nullable private PreparedStatement stmt2 = null;
++    @Nullable private PreparedStatement stmt3 = null;
++    @Nullable private PreparedStatement stmt4 = null;
+ 
+     public final SQLStmt selectLink = new SQLStmt(

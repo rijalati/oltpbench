@@ -1,0 +1,9 @@
+--- src/com/oltpbenchmark/util/Histogram.java
++++ src/com/oltpbenchmark/util/Histogram.java
+@@ -52,5 +52,5 @@
+      * 
+      */
+-    protected transient Map<Object, String> debug_names; 
++    protected transient volatile Map<Object, String> debug_names; 
+     
+     /**
