@@ -130,7 +130,7 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
               <compilerArgs combine.children="append">
-		<compilerArg>-XepPatchChecks:Var,MissingOverride,#|CHECK|#</compilerArg>
+		<compilerArg>-XepPatchChecks:#|CHECK|#</compilerArg>
 		<compilerArg>-XepPatchLocation:/home/rlatimore/src/git/oltpbench</compilerArg>
                 <!-- <compilerArg>-XepPatchChecks:OptionalEquality,DeadException,GetClassOnClass,MethodCanBeStatic,DefaultCharset,CollectionIncompatibleType,ThrowsUncheckedException,WildcardImport,BigDecimalLiteralDouble,ArgumentParameterMismatch,EmptyIf,EqualsHashCode,ClassNewInstance,TryFailThrowable,MissingOverride,ImmutableEnumChecker,ArrayToString,EqualsIncompatibleType,UnsynchronizedOverridesSynchronized,NonOverridingEquals,LiteralClassName,SynchronizeOnNonFinalField,Finally,AmbiguousMethodReference,BoxedPrimitiveConstructor,DoubleCheckedLocking</compilerArg> -->
 		<!--    <compilerArg>-XepPatchChecks:InputStreamSlowMultibyteRead,ReferenceEquality,ArraysAsListPrimitiveArray,IncompatibleArgumentType,ChainingConstructorIgnoresParameter,ComparisonOutOfRange,DeadThread,DoNotCall,EqualsReference,EqualsNaN,HashtableContains,IndexOfChar,BoxedPrimitiveConstructor,DeadException,MethodCanBeStatic,MissingOverride,CollectionIncompatibleType,DefaultCharset,ArrayToString,ImmutableEnumChecker,GetClassOnClass,EmptyIf,BigDecimalLiteralDouble,DoubleCheckedLocking,AmbiguousMethodReference,FieldCanBeFinal,ThrowsUncheckedException,ReturnMissingNullable,FieldMissingNullable,UngroupedOverloads,MixedArrayDimensions,Var,WildcardImport</compilerArg> 

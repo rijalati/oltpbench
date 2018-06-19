@@ -282,7 +282,6 @@ ParameterComment
 ParameterNotNullable
 PrivateConstructorForNoninstantiableModule
 PrivateConstructorForUtilityClass
-RemoveUnusedImports
 ReturnMissingNullable
 ScopeOnModule
 SwitchDefault
@@ -293,3 +292,4 @@ UnnecessarySetDefault
 UnnecessaryStaticImport
 UseBinds
 WildcardImport
+RemoveUnusedImports
