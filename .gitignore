@@ -5,7 +5,10 @@ output.res
 .classpath
 .settings
 results
-
+*.orig
+*.rej
+ep
+infer-out
 ## -------------------------------
 ## Kate Swap Files
 ## -------------------------------
