@@ -45,15 +45,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.3</version>
         <configuration>
           <compilerId>javac-with-errorprone</compilerId>
           <showWarnings>true</showWarnings>
           <forceJavacCompilerUse>true</forceJavacCompilerUse>
           <!-- maven-compiler-plugin defaults to targeting Java 5, but our javac
                only supports >=6 -->
-          <source>7</source>
-	  <target>7</target>
+          <source>8</source>
+	  <target>8</target>
 	  <compilerArgument>-Xlint:deprecation</compilerArgument>
         </configuration>
         <dependencies>
@@ -117,8 +117,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <profiles>
     <profile>
@@ -127,8 +127,14 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
+	    <artifactId>maven-compiler-plugin</artifactId>
+	    <version>3.3</version>
             <configuration>
+	      <compilerId>javac-with-errorprone</compilerId>
+              <source>8</source>
+	      <target>8</target>
+              <showWarnings>true</showWarnings>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
               <compilerArgs combine.children="append">
 		<compilerArg>-XepPatchChecks:RemoveUnusedImports</compilerArg>
 		<compilerArg>-XepPatchLocation:/home/rlatimore/src/git/oltpbench</compilerArg>
@@ -154,6 +160,11 @@
 	    <groupId>com.google.errorprone</groupId>
 	    <artifactId>error_prone_core</artifactId>
 	    <version>2.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jsoniter</groupId>
+      <artifactId>jsoniter</artifactId>
+      <version>0.9.19</version>
     </dependency>
     <dependency>
       <groupId>javax.persistence</groupId>

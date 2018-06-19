@@ -1,0 +1,177 @@
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -17,11 +17,11 @@
+ package com.oltpbenchmark;
+ 
++import com.google.common.base.Splitter;
+ import java.io.BufferedReader;
+ import java.io.FileReader;
+ import java.util.Iterator;
+-import java.util.ListIterator;
+-import java.util.List;
+ import java.util.LinkedList;
+-
++import java.util.List;
++import java.util.ListIterator;
+ import org.apache.log4j.Logger;
+ 
+@@ -76,5 +76,5 @@
+             // determine which columns to look at gives us flexibility in case
+             // the ordering changes or extra columns are added.
+-            String[] splitHeader = line.split(",");
++            Iterable<String> splitHeader = Splitter.on(',').split(line);
+             int txnIdCol = -1, phaseIdCol = -1, startTimeCol = -1;
+             int index = 0;
+@@ -104,8 +104,8 @@
+                 long phaseBaseTime = 0;
+                 while ((line = br.readLine()) != null) {
+-                    String[] splitLine = line.split(",");
+-                    int phaseId = Integer.parseInt(splitLine[phaseIdCol]);
++                    List<String> splitLine = Splitter.on(',').splitToList(line);
++                    int phaseId = Integer.parseInt(splitLine.get(phaseIdCol));
+                     long startTimeNs = (long)(1000*1000*1000
+-                                       * Double.parseDouble(splitLine[startTimeCol]));
++                                       * Double.parseDouble(splitLine.get(startTimeCol)));
+ 
+                     // We base transaction start times on the start of a phase
+@@ -120,5 +120,5 @@
+                     assert phaseBaseTime <= startTimeNs;
+                     tracedProcedures.add(new TraceElement(
+-                                             Integer.parseInt(splitLine[txnIdCol])
++                                             Integer.parseInt(splitLine.get(txnIdCol))
+                                              , phaseId
+                                              , startTimeNs - phaseBaseTime));
+--- src/com/oltpbenchmark/benchmarks/voter/VoterLoader.java
++++ src/com/oltpbenchmark/benchmarks/voter/VoterLoader.java
+@@ -17,4 +17,9 @@
+ package com.oltpbenchmark.benchmarks.voter;
+ 
++import com.google.common.base.Splitter;
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.api.Loader.LoaderThread;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.SQLUtil;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -23,9 +28,4 @@
+ import java.util.List;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.api.Loader.LoaderThread;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.SQLUtil;
+-
+ public class VoterLoader extends Loader<VoterBenchmark> {
+ 
+@@ -103,9 +103,9 @@
+         Table catalog_tbl = this.benchmark.getTableCatalog(VoterConstants.TABLENAME_CONTESTANTS);
+         PreparedStatement ps = conn.prepareStatement(SQLUtil.getInsertSQL(catalog_tbl, this.getDatabaseType()));
+-        String[] contestants = VoterConstants.CONTESTANT_NAMES_CSV.split(",");
++        List<String> contestants = Splitter.on(',').splitToList(VoterConstants.CONTESTANT_NAMES_CSV);
+ 
+         for (int i = 0; i < this.benchmark.numContestants; i++) {
+             ps.setInt(1, i+1);
+-            ps.setString(2, contestants[i]);
++            ps.setString(2, contestants.get(i));
+             ps.addBatch();
+         }
+--- src/com/oltpbenchmark/DBWorkload.java
++++ src/com/oltpbenchmark/DBWorkload.java
+@@ -18,4 +18,17 @@
+ package com.oltpbenchmark;
+ 
++import com.google.common.base.Splitter;
++import com.oltpbenchmark.api.BenchmarkModule;
++import com.oltpbenchmark.api.TransactionType;
++import com.oltpbenchmark.api.TransactionTypes;
++import com.oltpbenchmark.api.Worker;
++import com.oltpbenchmark.types.DatabaseType;
++import com.oltpbenchmark.util.ClassUtil;
++import com.oltpbenchmark.util.FileUtil;
++import com.oltpbenchmark.util.QueueLimitException;
++import com.oltpbenchmark.util.ResultUploader;
++import com.oltpbenchmark.util.StringBoxUtil;
++import com.oltpbenchmark.util.StringUtil;
++import com.oltpbenchmark.util.TimeUtil;
+ import java.io.File;
+ import java.io.IOException;
+@@ -27,5 +40,4 @@
+ import java.util.Map;
+ import java.util.NoSuchElementException;
+-
+ import org.apache.commons.cli.CommandLine;
+ import org.apache.commons.cli.CommandLineParser;
+@@ -41,17 +53,4 @@
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.BenchmarkModule;
+-import com.oltpbenchmark.api.TransactionType;
+-import com.oltpbenchmark.api.TransactionTypes;
+-import com.oltpbenchmark.api.Worker;
+-import com.oltpbenchmark.types.DatabaseType;
+-import com.oltpbenchmark.util.ClassUtil;
+-import com.oltpbenchmark.util.FileUtil;
+-import com.oltpbenchmark.util.QueueLimitException;
+-import com.oltpbenchmark.util.ResultUploader;
+-import com.oltpbenchmark.util.StringBoxUtil;
+-import com.oltpbenchmark.util.StringUtil;
+-import com.oltpbenchmark.util.TimeUtil;
+-
+ public class DBWorkload {
+     private static final Logger LOG = Logger.getLogger(DBWorkload.class);
+@@ -172,5 +171,5 @@
+         String targetBenchmarks = argsLine.getOptionValue("b");
+         
+-        String[] targetList = targetBenchmarks.split(",");
++        List<String> targetList = Splitter.on(',').splitToList(targetBenchmarks);
+         List<BenchmarkModule> benchList = new ArrayList<BenchmarkModule>();
+         
+@@ -264,5 +263,5 @@
+             // ----------------------------------------------------------------
+             int numTxnTypes = xmlConfig.configurationsAt("transactiontypes" + pluginTest + "/transactiontype").size();
+-            if (numTxnTypes == 0 && targetList.length == 1) {
++            if (numTxnTypes == 0 && targetList.size() == 1) {
+                 //if it is a single workload run, <transactiontypes /> w/o attribute is used
+                 pluginTest = "[not(@bench)]";
+@@ -355,5 +354,5 @@
+                 // use a workaround if there multiple workloads or single
+                 // attributed workload
+-                if (targetList.length > 1 || work.containsKey("weights[@bench]")) {
++                if (targetList.size() > 1 || work.containsKey("weights[@bench]")) {
+                     String weightKey = work.getString("weights" + pluginTest).toLowerCase();
+                     if (groupings.containsKey(weightKey))
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/CategoryParser.java
+@@ -18,14 +18,14 @@
+ package com.oltpbenchmark.benchmarks.auctionmark.util;
+ 
++import com.google.common.base.Splitter;
++import com.oltpbenchmark.util.FileUtil;
+ import java.io.BufferedReader;
+ import java.io.File;
++import java.util.List;
+ import java.util.Map;
+ import java.util.TreeMap;
+-
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.util.FileUtil;
+ 
+-
+ public class CategoryParser {
+     private static final Logger LOG = Logger.getLogger(CategoryParser.class);
+@@ -55,10 +55,10 @@
+ 
+ 	public void extractCategory(String s){
+-		String[] tokens = s.split("\t");
+-		int itemCount = Integer.parseInt(tokens[5]);
++		List<String> tokens = Splitter.on("\t").splitToList(s);
++		int itemCount = Integer.parseInt(tokens.get(5));
+ 		StringBuilder sb = new StringBuilder();
+ 		for(int i=0; i<=4; i++){
+-			if(!tokens[i].trim().isEmpty()){
+-				sb.append(tokens[i].trim())
++			if(!tokens.get(i).trim().isEmpty()){
++				sb.append(tokens.get(i).trim())
+ 				  .append("/");	
+ 			} else {

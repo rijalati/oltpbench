@@ -1,0 +1,1743 @@
+--- src/com/oltpbenchmark/api/BenchmarkModule.java
++++ src/com/oltpbenchmark/api/BenchmarkModule.java
+@@ -18,4 +18,12 @@
+ package com.oltpbenchmark.api;
+ 
++import com.oltpbenchmark.WorkloadConfiguration;
++import com.oltpbenchmark.api.Loader.LoaderThread;
++import com.oltpbenchmark.catalog.Catalog;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.types.DatabaseType;
++import com.oltpbenchmark.util.ClassUtil;
++import com.oltpbenchmark.util.ScriptRunner;
++import com.oltpbenchmark.util.ThreadUtil;
+ import java.io.File;
+ import java.io.IOException;
+@@ -31,16 +39,7 @@
+ import java.util.Random;
+ import java.util.Set;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.WorkloadConfiguration;
+-import com.oltpbenchmark.api.Loader.LoaderThread;
+-import com.oltpbenchmark.catalog.Catalog;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.types.DatabaseType;
+-import com.oltpbenchmark.util.ClassUtil;
+-import com.oltpbenchmark.util.ScriptRunner;
+-import com.oltpbenchmark.util.ThreadUtil;
+-
+ /**
+  * Base class for all benchmark implementations
+@@ -182,5 +181,5 @@
+      * @throws SQLException 
+      */
+-    public URL getDatabaseDDL(DatabaseType db_type) {
++    @Nullable public URL getDatabaseDDL(DatabaseType db_type) {
+         String ddlNames[] = {
+             this.benchmarkName + "-" + (db_type != null ? db_type.name().toLowerCase() : "") + "-ddl.sql",
+@@ -216,5 +215,5 @@
+      * @return
+      */
+-    public File getSQLDialect(DatabaseType db_type) {
++    @Nullable public File getSQLDialect(DatabaseType db_type) {
+        
+         // String xmlName = this.benchmarkName + "-dialects.xml";
+@@ -419,5 +418,5 @@
+      * @return
+      */
+-    @SuppressWarnings("unchecked")
++    @Nullable @SuppressWarnings("unchecked")
+     public final TransactionType initTransactionType(String procName, int id) {
+         if (id == TransactionType.INVALID_ID) {
+--- src/com/oltpbenchmark/api/Worker.java
++++ src/com/oltpbenchmark/api/Worker.java
+@@ -17,16 +17,4 @@
+ package com.oltpbenchmark.api;
+ 
+-import java.sql.Connection;
+-import java.sql.Statement;
+-import java.sql.SQLException;
+-import java.sql.Savepoint;
+-import java.util.HashMap;
+-import java.util.Map;
+-import java.util.Map.Entry;
+-import java.util.Random;
+-import java.util.concurrent.atomic.AtomicInteger;
+-
+-import org.apache.log4j.Logger;
+-
+ import com.oltpbenchmark.LatencyRecord;
+ import com.oltpbenchmark.Phase;
+@@ -41,4 +29,15 @@
+ import com.oltpbenchmark.util.Histogram;
+ import com.oltpbenchmark.util.StringUtil;
++import java.sql.Connection;
++import java.sql.SQLException;
++import java.sql.Savepoint;
++import java.sql.Statement;
++import java.util.HashMap;
++import java.util.Map;
++import java.util.Map.Entry;
++import java.util.Random;
++import java.util.concurrent.atomic.AtomicInteger;
++import javax.annotation.Nullable;
++import org.apache.log4j.Logger;
+ 
+ public abstract class Worker<T extends BenchmarkModule> implements Runnable {
+@@ -360,5 +359,5 @@
+      * @param llr
+      */
+-    protected final TransactionType doWork(boolean measure, SubmittedProcedure pieceOfWork) {
++    @Nullable protected final TransactionType doWork(boolean measure, SubmittedProcedure pieceOfWork) {
+         TransactionType next = null;
+         TransactionStatus status = TransactionStatus.RETRY;
+--- src/com/oltpbenchmark/WorkloadState.java
++++ src/com/oltpbenchmark/WorkloadState.java
+@@ -17,11 +17,11 @@
+ package com.oltpbenchmark;
+ 
++import com.oltpbenchmark.types.State;
++import com.oltpbenchmark.util.QueueLimitException;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+-import java.util.List;
+ import java.util.LinkedList;
+-
+-import com.oltpbenchmark.types.State;
+-import com.oltpbenchmark.util.QueueLimitException;
++import java.util.List;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -120,5 +120,5 @@
+    
+    /** Called by ThreadPoolThreads when waiting for work. */
+-    public SubmittedProcedure fetchWork() {
++    @Nullable public SubmittedProcedure fetchWork() {
+         synchronized(this) {
+             if (currentPhase != null && currentPhase.isSerial()) {
+@@ -187,5 +187,5 @@
+    }
+    
+-   public Phase getNextPhase() {
++   @Nullable public Phase getNextPhase() {
+        if (phaseIterator.hasNext())
+            return phaseIterator.next();
+--- src/com/oltpbenchmark/catalog/Table.java
++++ src/com/oltpbenchmark/catalog/Table.java
+@@ -18,8 +18,9 @@
+ package com.oltpbenchmark.catalog;
+ 
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.List;
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.List;
++import javax.annotation.Nullable;
+ 
+ 
+@@ -101,5 +102,5 @@
+     }
+ 
+-    public Column getColumnByName(String colname) {
++    @Nullable public Column getColumnByName(String colname) {
+         int idx = getColumnIndex(colname);
+         return (idx >= 0 ? this.columns.get(idx) : null);
+@@ -136,5 +137,5 @@
+      * @return
+      */
+-    public Index getIndex(String indexName) {
++    @Nullable public Index getIndex(String indexName) {
+         for (Index catalog_idx : this.indexes) {
+             if (catalog_idx.getName().equalsIgnoreCase(indexName)) {
+--- src/com/oltpbenchmark/catalog/IntegrityConstraint.java
++++ src/com/oltpbenchmark/catalog/IntegrityConstraint.java
+@@ -18,5 +18,5 @@
+ 
+ import java.io.Serializable;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.lang.NotImplementedException;
+ 
+@@ -34,5 +34,5 @@
+ 	}
+ 	
+-	@Override
++	@Nullable @Override
+ 	public IntegrityConstraint clone(){
+ 		
+--- src/com/oltpbenchmark/catalog/Index.java
++++ src/com/oltpbenchmark/catalog/Index.java
+@@ -17,4 +17,6 @@
+ package com.oltpbenchmark.catalog;
+ 
++import com.oltpbenchmark.types.SortDirectionType;
++import com.oltpbenchmark.util.StringUtil;
+ import java.util.ArrayList;
+ import java.util.Collection;
+@@ -23,10 +25,7 @@
+ import java.util.SortedMap;
+ import java.util.TreeMap;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ 
+-import com.oltpbenchmark.types.SortDirectionType;
+-import com.oltpbenchmark.util.StringUtil;
+-
+ public class Index extends AbstractCatalogObject {
+     private static final long serialVersionUID = 1l;
+@@ -90,10 +89,10 @@
+     }
+     
+-    public String getColumnName(int position) {
++    @Nullable public String getColumnName(int position) {
+         IndexColumn idx_col = this.columns.get(position);
+         return (idx_col != null ? idx_col.name : null);
+     }
+     
+-    public SortDirectionType getColumnDirection(int position) {
++    @Nullable public SortDirectionType getColumnDirection(int position) {
+         IndexColumn idx_col = this.columns.get(position);
+         return (idx_col != null ? idx_col.dir : null);
+--- src/com/oltpbenchmark/util/json/JSONStringer.java
++++ src/com/oltpbenchmark/util/json/JSONStringer.java
+@@ -42,4 +42,5 @@
+ 
+ import java.io.StringWriter;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -89,5 +90,5 @@
+      * @return The JSON text.
+      */
+-    public String toString() {
++    @Nullable public String toString() {
+         return this.mode == 'd' ? this.writer.toString() : null;
+     }
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -49,6 +49,7 @@
+ import java.util.LinkedHashMap;
+ import java.util.Map;
+-import java.util.TreeSet;
+ import java.util.Map.Entry;
++import java.util.TreeSet;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -637,5 +638,5 @@
+      * @return An array of field names, or null if there are no names.
+      */
+-    public static String[] getNames(JSONObject jo) {
++    @Nullable public static String[] getNames(JSONObject jo) {
+         int length = jo.length();
+         if (length == 0) {
+@@ -658,5 +659,5 @@
+      * @return An array of field names, or null if there are no names.
+      */
+-    public static String[] getNames(Object object) {
++    @Nullable public static String[] getNames(Object object) {
+         if (object == null) {
+             return null;
+@@ -736,5 +737,5 @@
+      * is empty.
+      */
+-    public JSONArray names() {
++    @Nullable public JSONArray names() {
+         JSONArray ja = new JSONArray();
+         Iterator<String> keys = keys();
+@@ -767,5 +768,5 @@
+      * @return      An object which is the value, or null if there is no value.
+      */
+-    public Object opt(String key) {
++    @Nullable public Object opt(String key) {
+         return key == null ? null : this.map.get(key);
+     }
+@@ -893,5 +894,5 @@
+      * @return      A JSONArray which is the value.
+      */
+-    public JSONArray optJSONArray(String key) {
++    @Nullable public JSONArray optJSONArray(String key) {
+         Object o = opt(key);
+         return o instanceof JSONArray ? (JSONArray)o : null;
+@@ -907,5 +908,5 @@
+      * @return      A JSONObject which is the value.
+      */
+-    public JSONObject optJSONObject(String key) {
++    @Nullable public JSONObject optJSONObject(String key) {
+         Object o = opt(key);
+         return o instanceof JSONObject ? (JSONObject)o : null;
+@@ -1286,5 +1287,5 @@
+      * @throws JSONException If any of the values are non-finite numbers.
+      */
+-    public JSONArray toJSONArray(JSONArray names) throws JSONException {
++    @Nullable public JSONArray toJSONArray(JSONArray names) throws JSONException {
+         if (names == null || names.length() == 0) {
+             return null;
+@@ -1309,5 +1310,5 @@
+      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+      */
+-    public String toString() {
++    @Nullable public String toString() {
+         try {
+             Iterator<String> keys = keys();
+--- src/com/oltpbenchmark/util/json/JSONArray.java
++++ src/com/oltpbenchmark/util/json/JSONArray.java
+@@ -48,4 +48,5 @@
+ import java.util.Iterator;
+ import java.util.Map;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -423,5 +424,5 @@
+      *              object at that index.
+      */
+-    public Object opt(int index) {
++    @Nullable public Object opt(int index) {
+         return (index < 0 || index >= length()) ?
+             null : this.myArrayList.get(index);
+@@ -527,5 +528,5 @@
+      * or if the value is not a JSONArray.
+      */
+-    public JSONArray optJSONArray(int index) {
++    @Nullable public JSONArray optJSONArray(int index) {
+         Object o = opt(index);
+         return o instanceof JSONArray ? (JSONArray)o : null;
+@@ -541,5 +542,5 @@
+      * @return      A JSONObject value.
+      */
+-    public JSONObject optJSONObject(int index) {
++    @Nullable public JSONObject optJSONObject(int index) {
+         Object o = opt(index);
+         return o instanceof JSONObject ? (JSONObject)o : null;
+@@ -821,5 +822,5 @@
+      * @throws JSONException If any of the names are null.
+      */
+-    public JSONObject toJSONObject(JSONArray names) throws JSONException {
++    @Nullable public JSONObject toJSONObject(JSONArray names) throws JSONException {
+         if (names == null || names.length() == 0 || length() == 0) {
+             return null;
+@@ -844,5 +845,5 @@
+      *  representation of the array.
+      */
+-    public String toString() {
++    @Nullable public String toString() {
+         try {
+             return '[' + join(",") + ']';
+--- src/com/oltpbenchmark/api/StatementDialects.java
++++ src/com/oltpbenchmark/api/StatementDialects.java
+@@ -17,4 +17,10 @@
+ package com.oltpbenchmark.api;
+ 
++import com.oltpbenchmark.api.dialects.DialectType;
++import com.oltpbenchmark.api.dialects.DialectsType;
++import com.oltpbenchmark.api.dialects.ObjectFactory;
++import com.oltpbenchmark.api.dialects.ProcedureType;
++import com.oltpbenchmark.api.dialects.StatementType;
++import com.oltpbenchmark.types.DatabaseType;
+ import java.io.File;
+ import java.io.StringWriter;
+@@ -28,5 +34,5 @@
+ import java.util.Map;
+ import java.util.Map.Entry;
+-
++import javax.annotation.Nullable;
+ import javax.xml.bind.JAXBContext;
+ import javax.xml.bind.JAXBElement;
+@@ -36,15 +42,7 @@
+ import javax.xml.validation.Schema;
+ import javax.xml.validation.SchemaFactory;
+-
+ import org.apache.log4j.Logger;
+ import org.xml.sax.SAXException;
+ 
+-import com.oltpbenchmark.api.dialects.DialectType;
+-import com.oltpbenchmark.api.dialects.DialectsType;
+-import com.oltpbenchmark.api.dialects.ObjectFactory;
+-import com.oltpbenchmark.api.dialects.ProcedureType;
+-import com.oltpbenchmark.api.dialects.StatementType;
+-import com.oltpbenchmark.types.DatabaseType;
+-
+ /**
+  * 
+@@ -254,5 +252,5 @@
+      * @return
+      */
+-    protected Collection<String> getStatementNames(String procName) {
++    @Nullable protected Collection<String> getStatementNames(String procName) {
+         Map<String, String> procDialects = this.dialectsMap.get(procName);
+         return (procDialects != null ? procDialects.keySet() : null);
+@@ -265,5 +263,5 @@
+      * @return
+      */
+-    public String getSQL(String procName, String stmtName) {
++    @Nullable public String getSQL(String procName, String stmtName) {
+         Map<String, String> procDialects = this.dialectsMap.get(procName);
+         if (procDialects != null) {
+--- src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAuthenticated.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAuthenticated.java
+@@ -18,14 +18,14 @@
+ package com.oltpbenchmark.benchmarks.wikipedia.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
++import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ 
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
+-import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+-
+ public class GetPageAuthenticated extends Procedure {
+ 	
+@@ -72,5 +72,5 @@
+     // -----------------------------------------------------------------
+ 	
+-    public Article run(Connection conn, boolean forSelect, String userIp, int userId, int nameSpace, String pageTitle) throws SQLException {
++    @Nullable public Article run(Connection conn, boolean forSelect, String userIp, int userId, int nameSpace, String pageTitle) throws SQLException {
+         // =======================================================
+         // LOADING BASIC DATA: txn1
+--- src/com/oltpbenchmark/benchmarks/jpab/JPABLoader.java
++++ src/com/oltpbenchmark/benchmarks/jpab/JPABLoader.java
+@@ -17,17 +17,16 @@
+ package com.oltpbenchmark.benchmarks.jpab;
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.api.Loader.LoaderThread;
++import com.oltpbenchmark.benchmarks.jpab.tests.BasicTest;
++import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ import java.sql.Connection;
+ import java.sql.SQLException;
+ import java.util.List;
+-
++import javax.annotation.Nullable;
+ import javax.persistence.EntityManager;
+ import javax.persistence.EntityManagerFactory;
+ import javax.persistence.Persistence;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.api.Loader.LoaderThread;
+-import com.oltpbenchmark.benchmarks.jpab.tests.BasicTest;
+-import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+-
+ public class JPABLoader extends Loader<JPABBenchmark> {
+ 
+@@ -38,5 +37,5 @@
+     }
+     
+-    @Override
++    @Nullable @Override
+     public List<LoaderThread> createLoaderThreads() throws SQLException {
+         // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/benchmarks/tpch/procedures/GenericQuery.java
++++ src/com/oltpbenchmark/benchmarks/tpch/procedures/GenericQuery.java
+@@ -17,4 +17,8 @@
+ package com.oltpbenchmark.benchmarks.tpch.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.api.Worker;
++import com.oltpbenchmark.util.RandomGenerator;
+ import java.io.BufferedReader;
+ import java.io.FileReader;
+@@ -24,12 +28,7 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-
+-import com.oltpbenchmark.util.RandomGenerator;
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.api.Worker;
+-
+ public abstract class GenericQuery extends Procedure {
+ 
+@@ -46,5 +45,5 @@
+     protected abstract PreparedStatement getStatement(Connection conn, RandomGenerator rand) throws SQLException;
+ 
+-    public ResultSet run(Connection conn, RandomGenerator rand) throws SQLException {
++    @Nullable public ResultSet run(Connection conn, RandomGenerator rand) throws SQLException {
+         //initializing all prepared statements
+         stmt = getStatement(conn, rand);
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/GenericQuery.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/GenericQuery.java
+@@ -17,4 +17,8 @@
+ package com.oltpbenchmark.benchmarks.chbenchmark.queries;
+ 
++import com.oltpbenchmark.DBWorkload;
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.api.Worker;
+ import java.io.BufferedReader;
+ import java.io.FileReader;
+@@ -24,12 +28,7 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.DBWorkload;
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.api.Worker;
+-
+ public abstract class GenericQuery extends Procedure {
+     
+@@ -65,5 +64,5 @@
+ 	protected abstract SQLStmt get_query();
+     
+-    public ResultSet run(Connection conn) throws SQLException {
++    @Nullable public ResultSet run(Connection conn) throws SQLException {
+ 		
+ 		//initializing all prepared statements
+--- src/com/oltpbenchmark/util/CollectionUtil.java
++++ src/com/oltpbenchmark/util/CollectionUtil.java
+@@ -31,5 +31,5 @@
+ import java.util.Set;
+ import java.util.SortedMap;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.set.ListOrderedSet;
+ import org.apache.commons.lang.NotImplementedException;
+@@ -274,5 +274,5 @@
+      * @return
+      */
+-    public static <T, U extends Comparable<U>> T getGreatest(Map<T, U> map) {
++    @Nullable public static <T, U extends Comparable<U>> T getGreatest(Map<T, U> map) {
+         T max_key = null;
+         U max_value = null;
+@@ -304,5 +304,5 @@
+      * @return
+      */
+-    public static <T> T first(Iterator<T> items) {
++    @Nullable public static <T> T first(Iterator<T> items) {
+         return (items.hasNext() ? items.next() : null);
+     }
+@@ -314,5 +314,5 @@
+      * @return
+      */
+-    public static <T> T first(Enumeration<T> items) {
++    @Nullable public static <T> T first(Enumeration<T> items) {
+         return (items.hasMoreElements() ? items.nextElement() : null);
+     }
+@@ -325,5 +325,5 @@
+      * @return
+      */
+-    public static <T> T get(Iterable<T> items, int idx) {
++    @Nullable public static <T> T get(Iterable<T> items, int idx) {
+         if (items instanceof AbstractList<?>) {
+             return ((AbstractList<T>)items).get(idx);
+@@ -344,5 +344,5 @@
+      * @return
+      */
+-    public static <T> T last(Iterable<T> items) {
++    @Nullable public static <T> T last(Iterable<T> items) {
+         T last = null;
+         if (items instanceof AbstractList<?>) {
+@@ -363,5 +363,5 @@
+      * @return
+      */
+-    public static <T> T last(T...items) {
++    @Nullable public static <T> T last(T...items) {
+         if (items != null && items.length > 0) {
+             return (items[items.length-1]);
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
+@@ -32,8 +32,10 @@
+ package com.oltpbenchmark.benchmarks.linkbench.utils;
+ 
++import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
++import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+ import java.io.File;
+ import java.io.IOException;
+ import java.util.Properties;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.ConsoleAppender;
+ import org.apache.log4j.FileAppender;
+@@ -42,7 +44,4 @@
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+-
+ public class ConfigUtil {
+   public static final String linkbenchHomeEnvVar = "LINKBENCH_HOME";
+@@ -52,5 +51,5 @@
+    * @return null if not set, or if not valid path
+    */
+-  public static String findLinkBenchHome() {
++  @Nullable public static String findLinkBenchHome() {
+     String linkBenchHome = System.getenv("LINKBENCH_HOME");
+     if (linkBenchHome != null && linkBenchHome.length() > 0) {
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSBenchmark.java
+@@ -17,4 +17,11 @@
+ package com.oltpbenchmark.benchmarks.seats;
+ 
++import com.oltpbenchmark.WorkloadConfiguration;
++import com.oltpbenchmark.api.BenchmarkModule;
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.api.Worker;
++import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.RandomGenerator;
+ import java.io.File;
+ import java.io.IOException;
+@@ -25,13 +32,6 @@
+ import java.util.ArrayList;
+ import java.util.List;
++import javax.annotation.Nullable;
+ 
+-import com.oltpbenchmark.WorkloadConfiguration;
+-import com.oltpbenchmark.api.BenchmarkModule;
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.api.Worker;
+-import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.RandomGenerator;
+-
+ public class SEATSBenchmark extends BenchmarkModule {
+ 
+@@ -43,5 +43,5 @@
+     }
+ 
+-    public File getDataDir() {
++    @Nullable public File getDataDir() {
+         URL url = SEATSBenchmark.class.getResource("data");
+         try {
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
+@@ -5,6 +5,6 @@
+ import com.oltpbenchmark.api.Worker;
+ import com.oltpbenchmark.types.TransactionStatus;
+-
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ 
+ 
+@@ -15,5 +15,5 @@
+     }
+ 
+-    protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
++    @Nullable protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
+         return null;
+     }
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -34,4 +34,5 @@
+ 
+ import java.util.*;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -259,5 +260,5 @@
+         }
+         
+-        public Histogram<T> getHistogramHistory() {
++        @Nullable public Histogram<T> getHistogramHistory() {
+             if (this.history != null) {
+                 return (this.history);
+--- src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
++++ src/com/oltpbenchmark/benchmarks/seats/procedures/FindFlights.java
+@@ -18,17 +18,16 @@
+ package com.oltpbenchmark.benchmarks.seats.procedures;
+ 
++import com.oltpbenchmark.api.*;
++import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+ import java.sql.Connection;
+-import java.sql.Timestamp;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import java.sql.Timestamp;
+ import java.util.ArrayList;
+ import java.util.List;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+-import com.oltpbenchmark.api.*;
+ 
+-import com.oltpbenchmark.benchmarks.seats.SEATSConstants;
+-
+ public class FindFlights extends Procedure {
+     private static final Logger LOG = Logger.getLogger(FindFlights.class);
+@@ -85,5 +84,5 @@
+     public final SQLStmt GetFlights3 = new SQLStmt(BaseGetFlights, 3);
+  
+-    public List<Object[]> run(Connection conn, long depart_aid, long arrive_aid, Timestamp start_date, Timestamp end_date, long distance) throws SQLException {
++    @Nullable public List<Object[]> run(Connection conn, long depart_aid, long arrive_aid, Timestamp start_date, Timestamp end_date, long distance) throws SQLException {
+         try {
+         final boolean debug = LOG.isDebugEnabled();
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkBenchmark.java
+@@ -18,13 +18,4 @@
+ package com.oltpbenchmark.benchmarks.auctionmark;
+ 
+-import java.io.File;
+-import java.io.IOException;
+-import java.net.URISyntaxException;
+-import java.net.URL;
+-import java.sql.Connection;
+-import java.sql.SQLException;
+-import java.util.ArrayList;
+-import java.util.List;
+-
+ import com.oltpbenchmark.WorkloadConfiguration;
+ import com.oltpbenchmark.api.BenchmarkModule;
+@@ -37,4 +28,13 @@
+ import com.oltpbenchmark.catalog.Table;
+ import com.oltpbenchmark.util.RandomGenerator;
++import java.io.File;
++import java.io.IOException;
++import java.net.URISyntaxException;
++import java.net.URL;
++import java.sql.Connection;
++import java.sql.SQLException;
++import java.util.ArrayList;
++import java.util.List;
++import javax.annotation.Nullable;
+ 
+ public class AuctionMarkBenchmark extends BenchmarkModule {
+@@ -50,5 +50,5 @@
+ 	}
+ 	
+-	public File getDataDir() {
++	@Nullable public File getDataDir() {
+ 	    URL url = AuctionMarkBenchmark.class.getResource("data");
+ 	    if (url != null) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -18,22 +18,4 @@
+ package com.oltpbenchmark.benchmarks.auctionmark;
+ 
+-import java.sql.Connection;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-import java.sql.SQLException;
+-import java.sql.Timestamp;
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Collections;
+-import java.util.HashMap;
+-import java.util.HashSet;
+-import java.util.LinkedList;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Set;
+-
+-import org.apache.commons.collections15.map.ListOrderedMap;
+-import org.apache.log4j.Logger;
+-
+ import com.oltpbenchmark.benchmarks.auctionmark.procedures.LoadConfig;
+ import com.oltpbenchmark.benchmarks.auctionmark.procedures.ResetDatabase;
+@@ -57,4 +39,21 @@
+ import com.oltpbenchmark.util.SQLUtil;
+ import com.oltpbenchmark.util.StringUtil;
++import java.sql.Connection;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Timestamp;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.LinkedList;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
++import javax.annotation.Nullable;
++import org.apache.commons.collections15.map.ListOrderedMap;
++import org.apache.log4j.Logger;
+ 
+ 
+@@ -574,5 +573,5 @@
+      * @return
+      */
+-    private synchronized UserId getRandomUserId(int min_item_count, int clientId, UserId...exclude) {
++    @Nullable private synchronized UserId getRandomUserId(int min_item_count, int clientId, UserId...exclude) {
+         // We use the UserIdGenerator to ensure that we always select the next UserId for
+         // a given client from the same set of UserIds
+@@ -764,5 +763,5 @@
+     }
+         
+-    private ItemStatus addItemToProperQueue(ItemInfo itemInfo, Timestamp baseTime) {
++    @Nullable private ItemStatus addItemToProperQueue(ItemInfo itemInfo, Timestamp baseTime) {
+         // Always check whether we even want it for this client
+         // The loader's profile and the cache profile will always have a negative client_id,
+@@ -835,5 +834,5 @@
+      * @return
+      */
+-    private ItemInfo getRandomItem(LinkedList<ItemInfo> itemSet, boolean needCurrentPrice, boolean needFutureEndDate) {
++    @Nullable private ItemInfo getRandomItem(LinkedList<ItemInfo> itemSet, boolean needCurrentPrice, boolean needFutureEndDate) {
+         Timestamp currentTime = this.updateAndGetCurrentTime();
+         int num_items = itemSet.size();
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/UserIdGenerator.java
+@@ -18,14 +18,13 @@
+ package com.oltpbenchmark.benchmarks.auctionmark.util;
+ 
++import com.oltpbenchmark.util.Histogram;
++import com.oltpbenchmark.util.StringUtil;
+ import java.util.Arrays;
+ import java.util.Iterator;
+ import java.util.Map;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.commons.lang.NotImplementedException;
+ 
+-import com.oltpbenchmark.util.Histogram;
+-import com.oltpbenchmark.util.StringUtil;
+-
+ public class UserIdGenerator implements Iterator<UserId> {
+ 
+@@ -102,5 +101,5 @@
+     }
+     
+-    public UserId seekToPosition(int position) {
++    @Nullable public UserId seekToPosition(int position) {
+         assert(position <= this.getTotalUsers()) : String.format("%d < %d", position, this.getTotalUsers());
+         UserId user_id = null;
+@@ -150,5 +149,5 @@
+     }
+     
+-    private UserId findNextUserId() {
++    @Nullable private UserId findNextUserId() {
+         // Find the next id for this size level
+         Long found = null;
+--- src/com/oltpbenchmark/util/ThreadUtil.java
++++ src/com/oltpbenchmark/util/ThreadUtil.java
+@@ -39,5 +39,5 @@
+ import java.util.concurrent.ScheduledThreadPoolExecutor;
+ import java.util.concurrent.ThreadFactory;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+@@ -105,5 +105,5 @@
+      * @return
+      */
+-    public static Pair<Integer, Process> exec(String command[]) {
++    @Nullable public static Pair<Integer, Process> exec(String command[]) {
+         ProcessBuilder pb = new ProcessBuilder(command);
+         Process p = null;
+--- src/com/oltpbenchmark/util/Pair.java
++++ src/com/oltpbenchmark/util/Pair.java
+@@ -34,4 +34,6 @@
+ package com.oltpbenchmark.util;
+ 
++import javax.annotation.Nullable;
++
+ /**
+  * Class representing a pair of generic-ized types. Supports equality, hashing
+@@ -74,5 +76,5 @@
+     }
+     
+-    public Object get(int idx) {
++    @Nullable public Object get(int idx) {
+         if (idx == 0) return first;
+         else if (idx == 1) return second;
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkLoader.java
+@@ -18,4 +18,9 @@
+ 
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Nation;
++import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Region;
++import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Supplier;
++import com.oltpbenchmark.util.RandomGenerator;
+ import java.io.BufferedReader;
+ import java.io.File;
+@@ -29,13 +34,7 @@
+ import java.util.List;
+ import java.util.StringTokenizer;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Nation;
+-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Region;
+-import com.oltpbenchmark.benchmarks.chbenchmark.pojo.Supplier;
+-import com.oltpbenchmark.util.RandomGenerator;
+-
+ public class CHBenCHmarkLoader extends Loader<CHBenCHmark> {
+ 	private static final Logger LOG = Logger.getLogger(CHBenCHmarkLoader.class);
+@@ -70,5 +69,5 @@
+ 	}
+ 	
+-	@Override
++	@Nullable @Override
+ 	public List<LoaderThread> createLoaderThreads() throws SQLException {
+ 	    // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
+@@ -17,4 +17,9 @@
+ package com.oltpbenchmark.benchmarks.tpcc.procedures;
+ 
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -23,13 +28,7 @@
+ import java.sql.Timestamp;
+ import java.util.Random;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+-
+ public class Delivery extends TPCCProcedure {
+ 
+@@ -95,5 +94,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Nullable public ResultSet run(Connection conn, Random gen,
+ 			int w_id, int numWarehouses,
+ 			int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
+@@ -16,4 +16,8 @@
+ package com.oltpbenchmark.benchmarks.linkbench.distributions;
+ 
++import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
++import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
++import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
++import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
+ import java.io.File;
+ import java.io.FileNotFoundException;
+@@ -27,13 +31,8 @@
+ import java.util.Scanner;
+ import java.util.TreeMap;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+-import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
+-import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
+ 
+-
+ /*
+  * This class simulates the real distribution based on statistical data.
+@@ -248,5 +247,5 @@
+ 
+   //convert CDF from ArrayList<Point> to Map
+-  static NavigableMap<Integer, Double> getCDF(DistributionType dist) {
++  @Nullable static NavigableMap<Integer, Double> getCDF(DistributionType dist) {
+     ArrayList<Point> points =
+       dist == DistributionType.LINKS ? nlinks_cdf :
+@@ -373,5 +372,5 @@
+   }
+ 
+-  public static InvertibleShuffler getShuffler(DistributionType type, long n) {
++  @Nullable public static InvertibleShuffler getShuffler(DistributionType type, long n) {
+     switch (type) {
+     case LINK_READS:
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
+@@ -16,15 +16,14 @@
+ package com.oltpbenchmark.benchmarks.linkbench.distributions;
+ 
+-import java.util.Properties;
+-import java.util.Random;
+-
+-import org.apache.log4j.Logger;
+-
+-import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
++import com.oltpbenchmark.benchmarks.linkbench.distributions.RealDistribution.DistributionType;
+ import com.oltpbenchmark.benchmarks.linkbench.utils.ConfigUtil;
+ import com.oltpbenchmark.benchmarks.linkbench.utils.InvertibleShuffler;
+ import com.oltpbenchmark.util.ClassUtil;
++import java.util.Properties;
++import java.util.Random;
++import javax.annotation.Nullable;
++import org.apache.log4j.Logger;
+ 
+ 
+@@ -116,5 +115,5 @@
+     }
+ 
+-    @Override
++    @Nullable @Override
+     public InvertibleShuffler getShuffler() {
+       // Don't shuffle these distributions
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetNode.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetNode.java
+@@ -17,15 +17,14 @@
+ package com.oltpbenchmark.benchmarks.linkbench.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.linkbench.pojo.Node;
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-
+ public class GetNode extends Procedure{
+ 
+@@ -41,5 +40,5 @@
+ 
+     //FIXME: return the RS rather than boolean
+-    public Node run(Connection conn, int type, long id) throws SQLException {
++    @Nullable public Node run(Connection conn, int type, long id) throws SQLException {
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("getNode : " + type + " " + id);
+--- src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/procedures/GetLinkList.java
+@@ -17,16 +17,15 @@
+ package com.oltpbenchmark.benchmarks.linkbench.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
++import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+-import com.oltpbenchmark.benchmarks.linkbench.pojo.Link;
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-
+ public class GetLinkList extends Procedure{
+ 
+@@ -47,5 +46,5 @@
+     );
+ 
+-    public Link[] run(Connection conn, long id1, long link_type,
++    @Nullable public Link[] run(Connection conn, long id1, long link_type,
+             long minTimestamp, long maxTimestamp,
+             int offset, int limit) throws SQLException {
+--- src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpch/TPCHLoader.java
+@@ -27,4 +27,6 @@
+ package com.oltpbenchmark.benchmarks.tpch;
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.api.Loader.LoaderThread;
+ import java.io.BufferedReader;
+ import java.io.File;
+@@ -40,10 +42,7 @@
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.api.Loader.LoaderThread;
+-
+ public class TPCHLoader extends Loader<TPCHBenchmark> {
+     private static final Logger LOG = Logger.getLogger(TPCHLoader.class);
+@@ -164,5 +163,5 @@
+     };
+     
+-    @Override
++    @Nullable @Override
+     public List<LoaderThread> createLoaderThreads() throws SQLException {
+         // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
+@@ -17,4 +17,9 @@
+ package com.oltpbenchmark.benchmarks.tpcc.procedures;
+ 
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -22,13 +27,7 @@
+ import java.sql.SQLException;
+ import java.util.Random;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+-
+ public class NewOrder extends TPCCProcedure {
+ 
+@@ -108,5 +107,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Nullable public ResultSet run(Connection conn, Random gen,
+ 			int terminalWarehouseID, int numWarehouses,
+ 			int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
+@@ -17,4 +17,10 @@
+ package com.oltpbenchmark.benchmarks.tpcc.procedures;
+ 
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -23,14 +29,7 @@
+ import java.util.ArrayList;
+ import java.util.Random;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
+-
+ public class Payment extends TPCCProcedure {
+ 
+@@ -121,5 +120,5 @@
+     private PreparedStatement customerByName = null;
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Nullable public ResultSet run(Connection conn, Random gen,
+                          int w_id, int numWarehouses,
+                          int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+--- src/com/oltpbenchmark/benchmarks/noop/NoOpLoader.java
++++ src/com/oltpbenchmark/benchmarks/noop/NoOpLoader.java
+@@ -17,12 +17,11 @@
+ package com.oltpbenchmark.benchmarks.noop;
+ 
++import com.oltpbenchmark.api.Loader;
+ import java.sql.Connection;
+ import java.sql.SQLException;
+ import java.util.List;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-
+ /**
+  * This doesn't load any data!
+@@ -37,5 +36,5 @@
+     }
+     
+-    @Override
++    @Nullable @Override
+     public List<LoaderThread> createLoaderThreads() throws SQLException {
+         // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/util/JSONUtil.java
++++ src/com/oltpbenchmark/util/JSONUtil.java
+@@ -17,4 +17,8 @@
+ package com.oltpbenchmark.util;
+ 
++import com.oltpbenchmark.util.json.JSONArray;
++import com.oltpbenchmark.util.json.JSONException;
++import com.oltpbenchmark.util.json.JSONObject;
++import com.oltpbenchmark.util.json.JSONStringer;
+ import java.io.File;
+ import java.io.IOException;
+@@ -32,12 +36,7 @@
+ import java.util.Set;
+ import java.util.Stack;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.util.json.JSONArray;
+-import com.oltpbenchmark.util.json.JSONException;
+-import com.oltpbenchmark.util.json.JSONObject;
+-import com.oltpbenchmark.util.json.JSONStringer;
+-
+ /**
+  * @author pavlo
+@@ -547,5 +546,5 @@
+      * @throws JSONException
+      */
+-    private static Class<?> getClassForField(JSONObject json_object, String json_key) throws JSONException {
++    @Nullable private static Class<?> getClassForField(JSONObject json_object, String json_key) throws JSONException {
+         Class<?> field_class = null;
+         // Check whether we also stored the class
+@@ -596,5 +595,5 @@
+      * @throws Exception
+      */
+-    public static Object getPrimitiveValue(String json_value, Class<?> field_class) throws Exception {
++    @Nullable public static Object getPrimitiveValue(String json_value, Class<?> field_class) throws Exception {
+         Object value = null;
+ 
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
+@@ -17,4 +17,8 @@
+ package com.oltpbenchmark.benchmarks.tpcc.procedures;
+ 
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -22,12 +26,7 @@
+ import java.sql.SQLException;
+ import java.util.Random;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+-
+ public class StockLevel extends TPCCProcedure {
+ 
+@@ -55,5 +54,5 @@
+ 	private PreparedStatement stockGetCountStock = null;
+ 
+-	 public ResultSet run(Connection conn, Random gen,
++	 @Nullable public ResultSet run(Connection conn, Random gen,
+ 				int w_id, int numWarehouses,
+ 				int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -17,4 +17,23 @@
+ package com.oltpbenchmark.benchmarks.auctionmark;
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
++import com.oltpbenchmark.benchmarks.auctionmark.util.CategoryParser;
++import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeGroupId;
++import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeValueId;
++import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
++import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
++import com.oltpbenchmark.benchmarks.auctionmark.util.LoaderItemInfo;
++import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
++import com.oltpbenchmark.benchmarks.auctionmark.util.UserIdGenerator;
++import com.oltpbenchmark.catalog.Column;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.CollectionUtil;
++import com.oltpbenchmark.util.CompositeId;
++import com.oltpbenchmark.util.Histogram;
++import com.oltpbenchmark.util.Pair;
++import com.oltpbenchmark.util.RandomDistribution.Flat;
++import com.oltpbenchmark.util.RandomDistribution.Zipf;
++import com.oltpbenchmark.util.SQLUtil;
+ import java.io.File;
+ import java.lang.reflect.Field;
+@@ -37,29 +56,9 @@
+ import java.util.concurrent.TimeUnit;
+ import java.util.regex.Pattern;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.CollectionUtils;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.Category;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.CategoryParser;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeGroupId;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.GlobalAttributeValueId;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemId;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.ItemStatus;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.LoaderItemInfo;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.UserId;
+-import com.oltpbenchmark.benchmarks.auctionmark.util.UserIdGenerator;
+-import com.oltpbenchmark.catalog.Column;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.CollectionUtil;
+-import com.oltpbenchmark.util.CompositeId;
+-import com.oltpbenchmark.util.Histogram;
+-import com.oltpbenchmark.util.Pair;
+-import com.oltpbenchmark.util.RandomDistribution.Flat;
+-import com.oltpbenchmark.util.RandomDistribution.Zipf;
+-import com.oltpbenchmark.util.SQLUtil;
+-
+ /**
+  * @author pavlo
+@@ -647,5 +646,5 @@
+             return (this.populateRow(t, row, this.currentCounter));
+         }
+-        private final T getNext() {
++        @Nullable private final T getNext() {
+             T last = this.current;
+             if (this.current == null || this.currentCounter == 0) {
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
+@@ -17,4 +17,16 @@
+ package com.oltpbenchmark.benchmarks.seats;
+ 
++import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
++import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
++import com.oltpbenchmark.benchmarks.seats.util.FlightId;
++import com.oltpbenchmark.catalog.Catalog;
++import com.oltpbenchmark.catalog.Column;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.Histogram;
++import com.oltpbenchmark.util.JSONUtil;
++import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
++import com.oltpbenchmark.util.RandomGenerator;
++import com.oltpbenchmark.util.SQLUtil;
++import com.oltpbenchmark.util.StringUtil;
+ import java.io.File;
+ import java.sql.Connection;
+@@ -28,21 +40,8 @@
+ import java.util.Map;
+ import java.util.Map.Entry;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.benchmarks.seats.procedures.LoadConfig;
+-import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
+-import com.oltpbenchmark.benchmarks.seats.util.FlightId;
+-import com.oltpbenchmark.catalog.Catalog;
+-import com.oltpbenchmark.catalog.Column;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.Histogram;
+-import com.oltpbenchmark.util.JSONUtil;
+-import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
+-import com.oltpbenchmark.util.RandomGenerator;
+-import com.oltpbenchmark.util.SQLUtil;
+-import com.oltpbenchmark.util.StringUtil;
+-
+ public class SEATSProfile {
+     private static final Logger LOG = Logger.getLogger(SEATSProfile.class);
+@@ -555,5 +554,5 @@
+      * @return
+      */
+-    public CustomerId getRandomCustomerId(Long airport_id) {
++    @Nullable public CustomerId getRandomCustomerId(Long airport_id) {
+         Integer cnt = this.getCustomerIdCount(airport_id);
+         if (cnt != null) {
+@@ -662,5 +661,5 @@
+     }
+ 
+-    public String getAirportCode(long airport_id) {
++    @Nullable public String getAirportCode(long airport_id) {
+         Map<String, Long> m = this.getCodeXref("AP_ID");
+         for (Entry<String, Long> e : m.entrySet()) {
+--- src/com/oltpbenchmark/util/SSHGetStats.java
++++ src/com/oltpbenchmark/util/SSHGetStats.java
+@@ -18,4 +18,7 @@
+ package com.oltpbenchmark.util;
+ 
++import ch.ethz.ssh2.Connection;
++import ch.ethz.ssh2.Session;
++import ch.ethz.ssh2.StreamGobbler;
+ import java.io.BufferedReader;
+ import java.io.IOException;
+@@ -24,9 +27,6 @@
+ import java.util.Properties;
+ import java.util.StringTokenizer;
++import javax.annotation.Nullable;
+ 
+-import ch.ethz.ssh2.Connection;
+-import ch.ethz.ssh2.Session;
+-import ch.ethz.ssh2.StreamGobbler;
+-
+ public class SSHGetStats {
+ 	String hostname;
+@@ -216,5 +216,5 @@
+ 	}
+ 
+-	public long[] getDiskStats() {
++	@Nullable public long[] getDiskStats() {
+ 
+ 		long[] diskstats = new long[11];
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -31,4 +31,5 @@
+ import java.util.Map.Entry;
+ import java.util.regex.Pattern;
++import javax.annotation.Nullable;
+ 
+ /**
+@@ -78,5 +79,5 @@
+      * @return
+      */
+-    public static String[] splitLines(String str) {
++    @Nullable public static String[] splitLines(String str) {
+         return (str != null ? LINE_SPLIT.split(str) : null);
+     }
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTLoader.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTLoader.java
+@@ -17,17 +17,15 @@
+ package com.oltpbenchmark.benchmarks.hyadapt;
+ 
+-import java.sql.Connection;
+-import java.sql.PreparedStatement;
+-import java.sql.SQLException;
+-
+-import org.apache.log4j.Logger;
+-
+ import com.oltpbenchmark.api.Loader;
+ import com.oltpbenchmark.api.Loader.LoaderThread;
+ import com.oltpbenchmark.catalog.Table;
+ import com.oltpbenchmark.util.SQLUtil;
+-
++import java.sql.Connection;
++import java.sql.PreparedStatement;
++import java.sql.SQLException;
+ import java.util.List;
+ import java.util.Random;
++import javax.annotation.Nullable;
++import org.apache.log4j.Logger;
+ 
+ public class HYADAPTLoader extends Loader<HYADAPTBenchmark> {
+@@ -62,5 +60,5 @@
+     }
+     
+-    @Override
++    @Nullable @Override
+     public List<LoaderThread> createLoaderThreads() throws SQLException {
+         // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -17,4 +17,25 @@
+ package com.oltpbenchmark.benchmarks.seats;
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
++import com.oltpbenchmark.benchmarks.seats.util.CustomerIdIterable;
++import com.oltpbenchmark.benchmarks.seats.util.DistanceUtil;
++import com.oltpbenchmark.benchmarks.seats.util.FlightId;
++import com.oltpbenchmark.benchmarks.seats.util.ReturnFlight;
++import com.oltpbenchmark.benchmarks.seats.util.SEATSHistogramUtil;
++import com.oltpbenchmark.catalog.Column;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.CollectionUtil;
++import com.oltpbenchmark.util.Histogram;
++import com.oltpbenchmark.util.Pair;
++import com.oltpbenchmark.util.RandomDistribution;
++import com.oltpbenchmark.util.RandomDistribution.Flat;
++import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
++import com.oltpbenchmark.util.RandomDistribution.Gaussian;
++import com.oltpbenchmark.util.RandomDistribution.Zipf;
++import com.oltpbenchmark.util.RandomGenerator;
++import com.oltpbenchmark.util.SQLUtil;
++import com.oltpbenchmark.util.StringUtil;
++import com.oltpbenchmark.util.TableDataIterable;
+ import java.io.File;
+ import java.sql.Connection;
+@@ -39,31 +60,9 @@
+ import java.util.concurrent.atomic.AtomicInteger;
+ import java.util.regex.Matcher;
+-
++import javax.annotation.Nullable;
+ import org.apache.commons.collections15.map.ListOrderedMap;
+ import org.apache.commons.collections15.set.ListOrderedSet;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.benchmarks.seats.util.CustomerId;
+-import com.oltpbenchmark.benchmarks.seats.util.CustomerIdIterable;
+-import com.oltpbenchmark.benchmarks.seats.util.DistanceUtil;
+-import com.oltpbenchmark.benchmarks.seats.util.FlightId;
+-import com.oltpbenchmark.benchmarks.seats.util.ReturnFlight;
+-import com.oltpbenchmark.benchmarks.seats.util.SEATSHistogramUtil;
+-import com.oltpbenchmark.catalog.Column;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.CollectionUtil;
+-import com.oltpbenchmark.util.Histogram;
+-import com.oltpbenchmark.util.Pair;
+-import com.oltpbenchmark.util.RandomDistribution;
+-import com.oltpbenchmark.util.RandomDistribution.Flat;
+-import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
+-import com.oltpbenchmark.util.RandomDistribution.Gaussian;
+-import com.oltpbenchmark.util.RandomDistribution.Zipf;
+-import com.oltpbenchmark.util.RandomGenerator;
+-import com.oltpbenchmark.util.SQLUtil;
+-import com.oltpbenchmark.util.StringUtil;
+-import com.oltpbenchmark.util.TableDataIterable;
+-
+ public class SEATSLoader extends Loader<SEATSBenchmark> {
+     private static final Logger LOG = Logger.getLogger(SEATSLoader.class);
+@@ -688,5 +687,5 @@
+      *            the target table that we need an iterable for
+      */
+-    protected Iterable<Object[]> getScalingIterable(Table catalog_tbl) {
++    @Nullable protected Iterable<Object[]> getScalingIterable(Table catalog_tbl) {
+         String name = catalog_tbl.getName().toUpperCase();
+         ScalingDataIterable it = null;
+@@ -871,5 +870,5 @@
+         }
+ 
+-        @Override
++        @Nullable @Override
+         protected Object specialValue(long id, int columnIdx) {
+             Object value = null;
+@@ -988,5 +987,5 @@
+         }
+ 
+-        @Override
++        @Nullable @Override
+         protected Object specialValue(long id, int columnIdx) {
+             Object value = null;
+@@ -1114,5 +1113,5 @@
+         }
+ 
+-        @Override
++        @Nullable @Override
+         protected Object specialValue(long id, int columnIdx) {
+             Object value = null;
+@@ -1296,5 +1295,5 @@
+         }
+ 
+-        @Override
++        @Nullable @Override
+         protected Object specialValue(long id, int columnIdx) {
+             Object value = null;
+@@ -1629,5 +1628,5 @@
+         }
+ 
+-        @Override
++        @Nullable @Override
+         protected Object specialValue(long id, int columnIdx) {
+             assert (this.current != null);
+--- src/com/oltpbenchmark/util/SQLUtil.java
++++ src/com/oltpbenchmark/util/SQLUtil.java
+@@ -17,4 +17,7 @@
+ package com.oltpbenchmark.util;
+ 
++import com.oltpbenchmark.catalog.Column;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.types.DatabaseType;
+ import java.math.BigDecimal;
+ import java.sql.Date;
+@@ -30,11 +33,7 @@
+ import java.util.HashSet;
+ import java.util.Set;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.catalog.Column;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.types.DatabaseType;
+-
+ public abstract class SQLUtil {
+     private static final Logger LOG = Logger.getLogger(SQLUtil.class);
+@@ -52,5 +51,5 @@
+      * @return
+      */
+-    public static Integer getInteger(Object obj) {
++    @Nullable public static Integer getInteger(Object obj) {
+         if (obj == null) return (null);
+         
+@@ -70,5 +69,5 @@
+      * @return
+      */
+-    public static Long getLong(Object obj) {
++    @Nullable public static Long getLong(Object obj) {
+         if (obj == null) return (null);
+         
+@@ -91,5 +90,5 @@
+      * @return
+      */
+-    public static Double getDouble(Object obj) {
++    @Nullable public static Double getDouble(Object obj) {
+         if (obj == null) return (null);
+         
+@@ -112,5 +111,5 @@
+      * @return
+      */
+-    public static Timestamp getTimestamp(Object obj) {
++    @Nullable public static Timestamp getTimestamp(Object obj) {
+         if (obj == null) return (null);
+         
+@@ -144,5 +143,5 @@
+      * @return
+      */
+-    public static String getSequenceName(DatabaseType dbType, Column catalog_col) {
++    @Nullable public static String getSequenceName(DatabaseType dbType, Column catalog_col) {
+         Table catalog_tbl = catalog_col.getTable();
+         assert(catalog_tbl != null);
+@@ -204,5 +203,5 @@
+      * @see java.sql.Types
+      */
+-    public static Object castValue(int sqlType, String value) {
++    @Nullable public static Object castValue(int sqlType, String value) {
+         Object ret = null;
+         switch (sqlType) {
+--- src/com/oltpbenchmark/util/FileUtil.java
++++ src/com/oltpbenchmark/util/FileUtil.java
+@@ -19,11 +19,10 @@
+ 
+ import java.io.*;
+-
+-import org.apache.log4j.Logger;
+-
+ import java.util.Arrays;
+ import java.util.List;
+ import java.util.regex.Pattern;
+ import java.util.zip.GZIPInputStream;
++import javax.annotation.Nullable;
++import org.apache.log4j.Logger;
+ 
+ /**
+@@ -64,5 +63,5 @@
+      * @return
+      */
+-    public static String getNextFilename(String basename) {
++    @Nullable public static String getNextFilename(String basename) {
+         
+         if (!exists(basename))
+@@ -92,5 +91,5 @@
+     }
+ 
+-    public static String realpath(String path) {
++    @Nullable public static String realpath(String path) {
+         File f = new File(path);
+         String ret = null;
+@@ -107,5 +106,5 @@
+     }
+ 
+-    public static String getExtension(File f) {
++    @Nullable public static String getExtension(File f) {
+         if (f != null && f.isFile()) {
+             String parts[] = EXT_SPLIT.split(f.getName());
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
+@@ -17,4 +17,9 @@
+ package com.oltpbenchmark.benchmarks.tpcc.procedures;
+ 
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
++import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
++import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -24,13 +29,7 @@
+ import java.util.ArrayList;
+ import java.util.Random;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConstants;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCUtil;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCWorker;
+-import com.oltpbenchmark.benchmarks.tpcc.pojo.Customer;
+-
+ public class OrderStatus extends TPCCProcedure {
+ 
+@@ -77,5 +76,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
++    @Nullable public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+         boolean trace = LOG.isTraceEnabled();
+         
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchLoader.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchLoader.java
+@@ -17,16 +17,15 @@
+ package com.oltpbenchmark.benchmarks.linkbench;
+ 
++import com.oltpbenchmark.api.Loader;
++import com.oltpbenchmark.catalog.Table;
++import com.oltpbenchmark.util.SQLUtil;
++import com.oltpbenchmark.util.TextGenerator;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.SQLException;
+ import java.util.List;
+-
++import javax.annotation.Nullable;
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.SQLUtil;
+-import com.oltpbenchmark.util.TextGenerator;
+-
+ public class LinkBenchLoader extends Loader<LinkBenchBenchmark> {
+     private static final Logger LOG = Logger.getLogger(LinkBenchLoader.class);
+@@ -41,5 +40,5 @@
+     }
+     
+-    @Override
++    @Nullable @Override
+     public List<LoaderThread> createLoaderThreads() throws SQLException {
+         // TODO Auto-generated method stub
+--- src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAnonymous.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAnonymous.java
+@@ -18,14 +18,14 @@
+ package com.oltpbenchmark.benchmarks.wikipedia.procedures;
+ 
++import com.oltpbenchmark.api.Procedure;
++import com.oltpbenchmark.api.SQLStmt;
++import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
++import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import javax.annotation.Nullable;
+ 
+-import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.wikipedia.WikipediaConstants;
+-import com.oltpbenchmark.benchmarks.wikipedia.util.Article;
+-
+ public class GetPageAnonymous extends Procedure {
+ 	
+@@ -65,5 +65,5 @@
+     // -----------------------------------------------------------------
+ 	
+-	public Article run(Connection conn, boolean forSelect, String userIp,
++	@Nullable public Article run(Connection conn, boolean forSelect, String userIp,
+ 			                            int pageNamespace, String pageTitle) throws UserAbortException, SQLException {		
+ 	    int param = 1;

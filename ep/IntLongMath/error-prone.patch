@@ -1,0 +1,9 @@
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -603,5 +603,5 @@
+         // profile
+         if (catalog_tbl.getName().equals(SEATSConstants.TABLENAME_RESERVATION)) {
+-            this.profile.num_reservations = row_idx + 1;
++            this.profile.num_reservations = row_idx + 1L;
+         }
+ 

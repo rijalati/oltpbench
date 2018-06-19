@@ -1,0 +1,1316 @@
+--- src/com/oltpbenchmark/api/Procedure.java
++++ src/com/oltpbenchmark/api/Procedure.java
+@@ -199,16 +199,6 @@
+         return (Collections.unmodifiableMap(this.name_stmt_xref));
+     }
++
+     
+-    /**
+-     * Hook for testing to retrieve a SQLStmt based on its name
+-     * @param stmtName
+-     * @return
+-     */
+-    protected final SQLStmt getStatment(String stmtName) {
+-        assert(this.name_stmt_xref != null) :
+-            "Trying to access Procedure " + this.procName + " before it is initialized!";
+-        return (this.name_stmt_xref.get(stmtName));
+-    }
+-    
+     protected static Map<String, SQLStmt> getStatments(Procedure proc) {
+         Class<? extends Procedure> c = proc.getClass();
+@@ -231,5 +221,17 @@
+         return (stmts);
+     }
++
+     
++    /**
++     * Hook for testing to retrieve a SQLStmt based on its name
++     * @param stmtName
++     * @return
++     */
++    protected final SQLStmt getStatment(String stmtName) {
++        assert(this.name_stmt_xref != null) :
++            "Trying to access Procedure " + this.procName + " before it is initialized!";
++        return (this.name_stmt_xref.get(stmtName));
++    }
++    
+     @Override
+     public String toString() {
+--- src/com/oltpbenchmark/util/Histogram.java
++++ src/com/oltpbenchmark/util/Histogram.java
+@@ -394,6 +394,17 @@
+         this._put(value, i);
+     }
++
+     
+     /**
++     * Increments the number of occurrences of this particular value i
++     * @param value the value to be added to the histogram
++     * 
++     */
++    public synchronized void put(X value) {
++        this._put(value, 1);
++    }
++
++    
++    /**
+      * Set the number of occurrences of this particular value i
+      * @param value the value to be added to the histogram
+@@ -409,13 +420,4 @@
+     
+     /**
+-     * Increments the number of occurrences of this particular value i
+-     * @param value the value to be added to the histogram
+-     * 
+-     */
+-    public synchronized void put(X value) {
+-        this._put(value, 1);
+-    }
+-    
+-    /**
+      * Increment all values in the histogram by one
+      */
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -166,4 +166,5 @@
+ 
+ 
++
+     /**
+      * Construct a JSONObject from a subset of another JSONObject.
+@@ -182,4 +183,5 @@
+ 
+ 
++
+     /**
+      * Construct a JSONObject from a JSONTokener.
+@@ -243,4 +245,5 @@
+ 
+ 
++
+     /**
+      * Construct a JSONObject from a Map.
+@@ -254,4 +257,5 @@
+     }
+ 
++
+     /**
+      * Construct a JSONObject from a Map.
+@@ -272,4 +276,5 @@
+ 
+ 
++
+     /**
+      * Construct a JSONObject from an Object using bean getters.
+@@ -297,4 +302,5 @@
+ 
+ 
++
+     /**
+      * Construct JSONObject from the given bean. This will also create JSONObject
+@@ -312,4 +318,45 @@
+     }
+ 
++
++    /**
++     * Construct a JSONObject from an Object, using reflection to find the
++     * public members. The resulting JSONObject's keys will be the strings
++     * from the names array, and the values will be the field values associated
++     * with those keys in the object. If a key is not found or not visible,
++     * then it will not be copied into the new JSONObject.
++     * @param object An object that has fields that should be used to make a
++     * JSONObject.
++     * @param names An array of strings, the names of the fields to be obtained
++     * from the object.
++     */
++    public JSONObject(Object object, String names[]) {
++        this();
++        Class<?> c = object.getClass();
++        for (int i = 0; i < names.length; i += 1) {
++            String name = names[i];
++            try {
++                putOpt(name, c.getField(name).get(object));
++            } catch (Exception e) {
++                /* forget about it */
++            }
++        }
++    }
++
++
++
++    /**
++     * Construct a JSONObject from a source JSON text string.
++     * This is the most commonly used JSONObject constructor.
++     * @param source    A string beginning
++     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
++     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
++     * @exception JSONException If there is a syntax error in the source
++     *  string or a duplicated key.
++     */
++    public JSONObject(String source) throws JSONException {
++        this(new JSONTokener(source));
++    }
++
++
+     private void populateInternalMap(Object bean, boolean includeSuperClass){
+         Class<?> klass = bean.getClass();
+@@ -382,44 +429,6 @@
+     }
+ 
+-    /**
+-     * Construct a JSONObject from an Object, using reflection to find the
+-     * public members. The resulting JSONObject's keys will be the strings
+-     * from the names array, and the values will be the field values associated
+-     * with those keys in the object. If a key is not found or not visible,
+-     * then it will not be copied into the new JSONObject.
+-     * @param object An object that has fields that should be used to make a
+-     * JSONObject.
+-     * @param names An array of strings, the names of the fields to be obtained
+-     * from the object.
+-     */
+-    public JSONObject(Object object, String names[]) {
+-        this();
+-        Class<?> c = object.getClass();
+-        for (int i = 0; i < names.length; i += 1) {
+-            String name = names[i];
+-            try {
+-                putOpt(name, c.getField(name).get(object));
+-            } catch (Exception e) {
+-                /* forget about it */
+-            }
+-        }
+-    }
+ 
+-
+     /**
+-     * Construct a JSONObject from a source JSON text string.
+-     * This is the most commonly used JSONObject constructor.
+-     * @param source    A string beginning
+-     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+-     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+-     * @exception JSONException If there is a syntax error in the source
+-     *  string or a duplicated key.
+-     */
+-    public JSONObject(String source) throws JSONException {
+-        this(new JSONTokener(source));
+-    }
+-
+-
+-    /**
+      * Accumulate values under a key. It is similar to the put method except
+      * that if there is already an object stored under the key then a
+@@ -817,5 +826,107 @@
+ 
+ 
++
+     /**
++     * Put a key/boolean pair in the JSONObject.
++     *
++     * @param key   A key string.
++     * @param value A boolean which is the value.
++     * @return this.
++     * @throws JSONException If the key is null.
++     */
++    public JSONObject put(String key, boolean value) throws JSONException {
++        put(key, value ? Boolean.TRUE : Boolean.FALSE);
++        return this;
++    }
++
++
++
++    /**
++     * Put a key/double pair in the JSONObject.
++     *
++     * @param key   A key string.
++     * @param value A double which is the value.
++     * @return this.
++     * @throws JSONException If the key is null or if the number is invalid.
++     */
++    public JSONObject put(String key, double value) throws JSONException {
++        put(key, new Double(value));
++        return this;
++    }
++
++
++
++    /**
++     * Put a key/int pair in the JSONObject.
++     *
++     * @param key   A key string.
++     * @param value An int which is the value.
++     * @return this.
++     * @throws JSONException If the key is null.
++     */
++    public JSONObject put(String key, int value) throws JSONException {
++        put(key, new Integer(value));
++        return this;
++    }
++
++
++
++    /**
++     * Put a key/long pair in the JSONObject.
++     *
++     * @param key   A key string.
++     * @param value A long which is the value.
++     * @return this.
++     * @throws JSONException If the key is null.
++     */
++    public JSONObject put(String key, long value) throws JSONException {
++        put(key, new Long(value));
++        return this;
++    }
++
++
++
++    /**
++     * Put a key/value pair in the JSONObject, where the value will be a
++     * JSONObject which is produced from a Map.
++     * @param key   A key string.
++     * @param value A Map value.
++     * @return      this.
++     * @throws JSONException
++     */
++    public JSONObject put(String key, Map<?,?> value) throws JSONException {
++        put(key, new JSONObject(value));
++        return this;
++    }
++
++
++
++    /**
++     * Put a key/value pair in the JSONObject. If the value is null,
++     * then the key will be removed from the JSONObject if it is present.
++     * @param key   A key string.
++     * @param value An object which is the value. It should be of one of these
++     *  types: Boolean, Double, Integer, JSONArray, JSONObject, Long, String,
++     *  or the JSONObject.NULL object.
++     * @return this.
++     * @throws JSONException If the value is non-finite number
++     *  or if the key is null.
++     */
++    public JSONObject put(String key, Object value) throws JSONException {
++        if (key == null) {
++            throw new JSONException("Null key.");
++        }
++        if (value != null) {
++            testValidity(value);
++            this.map.put(key, value);
++        } else {
++            remove(key);
++        }
++        return this;
++    }
++
++
++
++    /**
+      * Get an optional double associated with a key,
+      * or NaN if there is no such key or if its value is not a number.
+@@ -974,99 +1085,4 @@
+ 
+     /**
+-     * Put a key/boolean pair in the JSONObject.
+-     *
+-     * @param key   A key string.
+-     * @param value A boolean which is the value.
+-     * @return this.
+-     * @throws JSONException If the key is null.
+-     */
+-    public JSONObject put(String key, boolean value) throws JSONException {
+-        put(key, value ? Boolean.TRUE : Boolean.FALSE);
+-        return this;
+-    }
+-
+-
+-    /**
+-     * Put a key/double pair in the JSONObject.
+-     *
+-     * @param key   A key string.
+-     * @param value A double which is the value.
+-     * @return this.
+-     * @throws JSONException If the key is null or if the number is invalid.
+-     */
+-    public JSONObject put(String key, double value) throws JSONException {
+-        put(key, new Double(value));
+-        return this;
+-    }
+-
+-
+-    /**
+-     * Put a key/int pair in the JSONObject.
+-     *
+-     * @param key   A key string.
+-     * @param value An int which is the value.
+-     * @return this.
+-     * @throws JSONException If the key is null.
+-     */
+-    public JSONObject put(String key, int value) throws JSONException {
+-        put(key, new Integer(value));
+-        return this;
+-    }
+-
+-
+-    /**
+-     * Put a key/long pair in the JSONObject.
+-     *
+-     * @param key   A key string.
+-     * @param value A long which is the value.
+-     * @return this.
+-     * @throws JSONException If the key is null.
+-     */
+-    public JSONObject put(String key, long value) throws JSONException {
+-        put(key, new Long(value));
+-        return this;
+-    }
+-
+-
+-    /**
+-     * Put a key/value pair in the JSONObject, where the value will be a
+-     * JSONObject which is produced from a Map.
+-     * @param key   A key string.
+-     * @param value A Map value.
+-     * @return      this.
+-     * @throws JSONException
+-     */
+-    public JSONObject put(String key, Map<?,?> value) throws JSONException {
+-        put(key, new JSONObject(value));
+-        return this;
+-    }
+-
+-
+-    /**
+-     * Put a key/value pair in the JSONObject. If the value is null,
+-     * then the key will be removed from the JSONObject if it is present.
+-     * @param key   A key string.
+-     * @param value An object which is the value. It should be of one of these
+-     *  types: Boolean, Double, Integer, JSONArray, JSONObject, Long, String,
+-     *  or the JSONObject.NULL object.
+-     * @return this.
+-     * @throws JSONException If the value is non-finite number
+-     *  or if the key is null.
+-     */
+-    public JSONObject put(String key, Object value) throws JSONException {
+-        if (key == null) {
+-            throw new JSONException("Null key.");
+-        }
+-        if (value != null) {
+-            testValidity(value);
+-            this.map.put(key, value);
+-        } else {
+-            remove(key);
+-        }
+-        return this;
+-    }
+-
+-
+-    /**
+      * Put a key/value pair in the JSONObject, but only if the key and the
+      * value are both non-null, and only if there is not already a member
+--- src/com/oltpbenchmark/distributions/ZipfianGenerator.java
++++ src/com/oltpbenchmark/distributions/ZipfianGenerator.java
+@@ -179,18 +179,8 @@
+ 		countforzeta=n;
+ 		return zetastatic(n,theta);
+-	}
++	}
++
+ 	
+ 	/**
+-	 * Compute the zeta constant needed for the distribution. Do this from scratch for a distribution with n items, using the 
+-	 * zipfian constant theta. This is a static version of the function which will not remember n.
+-	 * @param n The number of items to compute zeta over.
+-	 * @param theta The zipfian constant.
+-	 */
+-	static double zetastatic(long n, double theta)
+-	{
+-		return zetastatic(0,n,theta,0);
+-	}
+-	
+-	/**
+ 	 * Compute the zeta constant needed for the distribution. Do this incrementally for a distribution that
+ 	 * has n items now but used to have st items. Use the zipfian constant theta. Remember the new value of 
+@@ -206,7 +196,20 @@
+ 		countforzeta=n;
+ 		return zetastatic(st,n,theta,initialsum);
+-	}
++	}
++
+ 	
+ 	/**
++	 * Compute the zeta constant needed for the distribution. Do this from scratch for a distribution with n items, using the 
++	 * zipfian constant theta. This is a static version of the function which will not remember n.
++	 * @param n The number of items to compute zeta over.
++	 * @param theta The zipfian constant.
++	 */
++	static double zetastatic(long n, double theta)
++	{
++		return zetastatic(0,n,theta,0);
++	}
++
++	
++	/**
+ 	 * Compute the zeta constant needed for the distribution. Do this incrementally for a distribution that
+ 	 * has n items now but used to have st items. Use the zipfian constant theta. Remember the new value of 
+@@ -229,6 +232,7 @@
+ 		
+ 		return sum;
+-	}
++	}
+ 
++
+ 	/****************************************************************************************/
+ 	
+@@ -242,7 +246,20 @@
+ 	{
+ 		return (int)nextLong(itemcount);
+-	}
++	}
+ 
++
+ 	/**
++	 * Return the next value, skewed by the Zipfian distribution. The 0th item will be the most popular, followed by the 1st, followed
++	 * by the 2nd, etc. (Or, if min != 0, the min-th item is the most popular, the min+1th item the next most popular, etc.) If you want the
++	 * popular items scattered throughout the item space, use ScrambledZipfianGenerator instead.
++	 */
++	@Override
++	public int nextInt() 
++	{
++		return (int)nextLong(items);
++	}
++
++
++	/**
+ 	 * Generate the next item as a long.
+ 	 * 
+@@ -301,16 +318,6 @@
+ 		setLastInt((int)ret);
+ 		return ret;
+-	}
++	}
+ 
+-	/**
+-	 * Return the next value, skewed by the Zipfian distribution. The 0th item will be the most popular, followed by the 1st, followed
+-	 * by the 2nd, etc. (Or, if min != 0, the min-th item is the most popular, the min+1th item the next most popular, etc.) If you want the
+-	 * popular items scattered throughout the item space, use ScrambledZipfianGenerator instead.
+-	 */
+-	@Override
+-	public int nextInt() 
+-	{
+-		return (int)nextLong(items);
+-	}
+ 
+ 	/**
+@@ -322,5 +329,6 @@
+ 	{
+ 		return nextLong(items);
+-	}
++	}
++
+ 	
+ 	public static void main(String[] args)
+--- src/com/oltpbenchmark/util/ClassUtil.java
++++ src/com/oltpbenchmark/util/ClassUtil.java
+@@ -167,4 +167,5 @@
+     }
+ 
++
+     
+     public static <T> T newInstance(Class<T> target_class, Object params[], Class<?> classes[]) {
+@@ -184,5 +185,36 @@
+         return (ret);
+     }
++
+     
++    /** Create an object for the given class and initialize it from conf
++    *
++    * @param theClass class of which an object is created
++    * @param expected the expected parent class or interface
++    * @return a new object
++    */
++   public static <T> T newInstance(Class<?> theClass, Class<T> expected) {
++     T result;
++     try {
++       if (!expected.isAssignableFrom(theClass)) {
++         throw new Exception("Specified class " + theClass.getName() + "" +
++             "does not extend/implement " + expected.getName());
++       }
++       Class<? extends T> clazz = (Class<? extends T>)theClass;
++       Constructor<? extends T> meth = clazz.getDeclaredConstructor(EMPTY_ARRAY);
++       meth.setAccessible(true);
++       result = meth.newInstance();
++     } catch (Exception e) {
++       throw new RuntimeException(e);
++     }
++     return result;
++   }
++
++
++   public static <T> T newInstance(String className, Class<T> expected)
++                                         throws ClassNotFoundException {
++     return newInstance(getClass(className), expected);
++   }
++
++    
+     /**
+      * 
+@@ -234,32 +266,4 @@
+     }
+     
+-    /** Create an object for the given class and initialize it from conf
+-    *
+-    * @param theClass class of which an object is created
+-    * @param expected the expected parent class or interface
+-    * @return a new object
+-    */
+-   public static <T> T newInstance(Class<?> theClass, Class<T> expected) {
+-     T result;
+-     try {
+-       if (!expected.isAssignableFrom(theClass)) {
+-         throw new Exception("Specified class " + theClass.getName() + "" +
+-             "does not extend/implement " + expected.getName());
+-       }
+-       Class<? extends T> clazz = (Class<? extends T>)theClass;
+-       Constructor<? extends T> meth = clazz.getDeclaredConstructor(EMPTY_ARRAY);
+-       meth.setAccessible(true);
+-       result = meth.newInstance();
+-     } catch (Exception e) {
+-       throw new RuntimeException(e);
+-     }
+-     return result;
+-   }
+-
+-   public static <T> T newInstance(String className, Class<T> expected)
+-                                         throws ClassNotFoundException {
+-     return newInstance(getClass(className), expected);
+-   }
+-    
+     /**
+      * 
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -164,11 +164,7 @@
+             return (val);
+         }
++
+         
+-        @Override
+-        public String toString() {
+-            return String.format("%s[min=%d, max=%d]", this.getClass().getSimpleName(), this.min, this.max);
+-        }
+         
+-        
+         public static long nextLong(Random rng, long n) {
+             // error checking and 2^x checking removed for simplicity.
+@@ -180,4 +176,10 @@
+             return val;
+         }
++
++        
++        @Override
++        public String toString() {
++            return String.format("%s[min=%d, max=%d]", this.getClass().getSimpleName(), this.min, this.max);
++        }
+     }
+ 
+--- src/com/oltpbenchmark/util/CompositeId.java
++++ src/com/oltpbenchmark/util/CompositeId.java
+@@ -62,5 +62,9 @@
+         return (id);
+     }
++
+     
++    public abstract long encode();
++
++    
+     protected final long[] decode(long composite_id, int offset_bits[], long offset_pows[]) {
+         long values[] = new long[offset_bits.length];
+@@ -72,7 +76,7 @@
+         return (values);
+     }
+-    
+-    public abstract long encode();
++
+     public abstract void decode(long composite_id);
++
+     public abstract long[] toArray();
+     
+--- src/com/oltpbenchmark/util/StringBoxUtil.java
++++ src/com/oltpbenchmark/util/StringBoxUtil.java
+@@ -64,17 +64,6 @@
+         return (sb.toString());
+     }
+-    
+-    /**
+-     * Heavy unicode border box
+-     * @param str
+-     * @return
+-     */
+-    public static String heavyBox(String str) {
+-        return box(str, StringBoxUtil.UNICODE_HEAVYBOX_HORIZONTAL,
+-                        StringBoxUtil.UNICODE_HEAVYBOX_VERTICAL,
+-                        null,
+-                        StringBoxUtil.UNICODE_HEAVYBOX_CORNERS);
+-    }
+ 
++
+     /**
+      * Create a box around some text
+@@ -89,4 +78,5 @@
+     }
+ 
++
+     /**
+      * Make a box around some text using the given marker character.
+@@ -100,4 +90,5 @@
+     }
+ 
++
+     /**
+      * Make a box around some text. If str has multiple lines, then the box will
+@@ -111,5 +102,18 @@
+     }
+ 
++    
++    /**
++     * Heavy unicode border box
++     * @param str
++     * @return
++     */
++    public static String heavyBox(String str) {
++        return box(str, StringBoxUtil.UNICODE_HEAVYBOX_HORIZONTAL,
++                        StringBoxUtil.UNICODE_HEAVYBOX_VERTICAL,
++                        null,
++                        StringBoxUtil.UNICODE_HEAVYBOX_CORNERS);
++    }
+ 
++
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkProfile.java
+@@ -892,4 +892,14 @@
+         return itemInfo;
+     }
++
++    public ItemInfo getRandomItem() {
++        assert(this.getAllItemsCount() > 0);
++        int idx = -1;
++        while (idx == -1 || allItemSets[idx].isEmpty()) {
++            idx = rng.nextInt(allItemSets.length);
++        } // WHILE
++        return (this.getRandomItem(allItemSets[idx], false, false));
++    }
++
+     
+     /**********************************************************************************************
+@@ -948,12 +958,4 @@
+                 this.getCompleteItemsCount());
+     }
+-    public ItemInfo getRandomItem() {
+-        assert(this.getAllItemsCount() > 0);
+-        int idx = -1;
+-        while (idx == -1 || allItemSets[idx].isEmpty()) {
+-            idx = rng.nextInt(allItemSets.length);
+-        } // WHILE
+-        return (this.getRandomItem(allItemSets[idx], false, false));
+-    }
+ 
+     // ----------------------------------------------------------------
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/InvertibleShuffler.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/InvertibleShuffler.java
+@@ -70,7 +70,4 @@
+   }
+ 
+-  public long invertPermute(long i) {
+-    return permute(i, true);
+-  }
+ 
+   public long permute(long i, boolean inverse) {
+@@ -117,4 +114,9 @@
+   }
+ 
++
++  public long invertPermute(long i) {
++    return permute(i, true);
++  }
++
+ }
+ 
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -615,4 +615,13 @@
+         protected abstract short getElementCounter(T t);
+         protected abstract int populateRow(T t, Object[] row, short remaining);
++
++        @Override
++        protected final int populateRow(Object[] row) {
++            T t = this.getNext();
++            assert(t != null);
++            this.currentCounter--;
++            return (this.populateRow(t, row, this.currentCounter));
++        }
++
+         
+         public void stopWhenEmpty() {
+@@ -640,11 +649,4 @@
+             return (this.getNext() != null);
+         }
+-        @Override
+-        protected final int populateRow(Object[] row) {
+-            T t = this.getNext();
+-            assert(t != null);
+-            this.currentCounter--;
+-            return (this.populateRow(t, row, this.currentCounter));
+-        }
+         private final T getNext() {
+             T last = this.current;
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -499,18 +499,12 @@
+         return (join(delimiter, Arrays.asList(items)));
+     }
++
+     
+     public static <T> String join(String delimiter, final Iterator<T> items) {
+         return (join("", delimiter, CollectionUtil.iterable(items)));
+     }
++
+     
+     /**
+-     * Wrap the given string with the control characters
+-     * to make the text appear bold in the console
+-     */
+-    public static String bold(String str) {
+-        return (SET_BOLD_TEXT + str + SET_PLAIN_TEXT);
+-    }
+-    
+-    /**
+      * Python join()
+      * @param delimiter
+@@ -521,4 +515,5 @@
+         return (join("", delimiter, items));
+     }
++
+     
+     /**
+@@ -545,6 +540,15 @@
+         return sb.toString();
+     }
++
+     
+     /**
++     * Wrap the given string with the control characters
++     * to make the text appear bold in the console
++     */
++    public static String bold(String str) {
++        return (SET_BOLD_TEXT + str + SET_PLAIN_TEXT);
++    }
++    
++    /**
+      * Convert a byte array into a valid mysql string literal, assuming that
+      * it will be inserted into a column with latin-1 encoding.
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -268,4 +268,10 @@
+         }
+     }
++
++    int getLink(long id1, long link_type, long id2s[]) throws SQLException {
++        Link links[] = multigetLinks(id1, link_type, id2s);
++        return links == null ? 0 : links.length;
++    }
++
+     private void addLink() throws SQLException {
+         AddLink proc = this.getProcedure(AddLink.class);
+@@ -346,4 +352,25 @@
+     }
+ 
++    Link[] getLinkList(long id1, long link_type) throws SQLException {
++        GetLinkList proc= this.getProcedure(GetLinkList.class);
++        Link links[] = proc.run(conn, id1, link_type);
++        if (LOG.isDebugEnabled()) {
++           LOG.trace("getLinkList(id1=" + id1 + ", link_type="  + link_type
++                         + ") => count=" + (links == null ? 0 : links.length));
++        }
++        // If there were more links than limit, record
++        if (links != null && links.length >= LinkBenchConstants.DEFAULT_LIMIT) {
++          Link lastLink = links[links.length-1];
++          if (LOG.isDebugEnabled()) {
++            LOG.trace("Maybe more history for (" + id1 +"," +
++                          link_type + " older than " + lastLink.time);
++          }
++
++          addTailCacheEntry(lastLink);
++        }
++        return links;
++      }
++
++
+     private void initRequestProbabilities(Properties props) {
+         pc_addlink = ConfigUtil.getDouble(props, LinkBenchConstants.PR_ADD_LINK);
+@@ -572,8 +599,4 @@
+                 (int)(System.currentTimeMillis()/1000), data);
+     }
+-    int getLink(long id1, long link_type, long id2s[]) throws SQLException {
+-        Link links[] = multigetLinks(id1, link_type, id2s);
+-        return links == null ? 0 : links.length;
+-    }
+     Link[] multigetLinks(long id1, long link_type, long id2s[]) throws SQLException {
+         GetLink proc= this.getProcedure(GetLink.class);
+@@ -595,23 +618,4 @@
+         return links;
+     }
+-    Link[] getLinkList(long id1, long link_type) throws SQLException {
+-        GetLinkList proc= this.getProcedure(GetLinkList.class);
+-        Link links[] = proc.run(conn, id1, link_type);
+-        if (LOG.isDebugEnabled()) {
+-           LOG.trace("getLinkList(id1=" + id1 + ", link_type="  + link_type
+-                         + ") => count=" + (links == null ? 0 : links.length));
+-        }
+-        // If there were more links than limit, record
+-        if (links != null && links.length >= LinkBenchConstants.DEFAULT_LIMIT) {
+-          Link lastLink = links[links.length-1];
+-          if (LOG.isDebugEnabled()) {
+-            LOG.trace("Maybe more history for (" + id1 +"," +
+-                          link_type + " older than " + lastLink.time);
+-          }
+-
+-          addTailCacheEntry(lastLink);
+-        }
+-        return links;
+-      }
+     Link[] getLinkListTail() throws SQLException {
+         GetLinkList proc = this.getProcedure(GetLinkList.class);
+--- src/com/oltpbenchmark/jdbc/AutoIncrementPreparedStatement.java
++++ src/com/oltpbenchmark/jdbc/AutoIncrementPreparedStatement.java
+@@ -69,5 +69,12 @@
+     }
+ 
++
+     @Override
++    public ResultSet executeQuery() throws SQLException {
++        return this.stmt.executeQuery();
++    }
++
++
++    @Override
+     public int executeUpdate(String sql) throws SQLException {
+         return this.stmt.executeUpdate(sql);
+@@ -75,4 +82,28 @@
+ 
+     @Override
++    public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
++        return this.stmt.executeUpdate(sql, autoGeneratedKeys);
++    }
++
++
++    @Override
++    public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
++        return this.stmt.executeUpdate(sql, columnIndexes);
++    }
++
++
++    @Override
++    public int executeUpdate(String sql, String[] columnNames) throws SQLException {
++        return this.stmt.executeUpdate(sql, columnNames);
++    }
++
++
++    @Override
++    public int executeUpdate() throws SQLException {
++        return this.stmt.executeUpdate();
++    }
++
++
++    @Override
+     public void close() throws SQLException {
+         this.stmt.close();
+@@ -144,5 +175,30 @@
+     }
+ 
++
+     @Override
++    public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
++        return this.stmt.execute(sql, autoGeneratedKeys);
++    }
++
++
++    @Override
++    public boolean execute(String sql, int[] columnIndexes) throws SQLException {
++        return this.stmt.execute(sql, columnIndexes);
++    }
++
++
++    @Override
++    public boolean execute(String sql, String[] columnNames) throws SQLException {
++        return this.stmt.execute(sql, columnNames);
++    }
++
++
++    @Override
++    public boolean execute() throws SQLException {
++        return this.stmt.execute();
++    }
++
++
++    @Override
+     public ResultSet getResultSet() throws SQLException {
+         return this.stmt.getResultSet();
+@@ -159,5 +215,12 @@
+     }
+ 
++
+     @Override
++    public boolean getMoreResults(int current) throws SQLException {
++        return this.stmt.getMoreResults(current);
++    }
++
++
++    @Override
+     public void setFetchDirection(int direction) throws SQLException {
+         this.stmt.setFetchDirection(direction);
+@@ -194,5 +257,12 @@
+     }
+ 
++
+     @Override
++    public void addBatch() throws SQLException {
++        this.stmt.addBatch();
++    }
++
++
++    @Override
+     public void clearBatch() throws SQLException {
+         this.stmt.clearBatch();
+@@ -210,38 +280,4 @@
+ 
+     @Override
+-    public boolean getMoreResults(int current) throws SQLException {
+-        return this.stmt.getMoreResults(current);
+-    }
+-    @Override
+-    public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+-        return this.stmt.executeUpdate(sql, autoGeneratedKeys);
+-    }
+-
+-    @Override
+-    public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
+-        return this.stmt.executeUpdate(sql, columnIndexes);
+-    }
+-
+-    @Override
+-    public int executeUpdate(String sql, String[] columnNames) throws SQLException {
+-        return this.stmt.executeUpdate(sql, columnNames);
+-    }
+-
+-    @Override
+-    public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+-        return this.stmt.execute(sql, autoGeneratedKeys);
+-    }
+-
+-    @Override
+-    public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+-        return this.stmt.execute(sql, columnIndexes);
+-    }
+-
+-    @Override
+-    public boolean execute(String sql, String[] columnNames) throws SQLException {
+-        return this.stmt.execute(sql, columnNames);
+-    }
+-
+-    @Override
+     public int getResultSetHoldability() throws SQLException {
+         return this.stmt.getResultSetHoldability();
+@@ -274,18 +310,15 @@
+ 
+     @Override
+-    public ResultSet executeQuery() throws SQLException {
+-        return this.stmt.executeQuery();
++    public void setNull(int parameterIndex, int sqlType) throws SQLException {
++        this.stmt.setNull(parameterIndex, sqlType);
+     }
+ 
+-    @Override
+-    public int executeUpdate() throws SQLException {
+-        return this.stmt.executeUpdate();
+-    }
+ 
+     @Override
+-    public void setNull(int parameterIndex, int sqlType) throws SQLException {
+-        this.stmt.setNull(parameterIndex, sqlType);
++    public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
++        this.stmt.setNull(parameterIndex, sqlType, typeName);
+     }
+ 
++
+     @Override
+     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
+@@ -344,20 +377,54 @@
+     }
+ 
++
+     @Override
++    public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
++        this.stmt.setDate(parameterIndex, x, cal);
++    }
++
++
++    @Override
+     public void setTime(int parameterIndex, Time x) throws SQLException {
+         this.stmt.setTime(parameterIndex, x);
+     }
+ 
++
+     @Override
++    public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
++        this.stmt.setTime(parameterIndex, x, cal);
++    }
++
++
++    @Override
+     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
+         this.stmt.setTimestamp(parameterIndex, x);
+     }
+ 
++
+     @Override
++    public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
++        this.stmt.setTimestamp(parameterIndex, x, cal);
++    }
++
++
++    @Override
+     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
+         this.stmt.setAsciiStream(parameterIndex, x, length);
+     }
+ 
++
+     @Override
++    public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
++        this.stmt.setAsciiStream(parameterIndex, x, length);
++    }
++
++
++    @Override
++    public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
++        this.stmt.setAsciiStream(parameterIndex, x);
++    }
++
++
++    @Override
+     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
+         this.stmt.setUnicodeStream(parameterIndex, x, length);
+@@ -369,5 +436,18 @@
+     }
+ 
++
+     @Override
++    public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
++        this.stmt.setBinaryStream(parameterIndex, x, length);
++    }
++
++
++    @Override
++    public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
++        this.stmt.setBinaryStream(parameterIndex, x);
++    }
++
++
++    @Override
+     public void clearParameters() throws SQLException {
+         this.stmt.clearParameters();
+@@ -381,4 +461,5 @@
+     }
+ 
++
+     @Override
+     public void setObject(int parameterIndex, Object x) throws SQLException {
+@@ -386,20 +467,30 @@
+     }
+ 
++
+     @Override
+-    public boolean execute() throws SQLException {
+-        return this.stmt.execute();
++    public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
++        this.stmt.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+     }
+ 
++
+     @Override
+-    public void addBatch() throws SQLException {
+-        this.stmt.addBatch();
++    public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
++        this.stmt.setCharacterStream(parameterIndex, reader, length);
+     }
+ 
++
+     @Override
+-    public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
++    public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+         this.stmt.setCharacterStream(parameterIndex, reader, length);
+     }
+ 
++
+     @Override
++    public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
++        this.stmt.setCharacterStream(parameterIndex, reader);
++    }
++
++
++    @Override
+     public void setRef(int parameterIndex, Ref x) throws SQLException {
+         this.stmt.setRef(parameterIndex, x);
+@@ -411,37 +502,43 @@
+     }
+ 
++
+     @Override
+-    public void setClob(int parameterIndex, Clob x) throws SQLException {
+-        this.stmt.setClob(parameterIndex, x);
++    public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
++        this.stmt.setBlob(parameterIndex, inputStream, length);
+     }
+ 
++
+     @Override
+-    public void setArray(int parameterIndex, Array x) throws SQLException {
+-        this.stmt.setArray(parameterIndex, x);
++    public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
++        this.stmt.setBlob(parameterIndex, inputStream);
+     }
+ 
++
+     @Override
+-    public ResultSetMetaData getMetaData() throws SQLException {
+-        return this.stmt.getMetaData();
++    public void setClob(int parameterIndex, Clob x) throws SQLException {
++        this.stmt.setClob(parameterIndex, x);
+     }
+ 
++
+     @Override
+-    public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
+-        this.stmt.setDate(parameterIndex, x, cal);
++    public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
++        this.stmt.setClob(parameterIndex, reader, length);
+     }
+ 
++
+     @Override
+-    public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
+-        this.stmt.setTime(parameterIndex, x, cal);
++    public void setClob(int parameterIndex, Reader reader) throws SQLException {
++        this.stmt.setClob(parameterIndex, reader);
+     }
+ 
++
+     @Override
+-    public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
+-        this.stmt.setTimestamp(parameterIndex, x, cal);
++    public void setArray(int parameterIndex, Array x) throws SQLException {
++        this.stmt.setArray(parameterIndex, x);
+     }
+ 
+     @Override
+-    public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
+-        this.stmt.setNull(parameterIndex, sqlType, typeName);
++    public ResultSetMetaData getMetaData() throws SQLException {
++        return this.stmt.getMetaData();
+     }
+ 
+@@ -471,19 +568,17 @@
+     }
+ 
+-    @Override
+-    public void setNClob(int parameterIndex, NClob value) throws SQLException {
+-        this.stmt.setNClob(parameterIndex, value);
+-    }
+ 
+     @Override
+-    public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+-        this.stmt.setClob(parameterIndex, reader, length);
++    public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
++        this.stmt.setNCharacterStream(parameterIndex, value);
+     }
+ 
++
+     @Override
+-    public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+-        this.stmt.setBlob(parameterIndex, inputStream, length);
++    public void setNClob(int parameterIndex, NClob value) throws SQLException {
++        this.stmt.setNClob(parameterIndex, value);
+     }
+ 
++
+     @Override
+     public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+@@ -491,63 +586,15 @@
+     }
+ 
+-    @Override
+-    public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+-        this.stmt.setSQLXML(parameterIndex, xmlObject);
+-    }
+ 
+     @Override
+-    public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
+-        this.stmt.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
++    public void setNClob(int parameterIndex, Reader reader) throws SQLException {
++        this.stmt.setNClob(parameterIndex, reader);
+     }
+ 
+-    @Override
+-    public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+-        this.stmt.setAsciiStream(parameterIndex, x, length);
+-    }
+ 
+     @Override
+-    public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+-        this.stmt.setBinaryStream(parameterIndex, x, length);
++    public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
++        this.stmt.setSQLXML(parameterIndex, xmlObject);
+     }
+-
+-    @Override
+-    public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+-        this.stmt.setCharacterStream(parameterIndex, reader, length);
+-    }
+-
+-    @Override
+-    public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+-        this.stmt.setAsciiStream(parameterIndex, x);
+-    }
+-
+-    @Override
+-    public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+-        this.stmt.setBinaryStream(parameterIndex, x);
+-    }
+-
+-    @Override
+-    public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+-        this.stmt.setCharacterStream(parameterIndex, reader);
+-    }
+-
+-    @Override
+-    public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
+-        this.stmt.setNCharacterStream(parameterIndex, value);
+-    }
+-
+-    @Override
+-    public void setClob(int parameterIndex, Reader reader) throws SQLException {
+-        this.stmt.setClob(parameterIndex, reader);
+-    }
+-
+-    @Override
+-    public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+-        this.stmt.setBlob(parameterIndex, inputStream);
+-    }
+-
+-    @Override
+-    public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+-        this.stmt.setNClob(parameterIndex, reader);
+-    }
+     
+     // Java7 Fixes

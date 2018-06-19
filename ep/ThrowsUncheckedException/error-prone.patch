@@ -1,0 +1,263 @@
+--- src/com/oltpbenchmark/api/Worker.java
++++ src/com/oltpbenchmark/api/Worker.java
+@@ -564,5 +564,5 @@
+      *             TODO
+      */
+-    protected abstract TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException;
++    protected abstract TransactionStatus executeWork(TransactionType txnType) throws SQLException;
+ 
+     /**
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
+@@ -64,5 +64,5 @@
+ 
+   public static Level getDebugLevel(Properties props)
+-                                    throws LinkBenchConfigError {
++                                    {
+     if (props == null) {
+       return Level.DEBUG;
+@@ -129,5 +129,5 @@
+    */
+   public static String getPropertyRequired(Properties props, String key)
+-    throws LinkBenchConfigError {
++    {
+     String v = props.getProperty(key);
+     if (v == null) {
+@@ -139,5 +139,5 @@
+ 
+   public static int getInt(Properties props, String key)
+-      throws LinkBenchConfigError {
++      {
+     return getInt(props, key, null);
+   }
+@@ -151,5 +151,5 @@
+    */
+   public static int getInt(Properties props, String key, Integer defaultVal)
+-      throws LinkBenchConfigError {
++      {
+     if (defaultVal != null && !props.containsKey(key)) {
+       return defaultVal;
+@@ -165,5 +165,5 @@
+ 
+   public static long getLong(Properties props, String key)
+-      throws LinkBenchConfigError {
++      {
+     return getLong(props, key, null);
+   }
+@@ -178,5 +178,5 @@
+    */
+   public static long getLong(Properties props, String key, Long defaultVal)
+-      throws LinkBenchConfigError {
++      {
+     if (defaultVal != null && !props.containsKey(key)) {
+       return defaultVal;
+@@ -193,5 +193,5 @@
+ 
+   public static double getDouble(Properties props, String key)
+-                throws LinkBenchConfigError {
++                {
+     return getDouble(props, key, null);
+   }
+@@ -206,5 +206,5 @@
+    */
+   public static double getDouble(Properties props, String key,
+-        Double defaultVal) throws LinkBenchConfigError {
++        Double defaultVal) {
+     if (defaultVal != null && !props.containsKey(key)) {
+       return defaultVal;
+@@ -228,5 +228,5 @@
+    */
+   public static boolean getBool(Properties props, String key)
+-      throws LinkBenchConfigError {
++      {
+     String v = getPropertyRequired(props, key).trim().toLowerCase();
+     // Parse manually since parseBoolean accepts many things as "false"
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
+@@ -15,5 +15,5 @@
+     }
+ 
+-    protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+         return null;
+     }
+--- src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserWorker.java
++++ src/com/oltpbenchmark/benchmarks/resourcestresser/ResourceStresserWorker.java
+@@ -69,5 +69,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         if (nextTrans.getProcedureClass().equals(CPU1.class)) {
+             cpu1Transaction(CPU1_howManyPerTrasaction, CPU1_sleep, CPU1_nestedLevel);
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkWorker.java
+@@ -323,5 +323,5 @@
+     
+     @Override
+-    protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+         // We need to subtract the different between this and the profile's start time,
+         // since that accounts for the time gap between when the loader started and when the client start.
+--- src/com/oltpbenchmark/benchmarks/noop/NoOpWorker.java
++++ src/com/oltpbenchmark/benchmarks/noop/NoOpWorker.java
+@@ -42,5 +42,5 @@
+     
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         // Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
+         LOG.debug("Executing " + this.procNoOp);
+--- src/com/oltpbenchmark/benchmarks/tpcc/TPCCWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/TPCCWorker.java
+@@ -69,5 +69,5 @@
+ 	 */
+ 	@Override
+-    protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
+         try {
+             TPCCProcedure proc = (TPCCProcedure) this.getProcedure(nextTransaction.getProcedureClass());
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
+@@ -82,5 +82,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+         Class<? extends Procedure> procClass = txnType.getProcedureClass();
+         
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/AccessDistributions.java
+@@ -157,5 +157,5 @@
+ 
+   public static AccessDistribution loadAccessDistribution(Properties props,
+-      long minid, long maxid, DistributionType kind) throws LinkBenchConfigError {
++      long minid, long maxid, DistributionType kind) {
+     Logger logger = Logger.getLogger(ConfigUtil.LINKBENCH_LOGGER);
+     String keyPrefix;
+--- src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
++++ src/com/oltpbenchmark/benchmarks/sibench/SIWorker.java
+@@ -45,5 +45,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
+         
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -312,5 +312,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+         Transaction txn = Transaction.get(txnType.getName());
+         assert(txn != null) : "Unexpected " + txnType;
+--- src/com/oltpbenchmark/benchmarks/jpab/JPABWorker.java
++++ src/com/oltpbenchmark/benchmarks/jpab/JPABWorker.java
+@@ -51,5 +51,5 @@
+ 
+ 	@Override
+-	protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++	protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+ 		if (txnType.getProcedureClass().equals(Persist.class)) {			
+ 			persistTest();
+--- src/com/oltpbenchmark/benchmarks/tpch/TPCHWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpch/TPCHWorker.java
+@@ -37,5 +37,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
+         try {
+             GenericQuery proc = (GenericQuery) this.getProcedure(nextTransaction.getProcedureClass());
+--- src/com/oltpbenchmark/benchmarks/epinions/EpinionsWorker.java
++++ src/com/oltpbenchmark/benchmarks/epinions/EpinionsWorker.java
+@@ -53,5 +53,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         
+     	boolean successful = false;
+--- src/com/oltpbenchmark/benchmarks/twitter/TwitterWorker.java
++++ src/com/oltpbenchmark/benchmarks/twitter/TwitterWorker.java
+@@ -52,5 +52,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         TwitterOperation t = generator.nextTransaction();
+         t.uid = this.rng().nextInt(this.num_users); // HACK
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchWorker.java
+@@ -182,5 +182,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTWorker.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/HYADAPTWorker.java
+@@ -79,5 +79,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
+                 
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
+@@ -175,5 +175,5 @@
+ 	
+ 	@Override
+-	protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++	protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+ 	    Transaction t = Transaction.get(txnType.getName());
+         assert(t != null) : "Unexpected " + txnType;
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
+@@ -56,5 +56,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
+         Flat z_users = new Flat(this.rng(), 1, this.num_users);
+         Zipf z_pages = new Zipf(this.rng(), 1, this.num_pages, WikipediaConstants.USER_ID_SIGMA);
+--- src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
++++ src/com/oltpbenchmark/benchmarks/ycsb/YCSBWorker.java
+@@ -83,5 +83,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType nextTrans) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType nextTrans) throws SQLException {
+         Class<? extends Procedure> procClass = nextTrans.getProcedureClass();
+         
+--- src/com/oltpbenchmark/benchmarks/voter/VoterWorker.java
++++ src/com/oltpbenchmark/benchmarks/voter/VoterWorker.java
+@@ -36,5 +36,5 @@
+ 
+     @Override
+-    protected TransactionStatus executeWork(TransactionType txnType) throws UserAbortException, SQLException {
++    protected TransactionStatus executeWork(TransactionType txnType) throws SQLException {
+         assert (txnType.getProcedureClass().equals(Vote.class));
+         PhoneCall call = switchboard.receive();
+--- src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAnonymous.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/procedures/GetPageAnonymous.java
+@@ -66,5 +66,5 @@
+ 	
+ 	public Article run(Connection conn, boolean forSelect, String userIp,
+-			                            int pageNamespace, String pageTitle) throws UserAbortException, SQLException {		
++			                            int pageNamespace, String pageTitle) throws SQLException {		
+ 	    int param = 1;
+ 	    
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkWorker.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmarkWorker.java
+@@ -31,5 +31,5 @@
+ 	
+ 	@Override
+-	protected TransactionStatus executeWork(TransactionType nextTransaction) throws UserAbortException, SQLException {
++	protected TransactionStatus executeWork(TransactionType nextTransaction) throws SQLException {
+ 		try {
+             GenericQuery proc = (GenericQuery) this.getProcedure(nextTransaction.getProcedureClass());

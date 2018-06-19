@@ -1,0 +1,9 @@
+--- src/com/oltpbenchmark/benchmarks/jpab/JPABBenchmark.java
++++ src/com/oltpbenchmark/benchmarks/jpab/JPABBenchmark.java
+@@ -50,5 +50,5 @@
+         Test test = null;
+         try {
+-            test = (Test)Class.forName("com.oltpbenchmark.benchmarks.jpab.tests."+this.jpabConf.getTestName()).newInstance();
++            test = (Test)Class.forName("com.oltpbenchmark.benchmarks.jpab.tests."+this.jpabConf.getTestName()).getDeclaredConstructor().newInstance();
+             int totalObjectCount= (int) this.workConf.getScaleFactor();
+             test.setBatchSize(1);

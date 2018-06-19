@@ -1,0 +1,158 @@
+--- src/com/oltpbenchmark/catalog/Index.java
++++ src/com/oltpbenchmark/catalog/Index.java
+@@ -30,5 +30,5 @@
+ 
+ public class Index extends AbstractCatalogObject {
+-    private static final long serialVersionUID = 1l;
++    private static final long serialVersionUID = 1L;
+     
+     private final Table catalog_tbl;
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPConstants.java
+@@ -20,5 +20,5 @@
+ public abstract class TATPConstants {
+ 
+-    public static final long DEFAULT_NUM_SUBSCRIBERS = 100000l; 
++    public static final long DEFAULT_NUM_SUBSCRIBERS = 100000L; 
+     
+     public static final int SUB_NBR_PADDING_SIZE = 15;
+--- src/com/oltpbenchmark/benchmarks/voter/procedures/Vote.java
++++ src/com/oltpbenchmark/benchmarks/voter/procedures/Vote.java
+@@ -108,5 +108,5 @@
+         
+         ps = getPreparedStatement(conn, checkStateStmt);
+-        ps.setShort(1, (short)(phoneNumber / 10000000l));
++        ps.setShort(1, (short)(phoneNumber / 10000000L));
+         rs = ps.executeQuery();
+         // Some sample client libraries use the legacy random phone generation that mostly
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -136,5 +136,5 @@
+         
+         public double calculateMean(int num_samples) {
+-            long total = 0l;
++            long total = 0L;
+             for (int i = 0; i < num_samples; i++) {
+                 total += this.nextLong();
+--- src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewItem.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/procedures/NewItem.java
+@@ -290,5 +290,5 @@
+             initial_price,
+             // NUM BIDS
+-            0l,
++            0L,
+             // END DATE
+             end_date,
+--- src/com/oltpbenchmark/util/CompositeId.java
++++ src/com/oltpbenchmark/util/CompositeId.java
+@@ -36,5 +36,5 @@
+         long pows[] = new long[offset_bits.length];
+         for (int i = 0; i < offset_bits.length; i++) {
+-            pows[i] = (long)(Math.pow(2, offset_bits[i]) - 1l);
++            pows[i] = (long)(Math.pow(2, offset_bits[i]) - 1L);
+         } // FOR
+         return (pows);
+--- src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
++++ src/com/oltpbenchmark/benchmarks/smallbank/SmallBankWorker.java
+@@ -39,5 +39,5 @@
+     private final int custNameLength;
+     private final String custNameFormat;
+-    private final long custIdsBuffer[] = { -1l, -1l };
++    private final long custIdsBuffer[] = { -1L, -1L };
+     
+     public SmallBankWorker(SmallBankBenchmark benchmarkModule, int id) {
+--- src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/util/AuctionMarkUtil.java
+@@ -55,5 +55,5 @@
+     }
+     
+-    private static final long ITEM_ID_MASK = 0xFFFFFFFFFFFFFFl; // 56 bits (ITEM_ID)
++    private static final long ITEM_ID_MASK = 0xFFFFFFFFFFFFFFL; // 56 bits (ITEM_ID)
+ 
+     /**
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSConstants.java
+@@ -176,8 +176,8 @@
+     
+     /** Number of microseconds in a day */
+-    public static final long MILLISECONDS_PER_MINUTE = 60000l; // 60sec * 1,000
++    public static final long MILLISECONDS_PER_MINUTE = 60000L; // 60sec * 1,000
+     
+     /** Number of microseconds in a day */
+-    public static final long MILLISECONDS_PER_DAY = 86400000l; // 60sec * 60min * 24hr * 1,000 
++    public static final long MILLISECONDS_PER_DAY = 86400000L; // 60sec * 60min * 24hr * 1,000 
+     
+     /**
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkConstants.java
+@@ -35,5 +35,5 @@
+      * 1 sec in real time equals this value in the benchmark's virtual time in seconds
+      */
+-    public static final long TIME_SCALE_FACTOR = 600l; // one hour
++    public static final long TIME_SCALE_FACTOR = 600L; // one hour
+     
+     /**
+@@ -43,5 +43,5 @@
+      * items as it gets closer to their end times
+      */
+-    public static final long ITEM_ENDING_SOON = 36000l; // 10 hours
++    public static final long ITEM_ENDING_SOON = 36000L; // 10 hours
+     
+     public static final int ITEM_ALREADY_ENDED = 100000;
+@@ -57,5 +57,5 @@
+      * @see AuctionMarkConstants.TIME_SCALE_FACTOR
+      */
+-    public static final long CLOSE_AUCTIONS_INTERVAL = 12000l; // Every 20 seconds
++    public static final long CLOSE_AUCTIONS_INTERVAL = 12000L; // Every 20 seconds
+     
+     /**
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -761,5 +761,5 @@
+      **********************************************************************************************/
+     protected class GlobalAttributeGroupGenerator extends AbstractTableGenerator {
+-        private long num_categories = 0l;
++        private long num_categories = 0L;
+         private final Histogram<Integer> category_groups = new Histogram<Integer>();
+         private final LinkedList<GlobalAttributeGroupId> group_ids = new LinkedList<GlobalAttributeGroupId>();
+@@ -829,5 +829,5 @@
+         @Override
+         public void prepare() {
+-            this.tableSize = 0l;
++            this.tableSize = 0L;
+             for (GlobalAttributeGroupId gag_id : profile.gag_ids) {
+                 this.gag_counters.set(gag_id, 0);
+@@ -997,5 +997,5 @@
+         public void init() {
+             super.init();
+-            this.tableSize = 0l;
++            this.tableSize = 0L;
+             for (Long size : profile.users_per_itemCount.values()) {
+                 this.tableSize += size.intValue() * profile.users_per_itemCount.get(size);
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSProfile.java
+@@ -91,5 +91,5 @@
+      * The number of reservations initially created.
+      */
+-    protected long num_reservations = 0l;
++    protected long num_reservations = 0L;
+ 
+     /**
+--- src/com/oltpbenchmark/benchmarks/voter/PhoneCallGenerator.java
++++ src/com/oltpbenchmark/benchmarks/voter/PhoneCallGenerator.java
+@@ -69,5 +69,5 @@
+ 	
+ 	public PhoneCallGenerator(int clientId, int contestantCount) {
+-	    this.nextVoteId = clientId * 10000000l;
++	    this.nextVoteId = clientId * 10000000L;
+         this.contestantCount = contestantCount;
+ 		
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSLoader.java
+@@ -1799,5 +1799,5 @@
+         Integer distance = this.getDistance(depart_airport, arrive_airport);
+         assert (distance != null) : String.format("The calculated distance between '%s' and '%s' is null", depart_airport, arrive_airport);
+-        long flight_time = Math.round(distance / SEATSConstants.FLIGHT_TRAVEL_RATE) * 3600000000l;
++        long flight_time = Math.round(distance / SEATSConstants.FLIGHT_TRAVEL_RATE) * 3600000000L;
+         // 60 sec * 60 min * 1,000,000
+         return (new Timestamp(depart_time.getTime() + flight_time));

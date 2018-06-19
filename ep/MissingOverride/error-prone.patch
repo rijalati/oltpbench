@@ -1,0 +1,684 @@
+--- src/com/oltpbenchmark/LatencyRecord.java
++++ src/com/oltpbenchmark/LatencyRecord.java
+@@ -165,5 +165,5 @@
+ 	}
+ 
+-	public Iterator<Sample> iterator() {
++	@Override public Iterator<Sample> iterator() {
+ 		return new LatencyRecordIterator();
+ 	}
+--- src/com/oltpbenchmark/util/Histogram.java
++++ src/com/oltpbenchmark/util/Histogram.java
+@@ -315,5 +315,5 @@
+     public SortedSet<X> sortedValues() {
+         SortedSet<X> sorted = new TreeSet<X>(new Comparator<X>() {
+-            public int compare(final X item0, final X item1) {
++            @Override public int compare(final X item0, final X item1) {
+                 final Integer v0 = Histogram.this.get(item0);
+                 final Integer v1 = Histogram.this.get(item1);
+@@ -554,5 +554,5 @@
+      * Histogram Pretty Print
+      */
+-    public String toString() {
++    @Override public String toString() {
+         return (this.toString(MAX_CHARS, MAX_VALUE_LENGTH));
+     }
+--- src/com/oltpbenchmark/util/json/JSONStringer.java
++++ src/com/oltpbenchmark/util/json/JSONStringer.java
+@@ -89,5 +89,5 @@
+      * @return The JSON text.
+      */
+-    public String toString() {
++    @Override public String toString() {
+         return this.mode == 'd' ? this.writer.toString() : null;
+     }
+--- src/com/oltpbenchmark/util/json/JSONException.java
++++ src/com/oltpbenchmark/util/json/JSONException.java
+@@ -39,5 +39,5 @@
+     }
+ 
+-    public Throwable getCause() {
++    @Override public Throwable getCause() {
+         return this.cause;
+     }
+--- src/com/oltpbenchmark/util/json/JSONObject.java
++++ src/com/oltpbenchmark/util/json/JSONObject.java
+@@ -117,5 +117,5 @@
+          * @return     NULL.
+          */
+-        protected final Object clone() {
++        @Override protected final Object clone() {
+             return this;
+         }
+@@ -128,5 +128,5 @@
+          *  or null.
+          */
+-        public boolean equals(Object object) {
++        @Override public boolean equals(Object object) {
+             return object == null || object == this;
+         }
+@@ -137,5 +137,5 @@
+          * @return The string "null".
+          */
+-        public String toString() {
++        @Override public String toString() {
+             return "null";
+         }
+@@ -1309,5 +1309,5 @@
+      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+      */
+-    public String toString() {
++    @Override public String toString() {
+         try {
+             Iterator<String> keys = keys();
+--- src/com/oltpbenchmark/util/json/JSONTokener.java
++++ src/com/oltpbenchmark/util/json/JSONTokener.java
+@@ -433,5 +433,5 @@
+      * @return " at character [this.index]"
+      */
+-    public String toString() {
++    @Override public String toString() {
+         return " at character " + index;
+     }
+--- src/com/oltpbenchmark/util/json/JSONArray.java
++++ src/com/oltpbenchmark/util/json/JSONArray.java
+@@ -844,5 +844,5 @@
+      *  representation of the array.
+      */
+-    public String toString() {
++    @Override public String toString() {
+         try {
+             return '[' + join(",") + ']';
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -206,5 +206,5 @@
+      * Converts the list of procedures to a CSV string for easy validation.
+      */
+-    public String toString() {
++    @Override public String toString() {
+         StringBuilder sb = new StringBuilder(10*tracedProcedures.size());
+         sb.append("TraceReader");
+--- src/com/oltpbenchmark/distributions/IntegerGenerator.java
++++ src/com/oltpbenchmark/distributions/IntegerGenerator.java
+@@ -60,5 +60,5 @@
+ 	 * Generate the next string in the distribution.
+ 	 */
+-	public String nextString()
++	@Override public String nextString()
+ 	{
+ 		return ""+nextInt();
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q8.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q8.java
+@@ -55,5 +55,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q14.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q14.java
+@@ -30,5 +30,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSWorker.java
+@@ -15,5 +15,5 @@
+     }
+ 
+-    protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
++    @Override protected TransactionStatus executeWork(TransactionType txnType) throws Procedure.UserAbortException, SQLException {
+         return null;
+     }
+--- src/com/oltpbenchmark/benchmarks/linkbench/pojo/Link.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/pojo/Link.java
+@@ -56,5 +56,5 @@
+   }
+ 
+-  public boolean equals(Object other) {
++  @Override public boolean equals(Object other) {
+     if (other instanceof Link) {
+       Link o = (Link) other;
+@@ -69,5 +69,5 @@
+   }
+ 
+-  public String toString() {
++  @Override public String toString() {
+     return String.format("Link(id1=%d, id2=%d, link_type=%d," +
+         "visibility=%d, version=%d," +
+@@ -80,5 +80,5 @@
+    * @param l
+    */
+-  public Link clone() {
++  @Override public Link clone() {
+     Link l = new Link();
+     l.id1 = this.id1;
+--- src/com/oltpbenchmark/distributions/CounterGenerator.java
++++ src/com/oltpbenchmark/distributions/CounterGenerator.java
+@@ -56,5 +56,5 @@
+ 	 * is appropriate for generators that do not return numeric values.
+ 	 */
+-	public int nextInt() 
++	@Override public int nextInt() 
+ 	{
+ 		int ret = counter.getAndIncrement();
+--- src/com/oltpbenchmark/util/Pair.java
++++ src/com/oltpbenchmark/util/Pair.java
+@@ -60,10 +60,10 @@
+     }
+     
+-    public int hashCode() {
++    @Override public int hashCode() {
+         if (hash != null) return (hash.intValue());
+         return (this.computeHashCode());
+     }
+ 
+-    public String toString() {
++    @Override public String toString() {
+         return String.format("<%s, %s>", first, second);
+     }
+@@ -91,5 +91,5 @@
+     }
+ 
+-    public boolean equals(Object o) {
++    @Override public boolean equals(Object o) {
+         if (this == o) {
+             return true;
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmark.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmark.java
+@@ -40,5 +40,5 @@
+ 	}
+ 	
+-	protected Package getProcedurePackageImpl() {
++	@Override protected Package getProcedurePackageImpl() {
+ 		return (Q1.class.getPackage());
+ 	}
+@@ -60,5 +60,5 @@
+ 	}
+ 	
+-	protected Loader<CHBenCHmark> makeLoaderImpl(Connection conn) throws SQLException {
++	@Override protected Loader<CHBenCHmark> makeLoaderImpl(Connection conn) throws SQLException {
+ 		return new CHBenCHmarkLoader(this, conn);
+ 	}
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
+@@ -95,5 +95,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Override public ResultSet run(Connection conn, Random gen,
+ 			int w_id, int numWarehouses,
+ 			int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q18.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q18.java
+@@ -47,5 +47,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
+@@ -63,10 +63,10 @@
+     }
+ 
+-    public int compareTo(Point obj) {
++    @Override public int compareTo(Point obj) {
+       Point p = (Point)obj;
+       return this.value - p.value;
+     }
+ 
+-    public String toString() {
++    @Override public String toString() {
+       return "(" + value + ", " + probability + ")";
+     }
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/UniformDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/UniformDistribution.java
+@@ -34,5 +34,5 @@
+   private double scale = 1.0;
+ 
+-  public void init(long min, long max, Properties props, String keyPrefix) {
++  @Override public void init(long min, long max, Properties props, String keyPrefix) {
+     if (max <= min) {
+       throw new IllegalArgumentException("max = " + max + " <= min = " + min +
+@@ -77,5 +77,5 @@
+    * @return
+    */
+-  public double cdf(long id) {
++  @Override public double cdf(long id) {
+     if (id >= max) {
+       return 1.0;
+@@ -93,5 +93,5 @@
+    * Quantile function
+    */
+-  public long quantile(double p) {
++  @Override public long quantile(double p) {
+     assert(p >= 0.0 && p <= 1.0);
+     long n = max - min;
+@@ -105,5 +105,5 @@
+ 
+   /** Choose an id X uniformly in the range*/
+-  public long choose(Random rng) {
++  @Override public long choose(Random rng) {
+     long n = max - min;
+     // Java's random number generator has less randomness in lower bits
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q22.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q22.java
+@@ -54,5 +54,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q1.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q1.java
+@@ -34,5 +34,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/linkbench/pojo/Node.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/pojo/Node.java
+@@ -64,5 +64,5 @@
+   }
+ 
+-  public Node clone() {
++  @Override public Node clone() {
+     return new Node(id, type, version, time, data);
+   }
+@@ -77,5 +77,5 @@
+   }
+ 
+-  public String toString() {
++  @Override public String toString() {
+     return "Node(" + "id=" + id + ",type=" + type + ",version=" + version + ","
+                    + "timestamp=" + time + ",data="
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q15.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q15.java
+@@ -56,9 +56,9 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+ 
+-    public ResultSet run(Connection conn) throws SQLException {
++    @Override public ResultSet run(Connection conn) throws SQLException {
+         // With this query, we have to set up a view before we execute the
+         // query, then drop it once we're done.
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q13.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q13.java
+@@ -37,5 +37,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q20.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q20.java
+@@ -41,5 +41,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q17.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q17.java
+@@ -34,5 +34,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q3.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q3.java
+@@ -49,5 +49,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
+@@ -108,5 +108,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Override public ResultSet run(Connection conn, Random gen,
+ 			int terminalWarehouseID, int numWarehouses,
+ 			int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
+@@ -121,5 +121,5 @@
+     private PreparedStatement customerByName = null;
+ 
+-    public ResultSet run(Connection conn, Random gen,
++    @Override public ResultSet run(Connection conn, Random gen,
+                          int w_id, int numWarehouses,
+                          int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q5.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q5.java
+@@ -49,5 +49,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q10.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q10.java
+@@ -49,5 +49,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Node.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Node.java
+@@ -85,5 +85,5 @@
+     }
+ 
+-    public void load() {
++    @Override public void load() {
+         if (child1 != null) {
+             child1.load();
+@@ -94,5 +94,5 @@
+     }
+ 
+-    public void update() {
++    @Override public void update() {
+         changeCount++;
+         if (child1 != null) {
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/StockLevel.java
+@@ -55,5 +55,5 @@
+ 	private PreparedStatement stockGetCountStock = null;
+ 
+-	 public ResultSet run(Connection conn, Random gen,
++	 @Override public ResultSet run(Connection conn, Random gen,
+ 				int w_id, int numWarehouses,
+ 				int terminalDistrictLowerID, int terminalDistrictUpperID,
+--- src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
++++ src/com/oltpbenchmark/benchmarks/seats/SEATSWorker.java
+@@ -278,5 +278,5 @@
+     }
+     
+-    protected void initialize() {
++    @Override protected void initialize() {
+         try {
+             this.profile.loadProfile(this);
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q16.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q16.java
+@@ -40,5 +40,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q6.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q6.java
+@@ -29,5 +29,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q2.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q2.java
+@@ -54,5 +54,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q19.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q19.java
+@@ -51,5 +51,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q21.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q21.java
+@@ -49,5 +49,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q12.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q12.java
+@@ -38,5 +38,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/IndexedPerson.java
+@@ -105,5 +105,5 @@
+ 	// Methods:
+ 
+-    public void load() {
++    @Override public void load() {
+ 		assert firstName != null && middleName != null && lastName != null &&
+ 			street != null && city != null && state != null &&
+@@ -113,5 +113,5 @@
+     }
+ 
+-    public void update() {
++    @Override public void update() {
+     	lastLoginDate = new Date();
+     	loginCount++;
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/ZipfDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/ZipfDistribution.java
+@@ -198,5 +198,5 @@
+    * to calculate and only depend on the distribution parameters
+    */
+-  public long quantile(double p) {
++  @Override public long quantile(double p) {
+     double uz = p * zetan;
+     long n = max - min;
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q7.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q7.java
+@@ -57,5 +57,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q9.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q9.java
+@@ -47,5 +47,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/util/json/Test.java
++++ src/com/oltpbenchmark/util/json/Test.java
+@@ -76,9 +76,9 @@
+             }
+             
+-            public String toJSONString() {
++            @Override public String toJSONString() {
+                 return "{" + JSONObject.quote(this.aString) + ":" + 
+                 JSONObject.doubleToString(this.aNumber) + "}";
+             }            
+-            public String toString() {
++            @Override public String toString() {
+                 return this.getString() + " " + this.getNumber() + " " + 
+                         this.isBoolean() + "." + this.getBENT() + " " + this.getX();
+--- src/com/oltpbenchmark/util/TableDataIterable.java
++++ src/com/oltpbenchmark/util/TableDataIterable.java
+@@ -72,5 +72,5 @@
+     
+     
+-    public Iterator<Object[]> iterator() {
++    @Override public Iterator<Object[]> iterator() {
+         return (new TableIterator());
+     }
+--- src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
++++ src/com/oltpbenchmark/benchmarks/tatp/TATPWorker.java
+@@ -60,5 +60,5 @@
+     public static enum Transaction {
+     	DeleteCallForwarding(new TransactionInvoker<DeleteCallForwarding>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+             	long s_id = TATPUtil.getSubscriberId(subscriberSize);
+             	((DeleteCallForwarding)proc).run(
+@@ -71,5 +71,5 @@
+         }),
+         GetAccessData(new TransactionInvoker<GetAccessData>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((GetAccessData)proc).run(
+@@ -81,5 +81,5 @@
+         }),
+         GetNewDestination(new TransactionInvoker<GetNewDestination>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((GetNewDestination)proc).run(
+@@ -93,5 +93,5 @@
+         }),
+         GetSubscriberData(new TransactionInvoker<GetSubscriberData>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((GetSubscriberData)proc).run(
+@@ -102,5 +102,5 @@
+         }),
+         InsertCallForwarding(new TransactionInvoker<InsertCallForwarding>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((InsertCallForwarding)proc).run(
+@@ -115,5 +115,5 @@
+         }),
+         UpdateLocation(new TransactionInvoker<UpdateLocation>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((UpdateLocation)proc).run(
+@@ -125,5 +125,5 @@
+         }),
+         UpdateSubscriberData(new TransactionInvoker<UpdateSubscriberData>() {
+-            public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
++            @Override public void invoke(Connection conn, Procedure proc, long subscriberSize) throws SQLException {
+                 long s_id = TATPUtil.getSubscriberId(subscriberSize);
+                 ((UpdateSubscriberData)proc).run(
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q11.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q11.java
+@@ -41,5 +41,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/CollectionPerson.java
+@@ -106,5 +106,5 @@
+ 	// Methods:
+ 
+-    public void load() {
++    @Override public void load() {
+ 		assert firstName != null && middleName != null && lastName != null &&
+ 			street != null && city != null && state != null &&
+@@ -114,5 +114,5 @@
+     }
+ 
+-    public void update() {
++    @Override public void update() {
+     	lastLoginDate = new Date();
+     	loginCount++;
+--- src/com/oltpbenchmark/jdbc/AutoIncrementPreparedStatement.java
++++ src/com/oltpbenchmark/jdbc/AutoIncrementPreparedStatement.java
+@@ -552,8 +552,8 @@
+     
+     // Java7 Fixes
+-    public void closeOnCompletion() throws SQLException {
++    @Override public void closeOnCompletion() throws SQLException {
+         throw new SQLException();
+     }
+-    public boolean isCloseOnCompletion() throws SQLException {
++    @Override public boolean isCloseOnCompletion() throws SQLException {
+         throw new SQLException();
+     }
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
+@@ -77,5 +77,5 @@
+ 
+ 
+-    public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
++    @Override public ResultSet run(Connection conn, Random gen, int w_id, int numWarehouses, int terminalDistrictLowerID, int terminalDistrictUpperID, TPCCWorker w) throws SQLException {
+         boolean trace = LOG.isTraceEnabled();
+         
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person2d.java
+@@ -85,5 +85,5 @@
+     }
+ 
+-    public void update() {
++    @Override public void update() {
+     	lastLoginDate = new Date();
+     	loginCount++;
+--- src/com/oltpbenchmark/util/SimpleSystemPrinter.java
++++ src/com/oltpbenchmark/util/SimpleSystemPrinter.java
+@@ -27,5 +27,5 @@
+ 	}
+ 
+-	public void println(String msg) {
++	@Override public void println(String msg) {
+ 		if (out != null)
+ 			out.println(msg);
+--- src/com/oltpbenchmark/benchmarks/jpab/objects/Person.java
++++ src/com/oltpbenchmark/benchmarks/jpab/objects/Person.java
+@@ -100,5 +100,5 @@
+ 	// Methods:
+ 
+-    public void load() {
++    @Override public void load() {
+ 		assert firstName != null && middleName != null && lastName != null &&
+ 			street != null && city != null && state != null &&
+@@ -109,5 +109,5 @@
+     }
+ 
+-    public void update() {
++    @Override public void update() {
+         Date last=lastLoginDate;
+     	lastLoginDate = new Date();
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q4.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/Q4.java
+@@ -36,5 +36,5 @@
+         );
+ 	
+-		protected SQLStmt get_query() {
++		@Override protected SQLStmt get_query() {
+ 	    return query_stmt;
+ 	}

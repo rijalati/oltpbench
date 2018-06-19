@@ -1,0 +1,18 @@
+--- src/com/oltpbenchmark/util/json/JSONException.java
++++ src/com/oltpbenchmark/util/json/JSONException.java
+@@ -39,5 +39,5 @@
+     }
+ 
+-    public Throwable getCause() {
++    public synchronized Throwable getCause() {
+         return this.cause;
+     }
+--- src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
++++ src/com/oltpbenchmark/benchmarks/auctionmark/AuctionMarkLoader.java
+@@ -637,5 +637,5 @@
+         }
+         @Override
+-        public final boolean hasMore() {
++        public final synchronized boolean hasMore() {
+             return (this.getNext() != null);
+         }

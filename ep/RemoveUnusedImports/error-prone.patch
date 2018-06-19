@@ -1,0 +1,455 @@
+--- src/com/oltpbenchmark/SubmittedProcedure.java
++++ src/com/oltpbenchmark/SubmittedProcedure.java
+@@ -17,13 +17,13 @@
+ package com.oltpbenchmark;
+ 
+-import java.util.ArrayList;
+-import java.util.Iterator;
+-import java.util.List;
+-import java.util.LinkedList;
+ 
+-import com.oltpbenchmark.types.State;
+-import com.oltpbenchmark.util.QueueLimitException;
+-import org.apache.log4j.Logger;
+ 
++
++
++
++
++
++
++
+ /**
+  * This class is used for keeping track of the procedures that have been
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -19,7 +19,7 @@
+ import java.io.BufferedReader;
+ import java.io.FileReader;
+-import java.util.Iterator;
++
+ import java.util.ListIterator;
+-import java.util.List;
++
+ import java.util.LinkedList;
+ 
+--- src/com/oltpbenchmark/distributions/ZipfianGenerator.java
++++ src/com/oltpbenchmark/distributions/ZipfianGenerator.java
+@@ -33,6 +33,6 @@
+  */
+ 
+-import java.util.Random;
+ 
++
+ /**
+  * A generator of a zipfian distribution. It produces a sequence of items, such that some items are more popular than others, according
+--- src/com/oltpbenchmark/benchmarks/epinions/procedures/UpdateTrustRating.java
++++ src/com/oltpbenchmark/benchmarks/epinions/procedures/UpdateTrustRating.java
+@@ -19,5 +19,5 @@
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
++
+ import java.sql.SQLException;
+ 
+--- src/com/oltpbenchmark/benchmarks/tpch/procedures/GenericQuery.java
++++ src/com/oltpbenchmark/benchmarks/tpch/procedures/GenericQuery.java
+@@ -17,7 +17,7 @@
+ package com.oltpbenchmark.benchmarks.tpch.procedures;
+ 
+-import java.io.BufferedReader;
+-import java.io.FileReader;
+-import java.io.IOException;
++
++
++
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -29,5 +29,5 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
++
+ import com.oltpbenchmark.api.Worker;
+ 
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/queries/GenericQuery.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/queries/GenericQuery.java
+@@ -27,5 +27,5 @@
+ import org.apache.log4j.Logger;
+ 
+-import com.oltpbenchmark.DBWorkload;
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+--- src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/utils/ConfigUtil.java
+@@ -33,13 +33,13 @@
+ 
+ import java.io.File;
+-import java.io.IOException;
++
+ import java.util.Properties;
+ 
+-import org.apache.log4j.ConsoleAppender;
+-import org.apache.log4j.FileAppender;
+-import org.apache.log4j.Layout;
++
++
++
+ import org.apache.log4j.Level;
+-import org.apache.log4j.Logger;
+ 
++
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConfigError;
+ import com.oltpbenchmark.benchmarks.linkbench.LinkBenchConstants;
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord7.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord7.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord7 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/twitter/util/TraceTransactionGenerator.java
++++ src/com/oltpbenchmark/benchmarks/twitter/util/TraceTransactionGenerator.java
+@@ -19,6 +19,6 @@
+ 
+ import java.util.List;
+-import java.util.Random;
+ 
++
+ import com.oltpbenchmark.api.TransactionGenerator;
+ import com.oltpbenchmark.distributions.CounterGenerator;
+--- src/com/oltpbenchmark/benchmarks/tpcds/procedures/Test.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/procedures/Test.java
+@@ -3,10 +3,10 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.tpcds.TPCDSConstants;
+ 
++
++
+ import java.sql.Connection;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
++
++
+ import java.sql.SQLException;
+ 
+--- src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmark.java
++++ src/com/oltpbenchmark/benchmarks/chbenchmark/CHBenCHmark.java
+@@ -31,6 +31,6 @@
+ import com.oltpbenchmark.api.Worker;
+ import com.oltpbenchmark.benchmarks.chbenchmark.queries.Q1;
+-import com.oltpbenchmark.benchmarks.tpcc.TPCCConfig;
+ 
++
+ public class CHBenCHmark extends BenchmarkModule {
+ 	private static final Logger LOG = Logger.getLogger(CHBenCHmark.class);
+--- src/com/oltpbenchmark/api/collectors/DBParameterCollector.java
++++ src/com/oltpbenchmark/api/collectors/DBParameterCollector.java
+@@ -19,5 +19,5 @@
+ import java.sql.ResultSet;
+ import java.util.List;
+-import java.sql.ResultSetMetaData;
++
+ import java.util.Map;
+ 
+--- src/com/oltpbenchmark/benchmarks/jpab/procedures/Persist.java
++++ src/com/oltpbenchmark/benchmarks/jpab/procedures/Persist.java
+@@ -39,6 +39,6 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.benchmarks.jpab.objects.Person;
+-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
++
++
+ import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ 
+--- src/com/oltpbenchmark/benchmarks/jpab/procedures/Delete.java
++++ src/com/oltpbenchmark/benchmarks/jpab/procedures/Delete.java
+@@ -39,6 +39,6 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.benchmarks.jpab.objects.Person;
+-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
++
++
+ import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord4.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord4.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord4 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/epinions/procedures/UpdateItemTitle.java
++++ src/com/oltpbenchmark/benchmarks/epinions/procedures/UpdateItemTitle.java
+@@ -19,5 +19,5 @@
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
++
+ import java.sql.SQLException;
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord2.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord2.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord2 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord9.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord9.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord9 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord5.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord5.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord5 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
++++ src/com/oltpbenchmark/benchmarks/tpcds/TPCDSLoader.java
+@@ -23,9 +23,9 @@
+ import java.io.IOException;
+ import java.sql.Connection;
+-import java.sql.DriverManager;
++
+ import java.sql.PreparedStatement;
+ import java.sql.SQLException;
+ import java.util.ArrayList;
+-import java.util.Date;
++
+ import java.util.List;
+ import java.util.concurrent.CountDownLatch;
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord1.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord1.java
+@@ -24,10 +24,10 @@
+ import org.apache.log4j.Logger;
+ 
+-import com.mysql.jdbc.log.Log;
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.api.Worker;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
++
+ public class MaxRecord1 extends Procedure{
+     private static final Logger LOG = Logger.getLogger(MaxRecord1.class);
+--- src/com/oltpbenchmark/benchmarks/jpab/procedures/Retrieve.java
++++ src/com/oltpbenchmark/benchmarks/jpab/procedures/Retrieve.java
+@@ -39,6 +39,6 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.benchmarks.jpab.objects.Person;
+-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
++
++
+ import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ 
+--- src/com/oltpbenchmark/benchmarks/jpab/procedures/Update.java
++++ src/com/oltpbenchmark/benchmarks/jpab/procedures/Update.java
+@@ -39,6 +39,6 @@
+ 
+ import com.oltpbenchmark.api.Procedure;
+-import com.oltpbenchmark.benchmarks.jpab.objects.Person;
+-import com.oltpbenchmark.benchmarks.jpab.objects.TestEntity;
++
++
+ import com.oltpbenchmark.benchmarks.jpab.tests.Test;
+ 
+--- src/com/oltpbenchmark/api/collectors/MyRocksCollector.java
++++ src/com/oltpbenchmark/api/collectors/MyRocksCollector.java
+@@ -25,8 +25,8 @@
+ import java.util.List;
+ import java.util.Map;
+-import java.util.TreeMap;
+-import java.util.ArrayList;
++
++
+ import com.oltpbenchmark.util.JSONUtil;
+-import java.sql.ResultSetMetaData;
++
+ import org.apache.log4j.Logger;
+ import com.oltpbenchmark.catalog.Catalog;
+--- src/com/oltpbenchmark/benchmarks/sibench/procedures/MinRecord.java
++++ src/com/oltpbenchmark/benchmarks/sibench/procedures/MinRecord.java
+@@ -21,8 +21,8 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.HashMap;
+-import java.util.List;
+-import java.util.Map;
+ 
++
++
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord6.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord6.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord6 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord8.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord8.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord8 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/SumRecord10.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/SumRecord10.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class SumRecord10 extends Procedure{
+     public final SQLStmt sumStmt = new SQLStmt(
+--- src/com/oltpbenchmark/benchmarks/tpch/util/TPCHConstants.java
++++ src/com/oltpbenchmark/benchmarks/tpch/util/TPCHConstants.java
+@@ -17,7 +17,7 @@
+ package com.oltpbenchmark.benchmarks.tpch.util;
+ 
+-import java.util.HashMap;
+-import java.util.Map;
+ 
++
++
+ public class TPCHConstants {
+ 
+--- src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchLoader.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/LinkBenchLoader.java
+@@ -18,5 +18,5 @@
+ 
+ import java.sql.Connection;
+-import java.sql.PreparedStatement;
++
+ import java.sql.SQLException;
+ import java.util.List;
+@@ -25,8 +25,8 @@
+ 
+ import com.oltpbenchmark.api.Loader;
+-import com.oltpbenchmark.catalog.Table;
+-import com.oltpbenchmark.util.SQLUtil;
+-import com.oltpbenchmark.util.TextGenerator;
+ 
++
++
++
+ public class LinkBenchLoader extends Loader<LinkBenchBenchmark> {
+     private static final Logger LOG = Logger.getLogger(LinkBenchLoader.class);
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/ReadRecord1.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/ReadRecord1.java
+@@ -23,11 +23,11 @@
+ import java.util.Map;
+ 
+-import org.apache.log4j.Logger;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+ import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTLoader;
+ 
++
+ public class ReadRecord1 extends Procedure{
+     
+--- src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
++++ src/com/oltpbenchmark/benchmarks/wikipedia/WikipediaWorker.java
+@@ -19,6 +19,6 @@
+ import java.net.UnknownHostException;
+ import java.sql.SQLException;
+-import java.util.Random;
+ 
++
+ import org.apache.log4j.Logger;
+ 
+--- src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord3.java
++++ src/com/oltpbenchmark/benchmarks/hyadapt/procedures/MaxRecord3.java
+@@ -21,10 +21,10 @@
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Map;
+ 
++
+ import com.oltpbenchmark.api.Procedure;
+ import com.oltpbenchmark.api.SQLStmt;
+-import com.oltpbenchmark.benchmarks.hyadapt.HYADAPTConstants;
+ 
++
+ public class MaxRecord3 extends Procedure{
+     public final SQLStmt maxStmt = new SQLStmt(

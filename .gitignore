@@ -7,7 +7,6 @@ output.res
 results
 *.orig
 *.rej
-ep
 infer-out
 ## -------------------------------
 ## Kate Swap Files

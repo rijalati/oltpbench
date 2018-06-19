@@ -1,0 +1,214 @@
+--- src/com/oltpbenchmark/api/Worker.java
++++ src/com/oltpbenchmark/api/Worker.java
+@@ -227,5 +227,5 @@
+         // wait for start
+         wrkldState.blockForStart();
+-        State preState, postState;
++        State preState; State postState;
+         Phase phase;
+ 
+--- src/com/oltpbenchmark/TraceReader.java
++++ src/com/oltpbenchmark/TraceReader.java
+@@ -77,5 +77,5 @@
+             // the ordering changes or extra columns are added.
+             String[] splitHeader = line.split(",");
+-            int txnIdCol = -1, phaseIdCol = -1, startTimeCol = -1;
++            int txnIdCol = -1; int phaseIdCol = -1; int startTimeCol = -1;
+             int index = 0;
+             for (String field : splitHeader) {
+--- src/com/oltpbenchmark/distributions/ScrambledZipfianGenerator.java
++++ src/com/oltpbenchmark/distributions/ScrambledZipfianGenerator.java
+@@ -49,5 +49,5 @@
+ 	
+ 	ZipfianGenerator gen;
+-	long _min,_max,_itemcount;
++	long _min; long _max; long _itemcount;
+ 	
+ 	/******************************* Constructors **************************************/
+--- src/com/oltpbenchmark/distributions/ZipfianGenerator.java
++++ src/com/oltpbenchmark/distributions/ZipfianGenerator.java
+@@ -75,5 +75,5 @@
+ 	 * Computed parameters for generating the distribution.
+ 	 */
+-	double alpha,zetan,eta,theta,zeta2theta;
++	double alpha; double zetan; double eta; double theta; double zeta2theta;
+ 	
+ 	/**
+--- src/com/oltpbenchmark/util/RandomGenerator.java
++++ src/com/oltpbenchmark/util/RandomGenerator.java
+@@ -66,5 +66,5 @@
+         
+         // error checking and 2^x checking removed for simplicity.
+-        long bits, val;
++        long bits; long val;
+         do {
+             bits = (this.nextLong() << 1) >>> 1;
+--- src/com/oltpbenchmark/util/RandomDistribution.java
++++ src/com/oltpbenchmark/util/RandomDistribution.java
+@@ -173,5 +173,5 @@
+         public static long nextLong(Random rng, long n) {
+             // error checking and 2^x checking removed for simplicity.
+-            long bits, val;
++            long bits; long val;
+             do {
+                bits = (rng.nextLong() << 1) >>> 1;
+@@ -210,5 +210,5 @@
+         protected long nextLongImpl() {
+             // error checking and 2^x checking removed for simplicity.
+-            long bits, val;
++            long bits; long val;
+             do {
+                 bits = (random.nextLong() << 1) >>> 1;
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Delivery.java
+@@ -112,5 +112,5 @@
+ 		delivUpdateCustBalDelivCnt = this.getPreparedStatement(conn, delivUpdateCustBalDelivCntSQL);
+ 
+-		int d_id, c_id;
++		int d_id; int c_id;
+         float ol_total = 0;
+         int[] orderIDs;
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/RealDistribution.java
+@@ -152,7 +152,6 @@
+   }
+ 
+-  private static ArrayList<Point> nlinks_cdf, link_nreads_cdf, link_nwrites_cdf,
+-                  node_nreads_cdf, node_nwrites_cdf;
+-  private static double[] link_nreads_cs, nwrites_cs, node_nreads_cs, node_nwrites_cs;
++  private static ArrayList<Point> nlinks_cdf; private static ArrayList<Point> link_nreads_cdf; private static ArrayList<Point> link_nwrites_cdf; private static ArrayList<Point> node_nreads_cdf; private static ArrayList<Point> node_nwrites_cdf;
++  private static double[] link_nreads_cs; private static double[] nwrites_cs; private static double[] node_nreads_cs; private static double[] node_nwrites_cs;
+   /**
+    * These right_points arrays are used to keep track of state of
+@@ -165,8 +164,6 @@
+    * involved.
+    */
+-  private static long[] link_nreads_right_points, nwrites_right_points,
+-                        node_nreads_right_points, node_nwrites_right_points;
+-  private static double nlinks_expected_val, link_nreads_expected_val, link_nwrites_expected_val,
+-                        node_nreads_expected_val, node_nwrites_expected_val;
++  private static long[] link_nreads_right_points; private static long[] nwrites_right_points; private static long[] node_nreads_right_points; private static long[] node_nwrites_right_points;
++  private static double nlinks_expected_val; private static double link_nreads_expected_val; private static double link_nwrites_expected_val; private static double node_nreads_expected_val; private static double node_nwrites_expected_val;
+ 
+   /*
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/PiecewiseLinearDistribution.java
+@@ -206,5 +206,5 @@
+ 
+   public static int binarySearch(ArrayList<Point> points, double p) {
+-    int left = 0, right = points.size() - 1;
++    int left = 0; int right = points.size() - 1;
+     while (left < right) {
+       int mid = (left + right)/2;
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/NewOrder.java
+@@ -170,9 +170,9 @@
+ 			int[] supplierWarehouseIDs, int[] orderQuantities, Connection conn, TPCCWorker w)
+ 			throws SQLException {
+-		float c_discount, w_tax, d_tax = 0, i_price;
+-		int d_next_o_id, o_id = -1, s_quantity;
+-		String c_last = null, c_credit = null, i_name, i_data, s_data;
+-		String s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05;
+-		String s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10, ol_dist_info = null;
++		float c_discount; float w_tax; float d_tax = 0; float i_price;
++		int d_next_o_id; int o_id = -1; int s_quantity;
++		String c_last = null; String c_credit = null; String i_name; String i_data; String s_data;
++		String s_dist_01; String s_dist_02; String s_dist_03; String s_dist_04; String s_dist_05;
++		String s_dist_06; String s_dist_07; String s_dist_08; String s_dist_09; String s_dist_10; String ol_dist_info = null;
+ 		float[] itemPrices = new float[o_ol_cnt];
+ 		float[] orderLineAmounts = new float[o_ol_cnt];
+@@ -180,7 +180,7 @@
+ 		int[] stockQuantities = new int[o_ol_cnt];
+ 		char[] brandGeneric = new char[o_ol_cnt];
+-		int ol_supply_w_id, ol_i_id, ol_quantity;
++		int ol_supply_w_id; int ol_i_id; int ol_quantity;
+ 		int s_remote_cnt_increment;
+-		float ol_amount, total_amount = 0;
++		float ol_amount; float total_amount = 0;
+ 		
+ 		try {
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/Payment.java
+@@ -171,6 +171,6 @@
+         float paymentAmount = (float) (TPCCUtil.randomNumber(100, 500000, gen) / 100.0);
+ 
+-        String w_street_1, w_street_2, w_city, w_state, w_zip, w_name;
+-        String d_street_1, d_street_2, d_city, d_state, d_zip, d_name;
++        String w_street_1; String w_street_2; String w_city; String w_state; String w_zip; String w_name;
++        String d_street_1; String d_street_2; String d_city; String d_state; String d_zip; String d_name;
+ 
+         payUpdateWhse.setDouble(1, paymentAmount);
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/LinkDistributions.java
+@@ -77,5 +77,5 @@
+     private long nlinks_default;
+ 
+-    private long minid1, maxid1;
++    private long minid1; private long maxid1;
+ 
+     public ArithLinkDistribution(long minid1, long maxid1, LinkDistMode mode,
+--- src/com/oltpbenchmark/benchmarks/linkbench/distributions/GeometricDistribution.java
++++ src/com/oltpbenchmark/benchmarks/linkbench/distributions/GeometricDistribution.java
+@@ -37,5 +37,5 @@
+ 
+   /** Valid range */
+-  private long min = 0, max = 0;
++  private long min = 0; private long max = 0;
+ 
+   private double scale = 0.0;
+--- src/com/oltpbenchmark/util/StringUtil.java
++++ src/com/oltpbenchmark/util/StringUtil.java
+@@ -52,5 +52,5 @@
+     private static String CACHE_REPEAT_RESULT = null;
+ 
+-    private static final double BASE = 1024, KB = BASE, MB = KB*BASE, GB = MB*BASE;
++    private static final double BASE = 1024; private static final double KB = BASE; private static final double MB = KB * BASE; private static final double GB = MB * BASE;
+     private static final DecimalFormat df = new DecimalFormat("#.##");
+ 
+--- src/com/oltpbenchmark/util/MeasureTargetSystem.java
++++ src/com/oltpbenchmark/util/MeasureTargetSystem.java
+@@ -25,7 +25,7 @@
+ public class MeasureTargetSystem implements Runnable {
+ 
+-	BufferedWriter out, out2 = null;
++	BufferedWriter out; BufferedWriter out2 = null;
+ 	StatisticsCollector sc = null;
+-	int intermediateWarmupTime, measuringTime, speed;
++	int intermediateWarmupTime; int measuringTime; int speed;
+ 	long lastPhaseChange;
+ 	StatsHolder s;
+--- src/com/oltpbenchmark/util/ResultUploader.java
++++ src/com/oltpbenchmark/util/ResultUploader.java
+@@ -68,9 +68,9 @@
+     DBParameterCollector collector;
+ 
+-    String dbUrl, dbType;
+-    String username, password;
++    String dbUrl; String dbType;
++    String username; String password;
+     String benchType;
+ //    int windowSize;
+-    String uploadCode, uploadUrl;
++    String uploadCode; String uploadUrl;
+ 
+     public ResultUploader(Results r, XMLConfiguration conf, CommandLine argsLine) {
+--- src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
++++ src/com/oltpbenchmark/benchmarks/tpcc/procedures/OrderStatus.java
+@@ -99,5 +99,5 @@
+         }
+ 
+-        int o_id = -1, o_carrier_id = -1;
++        int o_id = -1; int o_carrier_id = -1;
+         Timestamp o_entry_d;
+         ArrayList<String> orderLines = new ArrayList<String>();
+--- src/com/oltpbenchmark/benchmarks/twitter/util/TransactionSelector.java
++++ src/com/oltpbenchmark/benchmarks/twitter/util/TransactionSelector.java
+@@ -33,6 +33,6 @@
+ public class TransactionSelector {
+ 
+-	String filename,filename2;
+-	DataInputStream dis,dis2 = null;
++	String filename; String filename2;
++	DataInputStream dis; DataInputStream dis2 = null;
+ 	Random r = null;
+ 	TransactionTypes transTypes;
