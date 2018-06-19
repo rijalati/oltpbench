@@ -127,8 +127,12 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
+	    <artifactId>maven-compiler-plugin</artifactId>
+	    <version>3.7.0</version>
             <configuration>
+              <compilerId>javac-with-errorprone</compilerId>
+              <showWarnings>true</showWarnings>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
               <compilerArgs combine.children="append">
 		<compilerArg>-XepPatchChecks:#|CHECK|#</compilerArg>
 		<compilerArg>-XepPatchLocation:/home/rlatimore/src/git/oltpbench</compilerArg>
@@ -154,6 +158,11 @@
 	    <groupId>com.google.errorprone</groupId>
 	    <artifactId>error_prone_core</artifactId>
 	    <version>2.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jsoniter</groupId>
+      <artifactId>jsoniter</artifactId>
+      <version>0.9.19</version>
     </dependency>
     <dependency>
       <groupId>javax.persistence</groupId>
