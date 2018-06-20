@@ -437,7 +437,7 @@ public class JSONArray {
      * @return      The truth.
      */
     public boolean optBoolean(int index)  {
-        return optBoolean(index, false);
+        return optBoolean(index, /* defaultValue= */false);
     }
 
 

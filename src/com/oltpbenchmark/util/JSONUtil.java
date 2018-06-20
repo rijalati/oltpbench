@@ -476,7 +476,7 @@ public abstract class JSONUtil {
      * @throws JSONException
      */
     public static <E extends Enum<?>, T> void fieldsFromJSON(JSONObject json_object, T object, Class<? extends T> base_class, E...members) throws JSONException {
-        JSONUtil.fieldsFromJSON(json_object, object, base_class, false, members);
+        JSONUtil.fieldsFromJSON(json_object, object, base_class, /* ignore_missing= */false, members);
     }
     
     /**

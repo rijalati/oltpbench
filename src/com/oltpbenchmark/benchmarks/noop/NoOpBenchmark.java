@@ -37,7 +37,7 @@ import com.oltpbenchmark.benchmarks.noop.procedures.NoOp;
 public class NoOpBenchmark extends BenchmarkModule {
 
     public NoOpBenchmark(WorkloadConfiguration workConf) {
-        super("noop", workConf, true);
+        super("noop", workConf, /* withCatalog= */true);
     }
 
     @Override

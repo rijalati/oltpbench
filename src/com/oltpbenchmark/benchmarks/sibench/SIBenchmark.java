@@ -35,7 +35,7 @@ import com.oltpbenchmark.util.SQLUtil;
 public class SIBenchmark extends BenchmarkModule {
 
     public SIBenchmark(WorkloadConfiguration workConf) {
-        super("si", workConf, true);
+        super("si", workConf, /* withCatalog= */true);
     }
 
     @Override

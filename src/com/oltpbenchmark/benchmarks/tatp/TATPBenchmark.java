@@ -32,7 +32,7 @@ import com.oltpbenchmark.benchmarks.tatp.procedures.DeleteCallForwarding;
 public class TATPBenchmark extends BenchmarkModule {
 
 	public TATPBenchmark(WorkloadConfiguration workConf) {
-		super("tatp", workConf, true);
+		super("tatp", workConf, /* withCatalog= */true);
 	}
 	
 	@Override

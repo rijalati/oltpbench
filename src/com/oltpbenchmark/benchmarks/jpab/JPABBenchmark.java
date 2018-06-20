@@ -39,7 +39,7 @@ public class JPABBenchmark extends BenchmarkModule {
     private JPABConfiguration jpabConf;
 
     public JPABBenchmark(WorkloadConfiguration workConf) {
-        super("jpab", workConf, false);
+        super("jpab", workConf, /* withCatalog= */false);
         this.jpabConf = new JPABConfiguration(workConf);
     }
 

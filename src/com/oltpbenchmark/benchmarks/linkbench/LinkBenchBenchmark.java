@@ -46,7 +46,7 @@ public class LinkBenchBenchmark extends BenchmarkModule {
     private Properties props;
 
     public LinkBenchBenchmark(WorkloadConfiguration workConf) throws Exception {
-        super("linkbench", workConf, true);
+        super("linkbench", workConf, /* withCatalog= */true);
         this.linkBenchConf = new LinkBenchConfiguration(workConf);
         props = new Properties();
         props.load(new FileInputStream(this.linkBenchConf.getConfigFile()));

@@ -439,7 +439,7 @@ public class AuctionMarkWorker extends Worker<AuctionMarkBenchmark> {
         UserId sellerId = new UserId(i_u_id);
         assert (i_id.getSellerId().equals(sellerId));
          
-        ItemStatus qtype = profile.addItemToProperQueue(itemInfo, false);
+        ItemStatus qtype = profile.addItemToProperQueue(itemInfo, /* is_loader= */false);
     
         return (i_id);
     }

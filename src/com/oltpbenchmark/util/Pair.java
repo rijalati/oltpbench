@@ -51,7 +51,7 @@ public class Pair<T, U> implements Comparable<Pair<T, U>> {
     }
 
     public Pair(T first, U second) {
-        this(first, second, true);
+        this(first, second, /* precomputeHash= */true);
     }
 
     private int computeHashCode() {

@@ -282,7 +282,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
         link.data = linkAddDataGen.fill(rng,
                                       new byte[(int)linkDataSize.choose(rng)]);
         // no inverses for now
-        boolean alreadyExists = proc.run(conn, link, true);
+        boolean alreadyExists = proc.run(conn, link, /* noinverse= */true);
         boolean added = !alreadyExists;
     }
     private void deleteLink() throws SQLException{
@@ -293,8 +293,8 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
         long link_type = id2chooser.chooseRandomLinkType(rng);
         long id2 = id2chooser.chooseForOp(rng, id1, link_type,
                                           ID2Chooser.P_DELETE_EXIST);
-        proc.run(conn, id1, link_type, id2, true, // no inverse
-            false);
+        proc.run(conn, id1, link_type, id2, /* noinverse= */true, // no inverse
+            /* expunge= */false);
     }
     private void updateLink() throws SQLException{
         //yes, updateLink uses addlLink procedure .. 
@@ -312,7 +312,7 @@ public class LinkBenchWorker extends Worker<LinkBenchBenchmark> {
         link.data = linkUpDataGen.fill(rng,
                             new byte[(int)linkDataSize.choose(rng)]);
         // no inverses for now
-        boolean found1 = proc.run(conn, link, true);
+        boolean found1 = proc.run(conn, link, /* noinverse= */true);
         boolean found = found1;
     }
     private void countLink() throws SQLException{

@@ -66,11 +66,11 @@ public class InvertibleShuffler {
   }
 
   public long permute(long i) {
-    return permute(i, false);
+    return permute(i, /* inverse= */false);
   }
 
   public long invertPermute(long i) {
-    return permute(i, true);
+    return permute(i, /* inverse= */true);
   }
 
   public long permute(long i, boolean inverse) {

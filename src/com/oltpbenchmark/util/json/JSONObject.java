@@ -292,7 +292,7 @@ public class JSONObject {
      */
     public JSONObject(Object bean) {
         this();
-        populateInternalMap(bean, false);
+        populateInternalMap(bean, /* includeSuperClass= */false);
     }
 
 
@@ -780,7 +780,7 @@ public class JSONObject {
      * @return      The truth.
      */
     public boolean optBoolean(String key) {
-        return optBoolean(key, false);
+        return optBoolean(key, /* defaultValue= */false);
     }
 
 

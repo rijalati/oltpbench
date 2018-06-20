@@ -108,6 +108,6 @@ public class ItemInfo implements JSONSerializable, Comparable<ItemInfo> {
     }
     @Override
     public void fromJSON(JSONObject json_object) throws JSONException {
-        JSONUtil.fieldsFromJSON(json_object, this, ItemInfo.class, true, JSONUtil.getSerializableFields(ItemInfo.class));
+        JSONUtil.fieldsFromJSON(json_object, this, ItemInfo.class, /* ignore_missing= */true, JSONUtil.getSerializableFields(ItemInfo.class));
     }
 }

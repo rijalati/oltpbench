@@ -35,7 +35,7 @@ import com.oltpbenchmark.util.SQLUtil;
 public class YCSBBenchmark extends BenchmarkModule {
 
     public YCSBBenchmark(WorkloadConfiguration workConf) {
-        super("ycsb", workConf, true);
+        super("ycsb", workConf, /* withCatalog= */true);
     }
 
     @Override

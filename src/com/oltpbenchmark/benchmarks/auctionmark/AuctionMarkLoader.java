@@ -1058,7 +1058,7 @@ public class AuctionMarkLoader extends Loader<AuctionMarkBenchmark> {
             else if (itemInfo.numBids > 0) {
         		itemInfo.lastBidderId = profile.getRandomBuyerId(itemInfo.sellerId);
             }
-            profile.addItemToProperQueue(itemInfo, true);
+            profile.addItemToProperQueue(itemInfo, /* is_loader= */true);
 
             // I_ID
             row[col++] = itemInfo.itemId;

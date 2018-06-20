@@ -70,7 +70,7 @@ public class CategoryParser {
 			categoryName = categoryName.substring(0, categoryName.length() - 1);
 		}
 		
-		addNewCategory(categoryName, itemCount, true);
+		addNewCategory(categoryName, itemCount, /* isLeaf= */true);
 	}
 	
 	public Category addNewCategory(String fullCategoryName, int itemCount, boolean isLeaf){
@@ -93,7 +93,7 @@ public class CategoryParser {
 		if(_categoryMap.containsKey(parentCategoryName)){
 			parentCategory = _categoryMap.get(parentCategoryName);
 		} else if(!parentCategoryName.isEmpty()){
-			parentCategory = addNewCategory(parentCategoryName, 0, false);
+			parentCategory = addNewCategory(parentCategoryName, 0, /* isLeaf= */false);
 		}
 		
 		if(parentCategory!=null){

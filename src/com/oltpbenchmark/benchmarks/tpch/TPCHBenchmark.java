@@ -45,7 +45,7 @@ public class TPCHBenchmark extends BenchmarkModule {
     private static final Logger LOG = Logger.getLogger(TPCHBenchmark.class);
 
 	public TPCHBenchmark(WorkloadConfiguration workConf) {
-		super("tpch", workConf, true);
+		super("tpch", workConf, /* withCatalog= */true);
 	}
 
 	@Override

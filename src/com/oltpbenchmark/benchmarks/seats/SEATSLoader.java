@@ -396,7 +396,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
                     // All other histograms are just serialized and can be
                     // loaded directly
                 } else {
-                    hist = SEATSHistogramUtil.loadHistogram(histogramName, this.profile.airline_data_dir, true);
+                    hist = SEATSHistogramUtil.loadHistogram(histogramName, this.profile.airline_data_dir, /* has_header= */true);
                 }
             } catch (Exception ex) {
                 throw new RuntimeException("Failed to load histogram '" + histogramName + "'", ex);
@@ -635,7 +635,7 @@ public class SEATSLoader extends Loader<SEATSBenchmark> {
         private final Set<Integer> rnd_integer = new HashSet<Integer>();
 
         public FixedDataIterable(Table catalog_tbl, File filename) throws Exception {
-            super(catalog_tbl, filename, true, true);
+            super(catalog_tbl, filename, /* has_header= */true, /* auto_generate_first_column= */true);
 
             // Figure out which columns are random integers and strings
             for (Column catalog_col : catalog_tbl.getColumns()) {

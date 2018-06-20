@@ -147,7 +147,7 @@ public abstract class FileUtil {
     }
 
     public static File getTempFile(String ext) {
-        return (FileUtil.getTempFile(null, ext, false));
+        return (FileUtil.getTempFile(null, ext, /* deleteOnExit= */false));
     }
 
     public static File getTempFile(String prefix, String suffix, boolean deleteOnExit) {
@@ -203,7 +203,7 @@ public abstract class FileUtil {
      * @return
      */
     public static File writeStringToTempFile(String content) {
-        return (writeStringToTempFile(content, "tmp", false));
+        return (writeStringToTempFile(content, "tmp", /* deleteOnExit= */false));
     }
 
     /**
@@ -215,7 +215,7 @@ public abstract class FileUtil {
      * @return
      */
     public static File writeStringToTempFile(String content, String ext) {
-        return (writeStringToTempFile(content, ext, false));
+        return (writeStringToTempFile(content, ext, /* deleteOnExit= */false));
     }
 
     /**
@@ -327,7 +327,7 @@ public abstract class FileUtil {
      * @throws IOException
      */
     public static File findDirectory(String dirName) throws IOException {
-        return (FileUtil.find(dirName, new File(".").getCanonicalFile(), true).getCanonicalFile());
+        return (FileUtil.find(dirName, new File(".").getCanonicalFile(), /* isdir= */true).getCanonicalFile());
     }
 
     /**
@@ -339,7 +339,7 @@ public abstract class FileUtil {
      * @throws IOException
      */
     public static File findFile(String fileName) throws IOException {
-        return (FileUtil.find(fileName, new File(".").getCanonicalFile(), false).getCanonicalFile());
+        return (FileUtil.find(fileName, new File(".").getCanonicalFile(), /* isdir= */false).getCanonicalFile());
     }
 
     private static final File find(String name, File current, boolean isdir) throws IOException {

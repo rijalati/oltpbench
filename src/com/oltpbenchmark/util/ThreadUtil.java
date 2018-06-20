@@ -137,7 +137,7 @@ public abstract class ThreadUtil {
      * @param command
      */
     public static <T> void fork(String command[], EventObservable<T> stop_observable) {
-        ThreadUtil.fork(command, stop_observable, null, false);
+        ThreadUtil.fork(command, stop_observable, null, /* print_output= */false);
     }
 
     /**
@@ -245,7 +245,7 @@ public abstract class ThreadUtil {
                 ThreadUtil.pool = Executors.newFixedThreadPool(max_threads, factory);
             }
         } // SYNCHRONIZED
-        ThreadUtil.run(runnables, ThreadUtil.pool, false);
+        ThreadUtil.run(runnables, ThreadUtil.pool, /* stop_pool= */false);
     }
     
     public static synchronized void shutdownGlobalPool() {
@@ -263,7 +263,7 @@ public abstract class ThreadUtil {
      */
     public static <R extends Runnable> void runNewPool(final Collection<R> threads) {
         ExecutorService pool = Executors.newCachedThreadPool(factory);
-        ThreadUtil.run(threads, pool, true);
+        ThreadUtil.run(threads, pool, /* stop_pool= */true);
     }
 
     /**
@@ -272,7 +272,7 @@ public abstract class ThreadUtil {
      */
     public static <R extends Runnable> void runNewPool(final Collection<R> threads, int max_concurrent) {
         ExecutorService pool = Executors.newFixedThreadPool(max_concurrent, factory);
-        ThreadUtil.run(threads, pool, true);
+        ThreadUtil.run(threads, pool, /* stop_pool= */true);
     }
 
     /**

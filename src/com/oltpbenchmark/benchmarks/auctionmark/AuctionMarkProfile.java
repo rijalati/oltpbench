@@ -454,7 +454,7 @@ public class AuctionMarkProfile {
             // IMPORTANT: Do not set the status here so that we make sure that
             // it is added to the right queue
             ItemInfo itemInfo = new ItemInfo(i_id, i_current_price, i_end_date, i_num_bids);
-            profile.addItemToProperQueue(itemInfo, false);
+            profile.addItemToProperQueue(itemInfo, /* is_loader= */false);
             ctr++;
         } // WHILE
         
@@ -896,10 +896,10 @@ public class AuctionMarkProfile {
      * AVAILABLE ITEMS
      **********************************************************************************************/
     public ItemInfo getRandomAvailableItemId() {
-        return this.getRandomItem(this.items_available, false, false);
+        return this.getRandomItem(this.items_available, /* needCurrentPrice= */false, /* needFutureEndDate= */false);
     }
     public ItemInfo getRandomAvailableItem(boolean hasCurrentPrice) {
-        return this.getRandomItem(this.items_available, hasCurrentPrice, false);
+        return this.getRandomItem(this.items_available, hasCurrentPrice, /* needFutureEndDate= */false);
     }
     public int getAvailableItemsCount() {
         return this.items_available.size();
@@ -909,10 +909,10 @@ public class AuctionMarkProfile {
      * ENDING SOON ITEMS
      **********************************************************************************************/
     public ItemInfo getRandomEndingSoonItem() {
-        return this.getRandomItem(this.items_endingSoon, false, true);
+        return this.getRandomItem(this.items_endingSoon, /* needCurrentPrice= */false, /* needFutureEndDate= */true);
     }
     public ItemInfo getRandomEndingSoonItem(boolean hasCurrentPrice) {
-        return this.getRandomItem(this.items_endingSoon, hasCurrentPrice, true);
+        return this.getRandomItem(this.items_endingSoon, hasCurrentPrice, /* needFutureEndDate= */true);
     }
     public int getEndingSoonItemsCount() {
         return this.items_endingSoon.size();
@@ -922,7 +922,7 @@ public class AuctionMarkProfile {
      * WAITING FOR PURCHASE ITEMS
      **********************************************************************************************/
     public ItemInfo getRandomWaitForPurchaseItem() {
-        return this.getRandomItem(this.items_waitingForPurchase, false, false);
+        return this.getRandomItem(this.items_waitingForPurchase, /* needCurrentPrice= */false, /* needFutureEndDate= */false);
     }
     public int getWaitForPurchaseItemsCount() {
         return this.items_waitingForPurchase.size();
@@ -932,7 +932,7 @@ public class AuctionMarkProfile {
      * COMPLETED ITEMS
      **********************************************************************************************/
     public ItemInfo getRandomCompleteItem() {
-        return this.getRandomItem(this.items_completed, false, false);
+        return this.getRandomItem(this.items_completed, /* needCurrentPrice= */false, /* needFutureEndDate= */false);
     }
     public int getCompleteItemsCount() {
         return this.items_completed.size();
@@ -953,7 +953,7 @@ public class AuctionMarkProfile {
         while (idx == -1 || allItemSets[idx].isEmpty()) {
             idx = rng.nextInt(allItemSets.length);
         } // WHILE
-        return (this.getRandomItem(allItemSets[idx], false, false));
+        return (this.getRandomItem(allItemSets[idx], /* needCurrentPrice= */false, /* needFutureEndDate= */false));
     }
 
     // ----------------------------------------------------------------

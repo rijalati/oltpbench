@@ -36,7 +36,7 @@ public class ResourceStresserBenchmark extends BenchmarkModule {
 	private static final Logger LOG = Logger.getLogger(Procedure.class);
 
 	public ResourceStresserBenchmark(WorkloadConfiguration workConf) {
-		super("resourcestresser", workConf, true);
+		super("resourcestresser", workConf, /* withCatalog= */true);
 	}
 	
 	@Override

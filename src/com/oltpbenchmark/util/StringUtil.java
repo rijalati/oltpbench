@@ -162,7 +162,7 @@ public abstract class StringUtil {
      * @return
      */
     public static String formatMaps(Map<?, ?>...maps) {
-        return (formatMaps(":", false, false, false, false, true, true, maps));
+        return (formatMaps(":", /* upper= */false, /* box= */false, /* border_top= */false, /* border_bottom= */false, /* recursive= */true, /* first_element_title= */true, maps));
     }
     
     /**
@@ -173,7 +173,7 @@ public abstract class StringUtil {
      * @return
      */
     public static String formatMaps(String delimiter, Map<?, ?>...maps) {
-        return (formatMaps(delimiter, false, false, false, false, true, true, maps));
+        return (formatMaps(delimiter, /* upper= */false, /* box= */false, /* border_top= */false, /* border_bottom= */false, /* recursive= */true, /* first_element_title= */true, maps));
     }
 
     /**
@@ -318,7 +318,7 @@ public abstract class StringUtil {
      * @return
      */
     public static String formatMapsBoxed(Map<?, ?>...maps) {
-        return (formatMaps(":", false, true, false, false, true, true, maps));
+        return (formatMaps(":", /* upper= */false, /* box= */true, /* border_top= */false, /* border_bottom= */false, /* recursive= */true, /* first_element_title= */true, maps));
     }
 
     /**
@@ -417,7 +417,7 @@ public abstract class StringUtil {
      * @return
      */
     public static String abbrv(String str, int max) {
-        return (abbrv(str, max, true));
+        return (abbrv(str, max, /* dots= */true));
     }
 
     /**
@@ -444,7 +444,7 @@ public abstract class StringUtil {
      * @return
      */
     public static String title(String string) {
-        return (StringUtil.title(string, false));
+        return (StringUtil.title(string, /* keep_upper= */false));
     }
     
     /**

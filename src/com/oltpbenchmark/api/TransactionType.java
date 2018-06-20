@@ -34,7 +34,7 @@ public class TransactionType implements Comparable<TransactionType> {
     }
 	
 	protected TransactionType(Class<? extends Procedure> procClass, int id) {
-	    this(procClass, id, false);
+	    this(procClass, id, /* supplemental= */false);
 	}
 
 	public Class<? extends Procedure> getProcedureClass() {

@@ -99,12 +99,12 @@ public class WikipediaWorker extends Worker<WikipediaBenchmark> {
             }
             // GetPageAnonymous
             else if (procClass.equals(GetPageAnonymous.class)) {
-                this.getPageAnonymous(true, this.generateUserIP(), nameSpace, pageTitle);
+                this.getPageAnonymous(/* forSelect= */true, this.generateUserIP(), nameSpace, pageTitle);
             }
             // GetPageAuthenticated
             else if (procClass.equals(GetPageAuthenticated.class)) {
                 assert (userId > 0);
-                this.getPageAuthenticated(true, this.generateUserIP(), userId, nameSpace, pageTitle);
+                this.getPageAuthenticated(/* forSelect= */true, this.generateUserIP(), userId, nameSpace, pageTitle);
             }
             this.conn.commit();
         } catch (SQLException esql) {
@@ -155,7 +155,7 @@ public class WikipediaWorker extends Worker<WikipediaBenchmark> {
     }
 
     public void updatePage(String userIp, int userId, int nameSpace, String pageTitle) throws SQLException {
-        Article a = this.getPageAnonymous(false, userIp, nameSpace, pageTitle);
+        Article a = this.getPageAnonymous(/* forSelect= */false, userIp, nameSpace, pageTitle);
         this.conn.commit();
 
         // TODO: If the Article is null, then we want to insert a new page.
