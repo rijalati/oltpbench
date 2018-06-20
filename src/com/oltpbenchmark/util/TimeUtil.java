@@ -21,8 +21,8 @@ import java.text.SimpleDateFormat;
 
 public abstract class TimeUtil {
 
-    public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public final static SimpleDateFormat DATE_FORMAT_14 = new SimpleDateFormat("yyyyMMddHHmmss");
+    public final static ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    public final static ThreadLocal<SimpleDateFormat> DATE_FORMAT_14 = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMddHHmmss"));
 
     /**
      * TODO(djellel)
