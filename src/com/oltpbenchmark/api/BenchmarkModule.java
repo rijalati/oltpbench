@@ -95,7 +95,8 @@ public abstract class BenchmarkModule {
      * Whether to use verbose output messages
      * @deprecated
      */
-    protected boolean verbose;
+    @Deprecated
+protected boolean verbose;
 
     public BenchmarkModule(String benchmarkName, WorkloadConfiguration workConf, boolean withCatalog) {
         assert (workConf != null) : "The WorkloadConfiguration instance is null.";
